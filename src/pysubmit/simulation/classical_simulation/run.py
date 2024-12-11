@@ -1,14 +1,35 @@
 from ansys.aedt.core import Hfss
-from ..config_handler import ConfigProject, ValuedVariable
+from typing import Dict
 
 
-def run(hfss: Hfss):
+# from ..config_handler import ConfigProject, ValuedVariable
 
 
+def run(hfss: Hfss) -> Dict[int, Dict[str, float]]:
     # Analyze
     hfss.analyze(gpus=3072, cores=8)
 
     # Save and exit
     hfss.save_project()
 
+    # get all modes to freqs and
+    return _get_all_modes_to_freq_and_quality_factor(hfss)
+
     # return hfss
+
+
+def _get_all_modes_to_freq_and_quality_factor(hfss) -> Dict[int, Dict[str, float]]:
+    post_api = hfss.post
+
+    modes_names = post_api.available_report_quantities(quantities_category='Eigen Modes')
+
+    number_of_modes = len(modes_names)
+
+    return dict(map(lambda x: (x, _get_mode_to_freq_and_quality_factor(post_api, x)),
+                    range(1, number_of_modes + 1)))
+
+
+def _get_mode_to_freq_and_quality_factor(post_api, mode_number: int):
+    freq_sol = post_api.get_solution_data(expressions=f'Mode({n})')
+    q_sol = post_api.get_solution_data(expressions=f'Q({n})')
+    return {'freq': freq_sol.data_real()[0], 'q_factor': q_sol.data_real()[0]}

@@ -13,11 +13,11 @@ from .modes_labels_scheme import ModesAndLabels
 class Config(BaseModel):
     config_project: ConfigProject
     junctions: List[ConfigJunction]
-    modes_and_labels: ModesAndLabels
+    modes_and_labels: List[ModesAndLabels]
     hfss_variables: List[ValuedVariable] = None
 
 
-def load(config_path):
+def load(config_path) -> Config:
     with open(config_path, "r") as file:
         config_data = yaml.safe_load(file)
     return Config(**config_data)

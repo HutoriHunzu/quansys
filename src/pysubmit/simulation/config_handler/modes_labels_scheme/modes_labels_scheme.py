@@ -13,7 +13,7 @@ class Modes(BaseModel):
     inference_type: str
     args: dict
 
-    def parse(self, mode_to_freq_and_q_factor) -> Dict[int, str]:
+    def parse(self, mode_to_freq_and_q_factor: Dict[int, Dict[str, float]]) -> Dict[int, str]:
         inference_args = dict({'type': self.inference_type}, **self.args)
         inference_instance = INFERENCE_ADAPTER.validate_python(inference_args)
         return inference_instance.infer(mode_to_freq_and_q_factor)
@@ -23,7 +23,7 @@ class ModesAndLabels(BaseModel):
     modes: List[Modes]
     labels: List[str]
 
-    def parse(self, mode_to_freq_and_q_factor: Dict[int, Tuple[float, float]] = None) -> Dict[int, str]:
+    def parse(self, mode_to_freq_and_q_factor: Dict[int, Dict[str, float]] = None) -> Dict[int, str]:
         modes_to_labels = {}
 
         mode_to_freq_and_q_factor = deepcopy(mode_to_freq_and_q_factor)

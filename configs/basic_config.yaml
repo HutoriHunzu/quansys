@@ -12,25 +12,26 @@ junctions:
     inductance_variable_name: "Lj"
 
 modes_and_labels:
-  labels:
-    - "transmon"
-    - "readout"
-    - "purcell"
+  -
+    labels:
+      - "transmon"
+      - "readout"
+      - "purcell"
 
-  modes:
-    - inference_type: "manual"
-      args:
-        mode_number: 1
-        label: "transmon"
+    modes:
+      - inference_type: "manual"
+        args:
+          mode_number: 1
+          label: "transmon"
 
-    - inference_type: "order"
-      args:
-        num: 2
-        min_or_max: "min"
-        ordered_labels:
-          - "readout"
-          - "purcell"
-        quantity: "q_factor"
+      - inference_type: "order"
+        args:
+          num: 2
+          min_or_max: "min"
+          ordered_labels:
+            - "readout"
+            - "purcell"
+          quantity: "q_factor"
 
 
 hfss_variables:
