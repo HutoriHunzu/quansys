@@ -1,14 +1,13 @@
 from ansys.aedt.core.hfss import Hfss
 
-from playground import mode_to_freq_and_q_factor
 from src.pysubmit.simulation.quantum_simulation.epr_calculator import EprCalculator
 from typing import List, Dict
 from datetime import datetime
 from pathlib import Path
 from .config_handler import Config
 
-from classical_simulation import classical_run
-from quantum_simulation import quantum_run
+from .classical_simulation import classical_run
+from .quantum_simulation import quantum_run
 from .hfss_common import variable_handler, project_handler
 from .json_utils import json_write
 from pathlib import Path
@@ -16,11 +15,14 @@ from pathlib import Path
 
 def main(config: Config, flags=None):
     # check status
-    with Hfss(version=config.version,
+    # TODO: add context manager for hfss so it will be saved using final
+    config_project = config.config_project
+    with Hfss(version=config_project.version,
               new_desktop=False,
-              design=config.design_name,
-              project=config.project_name,
+              design=config_project.design_name,
+              project=config_project.path,
               non_graphical=True) as hfss:
+
         # change variables accordingly
         variable_handler.set_variables(hfss, config.hfss_variables)
 
@@ -38,3 +40,4 @@ def main(config: Config, flags=None):
             # infer name
             result_name = '_'.join(mode_to_labels.values())
             json_write(f'{result_name}.json', quantum_result)
+

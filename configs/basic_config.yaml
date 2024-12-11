@@ -1,9 +1,8 @@
 ---
 
 config_project:
-  path: "/path/to/project"
-  project_name: "ExampleProject"
-  design_name: "ExampleDesign"
+  path: "./TwoModeShroom_smooth_meander_2024.aedt"
+  design_name: "OnlyChip"
   version: "2024.2"
 
 junctions:
@@ -35,9 +34,9 @@ modes_and_labels:
 
 
 hfss_variables:
-  - name: "spacer"
-    value: 1.0
-    unit: "mm"
+#  - name: "spacer"
+#    value: 1.0
+#    unit: "mm"
 #  - name: "Lj"
 #    value: 1.0
 #    unit: "nH"
