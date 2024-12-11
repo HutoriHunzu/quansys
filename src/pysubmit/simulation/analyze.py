@@ -16,13 +16,11 @@ from pathlib import Path
 
 def main(config: Config, flags=None):
     # check status
-    # TODO: add context manager for hfss so it will be saved using final
     with Hfss(version=config.version,
               new_desktop=False,
               design=config.design_name,
               project=config.project_name,
               non_graphical=True) as hfss:
-
         # change variables accordingly
         variable_handler.set_variables(hfss, config.hfss_variables)
 
@@ -39,12 +37,4 @@ def main(config: Config, flags=None):
 
             # infer name
             result_name = '_'.join(mode_to_labels.values())
-            tmp_name = result_name
-            counter = 0
-            while Path(f'{tmp_name}.json').is_file():
-                counter += 1
-                tmp_name = f'{result_name}_{counter}'
-            result_name = tmp_name
-
             json_write(f'{result_name}.json', quantum_result)
-

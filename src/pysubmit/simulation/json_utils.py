@@ -3,6 +3,7 @@ from dataclasses import asdict, is_dataclass, dataclass, fields
 import numpy as np
 from typing import Any, Dict, Type
 import importlib
+from pathlib import Path
 
 
 ## Custom JSON Encoder
@@ -72,8 +73,22 @@ def json_read(path, cls=None):
     return data
 
 
-def json_write(path, obj):
+def json_write(path, obj, use_unique: bool = True):
     # first dumps
     ser_data = json.dumps(obj, cls=CustomJSONEncoder, indent=4)
+
+    if use_unique:
+        path = unique_name_by_counter(Path(path))
+
     with open(path, 'w') as f:
         f.write(ser_data)
+
+
+def unique_name_by_counter(path: Path):
+    base_name = path.stem
+    counter = 0
+    while path.exists():
+        path = path.with_stem(f'{base_name}_{counter}')
+        counter += 1
+
+    return path
