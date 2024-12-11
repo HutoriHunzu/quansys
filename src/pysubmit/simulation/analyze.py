@@ -1,27 +1,34 @@
 from ansys.aedt.core.hfss import Hfss
 from src.pysubmit.simulation.quantum_simulation.epr_calculator import EprCalculator
-from json_utils import json_write
-from another_json_utils import json_write
 from typing import List, Dict
 from datetime import datetime
 from pathlib import Path
-from status_handler import touch_status
+from .config_handler import Config
+
+from classical_simulation import classical_run
+from quantum_simulation import quantum_run
+from  .hfss_common import variable_handler
+from .hfss_common import project_handler
 
 
-def main(config_path, flags=None):
 
+def main(config: Config, flags=None):
 
-    # load configs
-
-    # parse config into classes
 
     # check status
+    hfss = project_handler.hfss_open(config.config_project)
+
+    # change variables accordingly
+    variable_handler.set_variables(hfss, config.hfss_variables)
 
     # call for classical simulation
+    classical_run(hfss)
 
     # save results
+    infer_modes_to_labels =
 
     # call for quantum simulation
+    quantum_run(hfss, config.junctions)
 
     # save results
 
