@@ -1,8 +1,13 @@
 from src.pysubmit.simulation.config_handler.config import load
+from src.pysubmit.simulation.analyze import main
 
 path = './configs/basic_config.yaml'
 
 config = load(path)
+main(config)
+
+
+"""
 mode_to_freq_and_q_factor = {
     1: {'freq': 3.5, 'q_factor': 100},
     2: {'freq': 5.1, 'q_factor': 130},
@@ -15,3 +20,4 @@ for mode_and_labels in config.modes_and_labels:
     print(result)
 
 print(1)
+"""

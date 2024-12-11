@@ -14,7 +14,7 @@ class Config(BaseModel):
     config_project: ConfigProject
     junctions: List[ConfigJunction]
     modes_and_labels: List[ModesAndLabels]
-    hfss_variables: List[ValuedVariable] = None
+    hfss_variables: List[ValuedVariable] | None = None
 
 
 def load(config_path) -> Config:
