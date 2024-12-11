@@ -30,6 +30,6 @@ def _get_all_modes_to_freq_and_quality_factor(hfss) -> Dict[int, Dict[str, float
 
 
 def _get_mode_to_freq_and_quality_factor(post_api, mode_number: int):
-    freq_sol = post_api.get_solution_data(expressions=f'Mode({n})')
-    q_sol = post_api.get_solution_data(expressions=f'Q({n})')
+    freq_sol = post_api.get_solution_data(expressions=f'Mode({mode_number})')
+    q_sol = post_api.get_solution_data(expressions=f'Q({mode_number})')
     return {'freq': freq_sol.data_real()[0], 'q_factor': q_sol.data_real()[0]}

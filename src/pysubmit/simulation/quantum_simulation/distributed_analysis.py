@@ -328,10 +328,10 @@ class DistributedAnalysis:
 
                 yield ParsedJunctionValues(
                     info=info,
-                    frequency=ValuedVariable(value=frequency, unit='hz'),
-                    quality_factor=ValuedVariable(value=q_factor),
-                    inductance=ValuedVariable(value=inductance, unit='H'),
-                    capacitance=ValuedVariable(value=capacitance, unit=''),
+                    frequency=ValuedVariable(name='frequency', value=frequency, unit='hz'),
+                    quality_factor=ValuedVariable(name='q_factor', value=q_factor),
+                    inductance=ValuedVariable(name='inductance', value=inductance, unit='H'),
+                    capacitance=ValuedVariable(name='capacitance', value=capacitance, unit=''),
                 )
 
         return tuple(helper())
