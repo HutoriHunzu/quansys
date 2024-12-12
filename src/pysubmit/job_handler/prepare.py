@@ -22,8 +22,8 @@ def prepare_dir(aedt_file_path: Path,
     shutil.copy(aedt_file_path, dst_aedt_path)
 
     # changing the config project_path
-    config.config_project.original_path = aedt_file_path.resolve()
-    config.config_project.path = dst_aedt_path.name
+    config.config_project.original_path = str(aedt_file_path.resolve())
+    config.config_project.path = str(dst_aedt_path.name)
 
     # save new config
     save(dir_path / 'config.yaml', config)
