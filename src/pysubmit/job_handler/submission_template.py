@@ -24,6 +24,12 @@ def get_simulation_script(path_to_run_file: Path):
 # Load necessary modules
 module load ANSYS/Electromagnetics242
 
+# sourceing conda
+source /apps/easybd/programs/miniconda/24.9.2_environmentally/etc/profile.d/conda.sh
+
+# loading conda
+module load miniconda/24.9.2_environmentally
+
 # Activate the Python virtual environment
 conda activate pyaedt_11
 
