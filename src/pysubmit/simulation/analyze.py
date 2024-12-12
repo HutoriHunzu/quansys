@@ -1,16 +1,11 @@
 from ansys.aedt.core.hfss import Hfss
 
-from src.pysubmit.simulation.quantum_simulation.epr_calculator import EprCalculator
-from typing import List, Dict
-from datetime import datetime
-from pathlib import Path
 from .config_handler import Config
 
 from .classical_simulation import classical_run
 from .quantum_simulation import quantum_run
-from .hfss_common import variable_handler, project_handler
+from .hfss_common import variable_handler
 from .json_utils import json_write
-from pathlib import Path
 
 
 def main(config: Config, flags=None):

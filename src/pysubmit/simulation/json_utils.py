@@ -4,7 +4,7 @@ import numpy as np
 from typing import Any, Dict, Type
 import importlib
 from pathlib import Path
-
+from pydantic import BaseModel
 
 # Custom JSON Encoder
 class CustomJSONEncoder(json.JSONEncoder):
@@ -12,6 +12,11 @@ class CustomJSONEncoder(json.JSONEncoder):
         if is_dataclass(obj):
             # Convert dataclass to dict and include class information
             obj_dict = asdict(obj)
+            obj_dict["__class__"] = f"{obj.__class__.__module__}.{obj.__class__.__qualname__}"
+            return obj_dict
+        elif isinstance(obj, BaseModel):
+            # Convert Pydantic BaseModel to dict and include class information
+            obj_dict = obj.model_dump()
             obj_dict["__class__"] = f"{obj.__class__.__module__}.{obj.__class__.__qualname__}"
             return obj_dict
         elif isinstance(obj, np.ndarray):
@@ -35,11 +40,12 @@ class CustomJSONEncoder(json.JSONEncoder):
                     "dtype": str(obj.dtype),
                     "shape": obj.shape
                 }
+
         return super().default(obj)
 
 
 # Utility function to dynamically import a class from its fully qualified name
-def get_class_by_name(class_path: str) -> Type:
+def get_class_by_name(class_path: str) -> type:
     """
     Dynamically imports a class from a string.
 
@@ -47,7 +53,7 @@ def get_class_by_name(class_path: str) -> Type:
         class_path (str): The full path to the class, e.g., 'module.submodule.ClassName'.
 
     Returns:
-        Type: The class type.
+        type: The class type.
     """
     module_path, _, class_name = class_path.rpartition(".")
     if not module_path:
@@ -58,55 +64,38 @@ def get_class_by_name(class_path: str) -> Type:
 
 
 # Custom Decoder Function
-def custom_json_decoder(dct: Dict) -> Any:
+def custom_json_decoder(dct: dict) -> Any:
     if "__ndarray__" in dct:
         # Reconstruct the ndarray
         data = dct["data"]
         dtype = dct["dtype"]
         shape = dct["shape"]
 
-        # Reconstruct complex numbers if applicable
+        # Handle complex numbers if applicable
         if np.complex in np.dtype(dtype).subdtype:
-            # Handle complex numbers by checking for 'real' and 'imag' keys
-            data = np.array([
-                val["real"] + (val["imag"] if val["imag"] is not None else 0) * 1j
-                for val in data
-            ])
+            data = np.array([val["real"] + (val["imag"] if val["imag"] is not None else 0) * 1j for val in data])
         else:
             data = np.array(data, dtype=dtype)
 
         return data.reshape(shape)
     elif "__class__" in dct:
-        # Reconstruct the dataclass instance
+        # Reconstruct the Pydantic/BaseModel or dataclass instance
         class_path = dct.pop("__class__")
         cls = get_class_by_name(class_path)
-        # Assuming the class is a dataclass, recursively decode fields
-        field_types = {f.name: f.type for f in fields(cls)}
-        for key, value in dct.items():
-            if key in field_types and is_dataclass(field_types[key]):
-                dct[key] = custom_json_decoder(value)
-        return cls(**dct)
-    return dct
 
+        # Pydantic models are initialized with the dictionary as keyword arguments
+        if issubclass(cls, BaseModel):
+            return cls.model_validate(dct)
 
-# Custom Decoder Function
-def custom_json_decoder(dct: Dict) -> Any:
-    if "__ndarray__" in dct:
-        # Reconstruct the ndarray
-        data = dct["data"]
-        dtype = dct["dtype"]
-        shape = dct["shape"]
-        return np.array(data, dtype=dtype).reshape(shape)
-    elif "__class__" in dct:
-        # Reconstruct the dataclass instance
-        class_path = dct.pop("__class__")
-        cls = get_class_by_name(class_path)
-        # Assuming the class is a dataclass, recursively decode fields
-        field_types = {f.name: f.type for f in fields(cls)}
-        for key, value in dct.items():
-            if key in field_types and is_dataclass(field_types[key]):
-                dct[key] = custom_json_decoder(value)
-        return cls(**dct)
+        # Handle dataclasses (if needed, this could be expanded further)
+        if is_dataclass(cls):
+            # Assuming the class is a dataclass, recursively decode fields
+            field_types = {f.name: f.type for f in fields(cls)}
+            for key, value in dct.items():
+                if key in field_types and is_dataclass(field_types[key]):
+                    dct[key] = custom_json_decoder(value)
+            return cls(**dct)
+
     return dct
 
 
