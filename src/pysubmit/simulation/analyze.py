@@ -8,14 +8,13 @@ from .hfss_common import variable_handler
 from .json_utils import json_write
 
 
-def main(config: Config, flags=None):
+def main(config: Config):
     # check status
     # TODO: add context manager for hfss so it will be saved using final
     config_project = config.config_project
     with Hfss(version=config_project.version, new_desktop=False,
               design=config_project.design_name, project=config_project.path,
               close_on_exit=True, remove_lock=True, non_graphical=True) as hfss:
-        
         _analysis(hfss, config)
 
 

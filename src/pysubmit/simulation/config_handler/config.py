@@ -20,8 +20,11 @@ class Config(BaseModel):
 def load(config_path) -> Config:
     with open(config_path, "r") as file:
         config_data = yaml.safe_load(file)
-    return Config(**config_data)
+    return Config.model_validate(config_data)
 
 
-# def save():
-#     pass
+def save(config_path, config: Config):
+    d = config.model_dump()
+
+    with open(config_path, "w") as file:
+        yaml.safe_dump(d, file)
