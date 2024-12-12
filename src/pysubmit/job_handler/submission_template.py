@@ -28,7 +28,7 @@ module load ANSYS/Electromagnetics242
 source /home/projects/serger/goldblau/venvs/pyaedt_venv/bin/activate
 
 # Run your Python script
-python {path_to_run_file.resolve()}
+python {path_to_run_file.resolve()} --config config.yaml
     """
 
 
