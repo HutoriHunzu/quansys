@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pysubmit"
+version = "1.0.0"
+dependencies = [
+    "qutip",
+    "pyaedt[all]",
+    "pint",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = { file = "LICENSE.txt" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python"
+]
+
+
+[project.scripts]
+submit-run = "pysubmit:submit_run"
+submit-prepare = "pysubmit:submit_prepare"
+
