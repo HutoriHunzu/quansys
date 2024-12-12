@@ -4,7 +4,7 @@ Basic calculations that apply in general .
 
 import numpy as np
 from numpy import sqrt
-from src.pysubmit.simulation import logger
+
 
 class CalcsBasic():
 
@@ -24,11 +24,11 @@ class CalcsBasic():
 
         if (Pmj < 0).any():
             print('BAD!')
-            logger.error(f"""The simulation is not converged!!! \N{nauseated face}
-            Some of the energy participations are less than zero.
-            This happens when some participations are tiny 10^-8 or less
-            or when not enough passes have been taken. The Pmj matrix is
-            {Pmj}""")
+            # logger.error(f"""The simulation is not converged!!! \N{nauseated face}
+            # Some of the energy participations are less than zero.
+            # This happens when some participations are tiny 10^-8 or less
+            # or when not enough passes have been taken. The Pmj matrix is
+            # {Pmj}""")
 
         # Technically, there the equation is hbar omega / 2J, but here we assume
         # that the hbar is absorbed in the units of omega, and omega and Ej have the same units.

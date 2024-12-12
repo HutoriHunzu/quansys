@@ -1,4 +1,4 @@
-from src.pysubmit.simulation.config_handler import ValuedVariable
+from ..config_handler import ValuedVariable
 from ansys.aedt.core import Hfss
 from typing import List
 from .constants import ROUNDING_DIGITS

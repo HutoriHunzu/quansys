@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
-from src.pysubmit.simulation.config_handler import load
-from src.pysubmit.job_handler.prepare import prepare_dir
+from ..simulation.config_handler import load
+from ..job_handler.prepare import prepare_dir
 
 
 def parse_args():

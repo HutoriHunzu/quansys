@@ -1,5 +1,5 @@
-from src.pysubmit.simulation.config_handler.config import load
-from src.pysubmit.simulation.analyze import main
+from pysubmit.simulation.config_handler.config import load
+from pysubmit.simulation.analyze import main
 
 path = './configs/basic_config.yaml'
 

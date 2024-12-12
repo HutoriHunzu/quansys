@@ -5,7 +5,7 @@ from .submission_template import (get_simulation_script,
                                   get_bsub_submission_script,
                                   write_sh_file)
 
-from src.pysubmit.simulation.config_handler import Config, load, save
+from ..simulation.config_handler import Config, load, save
 
 
 def prepare_dir(aedt_file_path: Path,
