@@ -43,7 +43,7 @@ def main():
     else:
         aedt_path = Path(args.aedt)
 
-    output_dir = Path(args.output_dir)
+    output_dir = Path(args.output)
 
     prepare_dir(aedt_path, config, output_dir)
 
