@@ -34,7 +34,7 @@ module load miniconda/24.9.2_environmentally
 conda activate pyaedt_11
 
 # Run your Python script
-python {path_to_run_file.resolve()} --config config.yaml
+submit-run --config config.yaml
     """
 
 
