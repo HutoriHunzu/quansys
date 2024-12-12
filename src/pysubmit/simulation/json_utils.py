@@ -6,7 +6,7 @@ import importlib
 from pathlib import Path
 
 
-## Custom JSON Encoder
+# Custom JSON Encoder
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj: Any) -> Any:
         if is_dataclass(obj):
@@ -15,13 +15,26 @@ class CustomJSONEncoder(json.JSONEncoder):
             obj_dict["__class__"] = f"{obj.__class__.__module__}.{obj.__class__.__qualname__}"
             return obj_dict
         elif isinstance(obj, np.ndarray):
-            # Convert ndarray to a serializable format
-            return {
-                "__ndarray__": True,
-                "data": obj.tolist(),
-                "dtype": str(obj.dtype),
-                "shape": obj.shape
-            }
+            # Check if the ndarray contains complex numbers
+            if np.any(np.iscomplex(obj)):
+                # For complex arrays, store only non-zero imaginary parts
+                return {
+                    "__ndarray__": True,
+                    "data": [
+                        {"real": float(val.real), "imag": float(val.imag) if val.imag != 0 else None}
+                        for val in obj.flatten()
+                    ],
+                    "dtype": str(obj.dtype),
+                    "shape": obj.shape
+                }
+            else:
+                # For non-complex arrays, store as usual
+                return {
+                    "__ndarray__": True,
+                    "data": obj.real.tolist(),
+                    "dtype": str(obj.dtype),
+                    "shape": obj.shape
+                }
         return super().default(obj)
 
 
@@ -42,6 +55,38 @@ def get_class_by_name(class_path: str) -> Type:
     module = importlib.import_module(module_path)
     cls = getattr(module, class_name)
     return cls
+
+
+# Custom Decoder Function
+def custom_json_decoder(dct: Dict) -> Any:
+    if "__ndarray__" in dct:
+        # Reconstruct the ndarray
+        data = dct["data"]
+        dtype = dct["dtype"]
+        shape = dct["shape"]
+
+        # Reconstruct complex numbers if applicable
+        if np.complex in np.dtype(dtype).subdtype:
+            # Handle complex numbers by checking for 'real' and 'imag' keys
+            data = np.array([
+                val["real"] + (val["imag"] if val["imag"] is not None else 0) * 1j
+                for val in data
+            ])
+        else:
+            data = np.array(data, dtype=dtype)
+
+        return data.reshape(shape)
+    elif "__class__" in dct:
+        # Reconstruct the dataclass instance
+        class_path = dct.pop("__class__")
+        cls = get_class_by_name(class_path)
+        # Assuming the class is a dataclass, recursively decode fields
+        field_types = {f.name: f.type for f in fields(cls)}
+        for key, value in dct.items():
+            if key in field_types and is_dataclass(field_types[key]):
+                dct[key] = custom_json_decoder(value)
+        return cls(**dct)
+    return dct
 
 
 # Custom Decoder Function
