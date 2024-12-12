@@ -25,7 +25,7 @@ def get_simulation_script(path_to_run_file: Path):
 module load ANSYS/Electromagnetics242
 
 # Activate the Python virtual environment
-source /home/projects/serger/goldblau/venvs/pyaedt_venv/bin/activate
+conda activate pyaedt_11
 
 # Run your Python script
 python {path_to_run_file.resolve()} --config config.yaml
