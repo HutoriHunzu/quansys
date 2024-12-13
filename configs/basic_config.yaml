@@ -11,8 +11,7 @@ junctions:
     inductance_variable_name: "Lj"
 
 modes_and_labels:
-  -
-    labels:
+  - labels:
       - "transmon"
       - "readout"
       - "purcell"
@@ -34,12 +33,12 @@ modes_and_labels:
 
 
 sweep:
-  - name: 'product'
-    args:
-      variables:
-        - name: "spacer"
-          values: [0.01, 0.2]
-          unit: "mm"
+  name: 'product'
+  args:
+    variables:
+      - name: "spacer"
+        values: [ 0.01, 0.2 ]
+        unit: "mm"
 
 
 #hfss_variables:
