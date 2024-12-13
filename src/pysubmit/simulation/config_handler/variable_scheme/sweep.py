@@ -9,7 +9,7 @@ SUPPORTED_SWEEPS = (ZipSweep | ProductSweep)
 SWEEP_ADAPTER = TypeAdapter(SUPPORTED_SWEEPS)
 
 
-class ConfigSweep:
+class ConfigSweep(BaseModel):
     name: str
     args: dict
 

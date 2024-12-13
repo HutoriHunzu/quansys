@@ -36,9 +36,9 @@ modes_and_labels:
 sweep:
   name: 'product'
   args:
-    - name: "spacer"
-    - values: [0.01, 0.2]
-    - unit: "mm""
+    name: "spacer"
+    values: [0.01, 0.2]
+    unit: "mm"
 
 
 #hfss_variables:
