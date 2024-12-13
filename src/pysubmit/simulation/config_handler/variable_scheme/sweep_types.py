@@ -14,22 +14,21 @@ class Sweep(BaseModel):
 
 class ProductSweep(Sweep):
     type: str = 'product'
-    args: List[Variable]
+    variables: List[Variable]
 
     def gen(self) -> Iterable[Iterable[ValuedVariable]]:
-        variables = self.args
-        iter_lst = [variable.gen() for variable in variables]
+        iter_lst = [variable.gen() for variable in self.variables]
         return product(*iter_lst)
 
 
 class ZipSweep(Sweep):
     type: str = 'zip'
-    args: List[Variable]
+    variables: List[Variable]
 
     def gen(self) -> Iterable[Iterable[ValuedVariable]]:
-        variables = self.args
-        # check the length of all the variables
-        assert (len(set(map(lambda x: x.len(), variables))) == 1)
 
-        iter_lst = [variable.gen() for variable in variables]
+        # check the length of all the variables
+        assert (len(set(map(lambda x: x.len(), self.variables))) == 1)
+
+        iter_lst = [variable.gen() for variable in self.variables]
         return zip(*iter_lst)
