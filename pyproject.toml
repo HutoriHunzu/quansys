@@ -21,4 +21,5 @@ classifiers = [
 [project.scripts]
 submit-run = "pysubmit:submit_run"
 submit-prepare = "pysubmit:submit_prepare"
+submit-check = "pysubmit:submit_check"
 

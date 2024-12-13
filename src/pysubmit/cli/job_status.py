@@ -119,7 +119,8 @@ def get_all_jobs_info():
             jobs = parse_bjobs_output(result.stdout)
 
             # Return the list of job info objects
-            return jobs
+            for job in jobs:
+                print(job)
         else:
             print(f"Error while fetching jobs: {result.stderr}")
             return []
