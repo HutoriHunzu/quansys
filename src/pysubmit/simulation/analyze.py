@@ -1,6 +1,7 @@
 from ansys.aedt.core.hfss import Hfss
+from typing import List
 
-from .config_handler import Config
+from .config_handler import Config, ConfigProject, ConfigJunction, ConfigSweep, ModesAndLabels, ValuedVariable
 
 from .classical_simulation import classical_run
 from .quantum_simulation import quantum_run
@@ -15,7 +16,14 @@ def main(config: Config):
     with Hfss(version=config_project.version, new_desktop=False,
               design=config_project.design_name, project=config_project.path,
               close_on_exit=True, remove_lock=True, non_graphical=True) as hfss:
-        _analysis(hfss, config)
+        #
+
+        _analyze_sweep(hfss,
+                       junctions=config.junctions,
+                       modes_and_labels_lst=config.modes_and_labels,
+                       hfss_sweep=config.sweep)
+
+        # _analysis(hfss, config)
 
 
 def _analysis(hfss: Hfss, config: Config):
@@ -36,3 +44,41 @@ def _analysis(hfss: Hfss, config: Config):
         # infer name
         result_name = '_'.join(mode_to_labels.values())
         json_write(f'{result_name}.json', quantum_result)
+
+
+def _analyze_single_variation(hfss: Hfss,
+                              junctions: List[ConfigJunction] | None = None,
+                              modes_and_labels_lst: List[ModesAndLabels] | None = None,
+                              hfss_variables: List[ValuedVariable] | None = None,
+                              ):
+    if hfss_variables:
+        # change variables accordingly
+        variable_handler.set_variables(hfss, hfss_variables)
+
+    # call for classical simulation
+    mode_to_freq_and_q_factor = classical_run(hfss)
+    json_write('classical_results.json', mode_to_freq_and_q_factor)
+
+    if not (junctions and modes_and_labels_lst):
+        return
+
+    # save results
+    for modes_and_labels in modes_and_labels_lst:
+        mode_to_labels = modes_and_labels.parse(mode_to_freq_and_q_factor)
+
+        # call for quantum simulation
+        quantum_result = quantum_run(hfss, mode_to_labels, junctions)
+
+        # infer name
+        result_name = '_'.join(mode_to_labels.values())
+        json_write(f'{result_name}.json', quantum_result)
+
+
+def _analyze_sweep(hfss: Hfss,
+                   junctions: List[ConfigJunction] | None = None,
+                   modes_and_labels_lst: List[ModesAndLabels] | None = None,
+                   hfss_sweep: ConfigSweep | None = None,
+                   ):
+    # for each group of parameters do single analysis
+    for variation in hfss_sweep.generate_variation():
+        _analyze_single_variation(hfss, junctions, modes_and_labels_lst)

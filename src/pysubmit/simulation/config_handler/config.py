@@ -6,7 +6,7 @@ import yaml
 
 from .junction_scheme import ConfigJunction
 from .project_scheme import ConfigProject
-from .variable_scheme import ValuedVariable
+from .variable_scheme import ValuedVariable, ConfigSweep
 from .modes_labels_scheme import ModesAndLabels
 
 
@@ -15,6 +15,7 @@ class Config(BaseModel):
     junctions: List[ConfigJunction]
     modes_and_labels: List[ModesAndLabels]
     hfss_variables: List[ValuedVariable] | None = None
+    sweep: ConfigSweep | None
 
 
 def load(config_path) -> Config:

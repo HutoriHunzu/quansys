@@ -33,7 +33,16 @@ modes_and_labels:
           quantity: "q_factor"
 
 
-hfss_variables:
+sweep:
+  name: 'product'
+  args:
+    - name: "spacer"
+    - values: [0.01, 0.2]
+    - unit: "mm""
+
+
+#hfss_variables:
+
 #  - name: "spacer"
 #    value: 1.0
 #    unit: "mm"
