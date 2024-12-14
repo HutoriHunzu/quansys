@@ -41,6 +41,24 @@ sweep:
         unit: "mm"
 
 
+builder:
+  builder:
+    type: 'two_mode_srf_cavity'
+    build_design_name: 'OnlyCavity_tmp'
+    dst_design_name: 'OnlyCavity'
+    sweep:
+      name: 'product'
+      args:
+        variables:
+          - name: "full_cell_Rc"
+            values: [30.14]
+            unit: "mm"
+          - name: "half_cell_Rc"
+            values: [31]
+            unit: "mm"
+
+
+
 #hfss_variables:
 
 #  - name: "spacer"

@@ -1,6 +1,7 @@
 from pydantic import BaseModel, TypeAdapter
 from typing import List, Iterable
 from abc import abstractmethod
+from functools import reduce
 
 
 # SUPPORTED_INFERENCES = (ManualInference | OrderInference)
@@ -14,6 +15,13 @@ class ValuedVariable(BaseModel):
 
     def to_string(self):
         return f'{self.value}{self.unit}'
+
+    def to_dict(self):
+        return {self.name: self.value}
+
+    @classmethod
+    def iterable_to_dict(cls, values: Iterable['ValuedVariable']):
+        return reduce(lambda x, y: {**x, **y.to_dict()}, values, {})
 
 
 class Variable(BaseModel):

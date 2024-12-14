@@ -11,17 +11,19 @@ from .json_utils import json_write
 
 def main(config: Config):
     # check status
-    # TODO: add context manager for hfss so it will be saved using final
+
     config_project = config.config_project
     with Hfss(version=config_project.version, new_desktop=False,
               design=config_project.design_name, project=config_project.path,
               close_on_exit=True, remove_lock=True, non_graphical=True) as hfss:
-        #
+        # check for build
+        for build_params in config.builder.build(hfss):
+            #
 
-        _analyze_sweep(hfss,
-                       junctions=config.junctions,
-                       modes_and_labels_lst=config.modes_and_labels,
-                       hfss_sweep=config.sweep)
+            _analyze_sweep(hfss,
+                           junctions=config.junctions,
+                           modes_and_labels_lst=config.modes_and_labels,
+                           hfss_sweep=config.sweep)
 
         # _analysis(hfss, config)
 
