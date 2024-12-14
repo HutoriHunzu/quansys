@@ -13,8 +13,8 @@ from .builder_scheme import ConfigBuilder
 
 class Config(BaseModel):
     config_project: ConfigProject
-    junctions: List[ConfigJunction]
-    modes_and_labels: List[ModesAndLabels]
+    junctions: List[ConfigJunction] | None = None
+    modes_and_labels: List[ModesAndLabels] | None = None
     hfss_variables: List[ValuedVariable] | None = None
     sweep: ConfigSweep | None = None
     builder: ConfigBuilder | None = ConfigBuilder()

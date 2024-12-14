@@ -3,6 +3,7 @@ from typing import List, Iterable
 from abc import abstractmethod
 from .valued_variable import ValuedVariable, Variable
 from itertools import product
+from typing import Literal
 
 
 class Sweep(BaseModel):
@@ -13,7 +14,7 @@ class Sweep(BaseModel):
 
 
 class ProductSweep(Sweep):
-    type: str = 'product'
+    type: Literal['product']
     variables: List[Variable]
 
     def gen(self) -> Iterable[Iterable[ValuedVariable]]:
@@ -22,7 +23,7 @@ class ProductSweep(Sweep):
 
 
 class ZipSweep(Sweep):
-    type: str = 'zip'
+    type: Literal['zip']
     variables: List[Variable]
 
     def gen(self) -> Iterable[Iterable[ValuedVariable]]:
