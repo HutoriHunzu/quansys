@@ -432,6 +432,8 @@ class TwoModeCavity(Cavity):
             transmon_wg_coupler, connecting_line, fillet_circle, half_cell, coupler, full_cell, cavity_drive_wg_coupler,
             cavity_drive_wg)
 
+    # def make_boundaries(self, hfss):
+
 
 @dataclass
 class DoubleTeslaCouplersParameters():
@@ -451,9 +453,9 @@ class DoubleTeslaCouplersParameters():
     sapphire_house_pins_diameter: float = 0.5
     sapphire_house_pins_waveguide_diameter: float = 1.15
     sapphire_house_pins_waveguide_length: float = 6
-    pin_1_length: float = 5.6
-    pin_2_length: float = 6
-    pin_3_length: float = 0
+    pin_1_length: float = 6
+    pin_2_length: float = 0
+    pin_3_length: float = 6.75
     pin_4_length: float = 0
 
     # Simulation Boundaris
@@ -462,12 +464,13 @@ class DoubleTeslaCouplersParameters():
     make_bounmdaries_and_mesh: bool = True
 
 
-class DoubleTeslaCouplers():
+class DoubleTeslaCouplers:
     def __init__(self, parameters: DoubleTeslaCouplersParameters):
         self.parameters: DoubleTeslaCouplersParameters = parameters
 
     def build_hfss_model(self, hfss: Hfss):
         self.build_sapphire_house(hfss)
+        self.make_boundaries(hfss)
 
     def Boundaries_and_mesh(self, hfss: Hfss, top_face_z):
         modeler = hfss.modeler
@@ -486,6 +489,25 @@ class DoubleTeslaCouplers():
         hfss.assign_lumped_rlc_to_sheet(boundry_object.name, axisdir=[boundary_arrow_start, boundary_arrow_end],
                                         sourcename="cavity_drive", rlctype='"Parallel"',
                                         Rvalue=50, Lvalue=None, Cvalue=None)
+
+    def make_boundaries(self, hfss):
+        modeler = hfss.modeler
+        for n in ["pin_1_wg", "pin_3_wg"]:
+
+            top_face_z = modeler[n].bottom_face_z
+            # top_face_z = modeler["pin_3_wg"].top_face_z
+
+            boundry_object = modeler.create_object_from_face(top_face_z)
+
+            boundry_object.name = f"{n}_rlc_bound"
+            boundary_arrow_start = top_face_z.center
+            boundary_arrow_end = top_face_z.center
+            # making the arrow point the positie y direction
+            boundary_arrow_end[2] += 0.575
+            hfss.assign_lumped_rlc_to_sheet(boundry_object.name,
+                                            start_direction=[boundary_arrow_start, boundary_arrow_end],
+                                            rlc_type='Parallel',
+                                            resistance=50, inductance=None, capacitance=None)
 
     def build_cavity_wg(self, hfss: Hfss):
         modeler = hfss.modeler
@@ -543,12 +565,12 @@ class DoubleTeslaCouplers():
                                            name=f'pin_4_wg', matname='vacuum')
 
         # Creating pins
-        # pin_1 = modeler.create_cylinder(cs_axis='Y',
-        #                                 position=[0, f'transmon_wg_radius + sapphire_house_pins_waveguide_length',
-        #                                           f'-{self.parameters.pin_1_location}'],
-        #                                 radius='sapphire_house_pins_diameter/2',
-        #                                 height=f'-pin_1_length',
-        #                                 name=f'transmon_pin', matname='perfect conductor')
+        pin_1 = modeler.create_cylinder(cs_axis='Y',
+                                        position=[0, f'transmon_wg_radius + sapphire_house_pins_waveguide_length',
+                                                  f'-{self.parameters.pin_1_location}'],
+                                        radius='sapphire_house_pins_diameter/2',
+                                        height=f'-pin_1_length',
+                                        name=f'transmon_pin', matname='perfect conductor')
         #
         # pin_2 = modeler.create_cylinder(cs_axis='Y',
         #                                 position=[0, f'-transmon_wg_radius - sapphire_house_pins_waveguide_length',
@@ -556,14 +578,14 @@ class DoubleTeslaCouplers():
         #                                 radius='sapphire_house_pins_diameter/2',
         #                                 height=f'pin_2_length',
         #                                 name=f'readout_pin', matname='perfect conductor')
-        #
-        # pin_3 = modeler.create_cylinder(cs_axis='Y',
-        #                                 position=[0, f'transmon_wg_radius + sapphire_house_pins_waveguide_length',
-        #                                           f'-{self.parameters.pin_3_location}'],
-        #                                 radius='sapphire_house_pins_diameter/2',
-        #                                 height=f'-pin_3_length',
-        #                                 name=f'pin_3', matname='perfect conductor')
-        #
+
+        pin_3 = modeler.create_cylinder(cs_axis='Y',
+                                        position=[0, f'transmon_wg_radius + sapphire_house_pins_waveguide_length',
+                                                  f'-{self.parameters.pin_3_location}'],
+                                        radius='sapphire_house_pins_diameter/2',
+                                        height=f'-pin_3_length',
+                                        name=f'pin_3', matname='perfect conductor')
+
         # pin_4 = modeler.create_cylinder(cs_axis='Y',
         #                                 position=[0, f'-transmon_wg_radius - sapphire_house_pins_waveguide_length',
         #                                           f'-{self.parameters.pin_4_location}'],
@@ -709,11 +731,9 @@ class SystemModeler():
 
 def build(
         hfss: Hfss,
-        build_design_name: str,
-        dst_design_name: str,
+        design_name: str,
         cavity_params: dict = None,
         couplers_params: dict = None):
-
     if cavity_params is None:
         cavity_params = {}
 
@@ -726,10 +746,19 @@ def build(
     couplers_params = DoubleTeslaCouplersParameters(**couplers_params)
     couplers = DoubleTeslaCouplers(couplers_params)
 
+
     default_units = "mm"
 
-    hfss.insert_design(build_design_name, 'Eigenmode')
-    hfss.set_active_design(build_design_name)
+    hfss.set_active_design('design')
+
+    hfss.delete_design(design_name)
+
+    hfss.save_project()
+
+
+    hfss.insert_design(design_name, 'Eigenmode')
+
+    # hfss.modeler.delete('cavity')
 
     part_list = (cavity, couplers)
     combined_dict = {}
@@ -748,28 +777,44 @@ def build(
 
     for part in part_list:
         part.build_hfss_model(hfss)
+
     # Uniting Vacuum objects
     vacuum_objects = list(filter(lambda object: object.material_name == 'vacuum', hfss.modeler.solid_objects))
+    # print(vacuum_objects)
     cavity_solid_name = hfss.modeler.unite(vacuum_objects)
-
-    hfss.modeler.copy(['cavity'])  # Copy the object by its name
-
-    # hfss.insert_design('new', 'Eigenmode')
-    hfss.set_active_design(dst_design_name)
-
-    hfss.modeler.delete('cavity')
-
-    # Paste the object into the target design
-    hfss.modeler.paste()
 
     hfss.mesh.assign_length_mesh('cavity',
                                  inside_selection=True,
                                  name='cavity_mesh',
-                                 maximum_length='1mm')
+                                 maximum_length='4mm')
+
+
+
+    # hfss.save_project()
+
+    hfss.set_active_design('design')
+
+    setup = hfss.get_setup('Setup1')
+
+    # hfss.modeler.copy(['ChipBase'])  # Copy the object by its name
+    hfss.modeler.copy(['ChipBase', 'JJ', 'Transmon1', 'Transmon2', 'jj_meshbox', 'trpad_meshbox', 'line_jj1'])  # Copy the object by its name
+
+    hfss.set_active_design(design_name)
+
+    # Paste the object into the target design
+    hfss.modeler.paste()
+
+    hfss.assign_perfecte_to_sheets(['Transmon1', 'Transmon2'])
+
+    hfss.mesh.assign_length_mesh(['Transmon1', 'Transmon2'],
+                                 inside_selection=False,
+                                 name='perfect_e_mesh',
+                                 maximum_length='50um')
+
+    hfss.create_setup('Setup1', **setup.props)
 
     hfss.save_project()
 
-    hfss.delete_design(build_design_name)
 
     return cavity_params
 

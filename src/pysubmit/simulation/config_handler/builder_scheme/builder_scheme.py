@@ -10,16 +10,14 @@ SUPPORTED_BUILDERS = ()
 
 class TwoModesCavity(BaseModel):
     type: Literal['two_mode_srf_cavity']
-    build_design_name: str
-    dst_design_name: str
+    design_name: str
 
     sweep: ConfigSweep | None
 
     def build(self, hfss) -> Generator[dict, None, None]:
         for variables in self.prepare_variables():
             yield two_mode_srf_cavity.build(hfss,
-                                            self.build_design_name,
-                                            self.dst_design_name,
+                                            self.design_name,
                                             cavity_params=variables)
 
     def prepare_variables(self) -> Iterable[dict]:
