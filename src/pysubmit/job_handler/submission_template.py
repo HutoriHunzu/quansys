@@ -1,5 +1,6 @@
 from pathlib import Path
 import subprocess
+from ..simulation.config_handler import ConfigProject
 
 
 def write_sh_file(path: Path, txt: str, make_executable: bool = True):
@@ -39,22 +40,31 @@ submit-run --config config.yaml
 
 
 def get_bsub_submission_script(execution_dir: Path,
-                               simulation_script_path: Path):
+                               simulation_script_path: Path,
+                               config_project: ConfigProject):
     if simulation_script_path.resolve().parent == execution_dir.resolve().parent:
         shorter_simulation_script_path = simulation_script_path.name
     else:
         shorter_simulation_script_path = simulation_script_path.resolve()
 
+    gpus = config_project.gpus
+    if gpus == 1:
+        gpu_string = '-gpu num=1:j_exclusive=yes:gmem=8G:gmodel=NVIDIAA40 \\'
+        queue = 'short-gpu'
+    else:
+        gpu_string = ''
+        queue = 'short'
+
     return f"""#!/bin/bash
 
     # Submit the bsub job to execute hfss_run.sh
     bsub -J hfss_job$project_name \\
-        -q short \\
+        -q {queue} \\
         -oo lsf_output_%J.log \\
         -eo lsf_error_%J.err \\
-        -n 6 \\
-        -W 08:00 \\
-        -R "rusage[mem=50000] span[hosts=1]" \\
+        -n {config_project.cores} \\
+        -W 02:00 \\
+        -R "rusage[mem=20000] span[hosts=1]" \\ {gpu_string}
         -cwd {execution_dir.resolve()} \\
         {shorter_simulation_script_path}
     """
