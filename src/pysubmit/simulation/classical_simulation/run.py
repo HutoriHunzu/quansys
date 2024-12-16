@@ -4,7 +4,7 @@ from typing import Dict
 
 def run(hfss: Hfss) -> Dict[int, Dict[str, float]]:
     # Analyze
-    hfss.analyze(gpus=3072, cores=8)
+    hfss.analyze()
 
     # Save and exit
     hfss.save_project()
