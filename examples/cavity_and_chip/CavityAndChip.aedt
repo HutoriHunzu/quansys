@@ -11736,9 +11736,9 @@ $begin 'AnsoftProject'
 					NumModes=4
 					MaxDeltaFreq=0.2
 					ConvergeOnRealFreq=true
-					MaximumPasses=8
+					MaximumPasses=10
 					MinimumPasses=5
-					MinimumConvergedPasses=1
+					MinimumConvergedPasses=5
 					PercentRefinement=30
 					IsEnabled=true
 					$begin 'MeshLink'
@@ -11916,14 +11916,14 @@ $begin 'AnsoftProject'
 					ID=614
 					Name='AdaptivePass'
 					$begin 'SimDataExtractor'
-						SimValue('Mode(1)', 2, 90, false, SimValueID=3162, 0, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
-						SimValue('Mode(2)', 2, 90, false, SimValueID=3163, 0, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
-						SimValue('Mode(3)', 2, 90, false, SimValueID=3164, 0, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
-						SimValue('Mode(4)', 2, 90, false, SimValueID=3165, 0, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
+						SimValue('Mode(1)', 2, 90, false, SimValueID=3213, 0, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
+						SimValue('Mode(2)', 2, 90, false, SimValueID=3214, 0, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
+						SimValue('Mode(3)', 2, 90, false, SimValueID=3215, 0, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
+						SimValue('Mode(4)', 2, 90, false, SimValueID=3216, 0, 0, 2, 0, false, false, -1, 1, 0, 1, 1, '', 0, 0)
 						$begin 'Sweeps'
 							$begin 'Sweep'
 								Variable='Pass'
-								Column='1;2;3;4;5;6;7;8'
+								Column='1;2;3;4;5;6;7;8;9;10'
 								Units=''
 							$end 'Sweep'
 							$begin 'PostprocessSweep'
@@ -14536,7 +14536,7 @@ $begin 'AnsoftProject'
 										$end 'DESIGN_SOLUTION_SIM_VALUE_CONTEXT'
 									$end 'DesignSolnDefn'
 									ID=74
-									VersionID=530
+									VersionID=532
 									Name='re(Mode(5))'
 									TieNameToExpr=true
 									$begin 'Components'
@@ -15017,7 +15017,7 @@ $begin 'AnsoftProject'
 										$end 'DESIGN_SOLUTION_SIM_VALUE_CONTEXT'
 									$end 'DesignSolnDefn'
 									ID=75
-									VersionID=531
+									VersionID=533
 									Name='re(Mode(6))'
 									TieNameToExpr=true
 									$begin 'Components'
@@ -15490,7 +15490,7 @@ $begin 'AnsoftProject'
 						NextUniqueID=77
 						MoveBackwards=false
 						$begin 'NextVersID'
-							NextUniqueID=532
+							NextUniqueID=534
 							MoveBackwards=false
 						$end 'NextVersID'
 					$end 'ReportManager'

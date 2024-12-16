@@ -5,8 +5,8 @@ config_project:
   design_name: "cavity_and_chip"
   version: "2024.2"
   non_graphical: True
-  cores: 8
-  gpus: 1
+  cores: 12
+  gpus: 0
 
 junctions:
   - name: "line_jj1"
