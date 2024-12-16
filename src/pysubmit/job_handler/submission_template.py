@@ -49,7 +49,7 @@ def get_bsub_submission_script(execution_dir: Path,
 
     gpus = config_project.gpus
     if gpus == 1:
-        gpu_string = '-gpu num=1:j_exclusive=yes:gmem=8G:gmodel=NVIDIAA40 \\'
+        gpu_string = '\n-gpu num=1:j_exclusive=yes:gmem=8G:gmodel=NVIDIAA40 \\'
         queue = 'short-gpu'
     else:
         gpu_string = ''
@@ -64,7 +64,7 @@ def get_bsub_submission_script(execution_dir: Path,
         -eo lsf_error_%J.err \\
         -n {config_project.cores} \\
         -W 02:00 \\
-        -R "rusage[mem=20000] span[hosts=1]" \\ {gpu_string}
+        -R "rusage[mem=20000] span[hosts=1]" \\{gpu_string}
         -cwd {execution_dir.resolve()} \\
         {shorter_simulation_script_path}
     """
