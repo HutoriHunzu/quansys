@@ -449,7 +449,7 @@ class DoubleTeslaCouplersParameters():
     pin_2_location = 11  # distance from the shroom surface
     pin_3_location = 15  # distance from the shroom surface
     pin_4_location = 18  # distance from the shroom surface
-    spacer: float = 1
+    spacer: float = 0.001
     sapphire_house_pins_diameter: float = 0.5
     sapphire_house_pins_waveguide_diameter: float = 1.15
     sapphire_house_pins_waveguide_length: float = 6
@@ -810,6 +810,8 @@ def build(
                                  inside_selection=False,
                                  name='perfect_e_mesh',
                                  maximum_length='50um')
+
+    hfss.mesh.initial_mesh_settings.props['MeshMethod'] = 'AnsoftClassic'
 
     hfss.create_setup('Setup1', **setup.props)
 
