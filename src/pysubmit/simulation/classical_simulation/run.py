@@ -1,10 +1,11 @@
 from ansys.aedt.core import Hfss
 from typing import Dict
+from ..config_handler import ConfigProject
 
 
-def run(hfss: Hfss) -> Dict[int, Dict[str, float]]:
+def run(hfss: Hfss, config_project: ConfigProject) -> Dict[int, Dict[str, float]]:
     # Analyze
-    hfss.analyze()
+    hfss.analyze(cores=config_project.cpus, gpus=config_project.gpus)
 
     # Save and exit
     hfss.save_project()

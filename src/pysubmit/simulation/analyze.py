@@ -34,7 +34,7 @@ def _analysis(hfss: Hfss, config: Config):
     variable_handler.set_variables(hfss, config.hfss_variables)
 
     # call for classical simulation
-    mode_to_freq_and_q_factor = classical_run(hfss)
+    mode_to_freq_and_q_factor = classical_run(hfss, config.config_project)
     json_write('classical_results.json', mode_to_freq_and_q_factor)
 
     # save results
