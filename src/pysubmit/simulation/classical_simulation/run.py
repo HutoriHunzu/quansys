@@ -5,7 +5,7 @@ from ..config_handler import ConfigProject
 
 def run(hfss: Hfss, config_project: ConfigProject) -> Dict[int, Dict[str, float]]:
     # Analyze
-    hfss.analyze(cores=config_project.cpus, gpus=config_project.gpus)
+    hfss.analyze(cores=config_project.cores, gpus=config_project.gpus)
 
     # Save and exit
     hfss.save_project()
