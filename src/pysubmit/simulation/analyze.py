@@ -21,6 +21,7 @@ def main(config: Config):
             #
 
             _analyze_sweep(hfss,
+                           config_project,
                            junctions=config.junctions,
                            modes_and_labels_lst=config.modes_and_labels,
                            hfss_sweep=config.sweep,
@@ -50,6 +51,7 @@ def _analysis(hfss: Hfss, config: Config):
 
 
 def _analyze_single_variation(hfss: Hfss,
+                              config_project: ConfigProject,
                               junctions: List[ConfigJunction] | None = None,
                               modes_and_labels_lst: List[ModesAndLabels] | None = None,
                               hfss_variables: Iterable[ValuedVariable] | None = None,
@@ -60,7 +62,7 @@ def _analyze_single_variation(hfss: Hfss,
         variable_handler.set_variables(hfss, hfss_variables)
 
     # call for classical simulation
-    mode_to_freq_and_q_factor = classical_run(hfss)
+    mode_to_freq_and_q_factor = classical_run(hfss, config_project)
     json_write('classical_results.json', mode_to_freq_and_q_factor)
 
     if tag_key:
@@ -82,6 +84,7 @@ def _analyze_single_variation(hfss: Hfss,
 
 
 def _analyze_sweep(hfss: Hfss,
+                   config_project: ConfigProject,
                    junctions: List[ConfigJunction] | None = None,
                    modes_and_labels_lst: List[ModesAndLabels] | None = None,
                    hfss_sweep: ConfigSweep | None = None,
@@ -89,10 +92,10 @@ def _analyze_sweep(hfss: Hfss,
                    ):
     # for each group of parameters do single analysis
     if hfss_sweep is None:
-        return _analyze_single_variation(hfss, junctions, modes_and_labels_lst,
+        return _analyze_single_variation(hfss, config_project, junctions, modes_and_labels_lst,
                                          tag_key=tag_key)
 
     for variation in hfss_sweep.generate_variation():
-        _analyze_single_variation(hfss, junctions, modes_and_labels_lst,
+        _analyze_single_variation(hfss, config_project, junctions, modes_and_labels_lst,
                                   hfss_variables=variation,
                                   tag_key=tag_key)
