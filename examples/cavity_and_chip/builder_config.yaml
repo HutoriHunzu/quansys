@@ -4,7 +4,9 @@ config_project:
   path: "./CavityAndChip.aedt"
   design_name: "cavity_and_chip"
   version: "2024.2"
-  non_graphical: False
+  non_graphical: True
+  cores: 8
+  gpus: 1
 
 junctions:
   - name: "line_jj1"
