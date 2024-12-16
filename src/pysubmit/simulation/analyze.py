@@ -1,12 +1,13 @@
 from ansys.aedt.core.hfss import Hfss
 from typing import List, Iterable
+from pathlib import Path
 
 from .config_handler import Config, ConfigProject, ConfigJunction, ConfigSweep, ModesAndLabels, ValuedVariable
 
 from .classical_simulation import classical_run
 from .quantum_simulation import quantum_run
 from .hfss_common import variable_handler
-from .json_utils import json_write
+from .json_utils import json_write, unique_name_by_counter
 
 
 def main(config: Config):
@@ -64,6 +65,10 @@ def _analyze_single_variation(hfss: Hfss,
     # call for classical simulation
     mode_to_freq_and_q_factor = classical_run(hfss, config_project)
     json_write('classical_results.json', mode_to_freq_and_q_factor)
+
+    # write project
+    prof_path = unique_name_by_counter(Path('prof.prof'))
+    hfss.export_profile('Setup1', '-1', prof_path)
 
     if tag_key:
         json_write('tag.json', tag_key)
