@@ -43,10 +43,10 @@ def set_variables(hfss: Hfss, values: List[ValuedVariable] | None):
 
 def set_variable(hfss: Hfss, value: ValuedVariable):
     current_value = get_variable(hfss, value.name)
-    new_value = round(convert_to_si(value.value, value.unit), ROUNDING_DIGITS)
+    new_value = convert_to_si(value.value, value.unit)
     if not np.isclose(current_value, new_value):
         hfss[value.name] = value.to_string()
 
 
 def get_variable(hfss: Hfss, variable_name):
-    return round(hfss.get_evaluated_value(variable_name), ROUNDING_DIGITS)
+    return hfss.get_evaluated_value(variable_name)

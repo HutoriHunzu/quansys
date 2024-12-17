@@ -58,6 +58,9 @@ def _analyze_single_variation(hfss: Hfss,
                               hfss_variables: Iterable[ValuedVariable] | None = None,
                               tag_key: dict | None = None
                               ):
+    if tag_key is None:
+        tag_key = dict()
+
     if hfss_variables:
         # change variables accordingly
         variable_handler.set_variables(hfss, hfss_variables)
@@ -68,7 +71,10 @@ def _analyze_single_variation(hfss: Hfss,
 
     # write project
     prof_path = unique_name_by_counter(Path('prof.prof'))
-    hfss.export_profile('Setup1', '-1', prof_path)
+    hfss.export_profile('Setup1', '0', prof_path)
+
+    variables_as_dict = dict(map(lambda x: (x.name, x.to_string()), hfss_variables))
+    tag_key = dict(**tag_key, **variables_as_dict)
 
     if tag_key:
         json_write('tag.json', tag_key)
