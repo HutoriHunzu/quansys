@@ -75,7 +75,7 @@ def _analyze_single_variation(hfss: Hfss,
 
     # write project
     # export profile and convergence
-    variation = ' '.join(map(lambda x: f'{x[0]}={x[1]}', hfss.available_variations.nominal_w_values_dict.items()))
+    variation = ' '.join(map(lambda x: f'{x[0]}={x[1].evaluated_value}', hfss.variable_manager.variables.items()))
     # print(variation)
 
     prof_path = str(unique_name_by_counter(Path('profile.prof')).resolve())
