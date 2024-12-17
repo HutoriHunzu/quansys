@@ -1,6 +1,6 @@
 from ..config_handler import ValuedVariable
 from ansys.aedt.core import Hfss
-from typing import List
+from typing import Iterable
 from .constants import ROUNDING_DIGITS
 import numpy as np
 from functools import partial
@@ -34,7 +34,7 @@ def convert_to_si(value: float | int, unit: str = None) -> float:
         raise ValueError(f"Error in conversion: {e}")
 
 
-def set_variables(hfss: Hfss, values: List[ValuedVariable] | None):
+def set_variables(hfss: Hfss, values: Iterable[ValuedVariable] | None):
     if values is None:
         return
     helper = partial(set_variable, hfss)
