@@ -78,9 +78,9 @@ def _analyze_single_variation(hfss: Hfss,
     variation = ' '.join(map(lambda x: f'{x[0]}={x[1]}', hfss.available_variations.nominal_w_values_dict.items()))
     print(variation)
 
-    prof_path = str(unique_name_by_counter(Path('profile.prof')))
-    conv_path = str(unique_name_by_counter(Path('convergence.conv')))
-    variables_path = str(unique_name_by_counter(Path('variables.csv')))
+    prof_path = str(unique_name_by_counter(Path('profile.prof')).resolve())
+    conv_path = str(unique_name_by_counter(Path('convergence.conv')).resolve())
+    variables_path = str(unique_name_by_counter(Path('variables.csv')).resolve())
     hfss.export_profile('Setup1', variation=variation, output_file=prof_path)
     hfss.export_convergence('Setup1', variations=variation, output_file=conv_path)
     hfss.export_variables_to_csv(variables_path)
