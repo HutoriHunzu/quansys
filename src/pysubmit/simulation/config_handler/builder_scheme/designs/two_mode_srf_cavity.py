@@ -818,7 +818,7 @@ def build(
     hfss.save_project()
 
 
-    return cavity_params
+    return asdict(cavity_params)
 
 
 if __name__ == '__main__':
