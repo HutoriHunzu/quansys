@@ -11,6 +11,29 @@ from pint import UnitRegistry
 ureg = UnitRegistry()
 
 
+def convert_from_si(value, to_unit):
+    """
+    Convert a value from SI units to a specified unit.
+
+    Args:
+        value (float): The numeric value in SI units.
+        to_unit (str): The unit to convert to.
+
+    Returns:
+        float: The converted value.
+    """
+    if to_unit == '':
+        return value
+
+    # Create a quantity in SI base units (assume it's already in SI)
+    quantity = value * ureg.dimensionless
+
+    # Convert to the desired unit
+    converted_quantity = quantity.to(to_unit)
+
+    return converted_quantity
+
+
 def convert_to_si(value: float | int, unit: str = None) -> float:
     """
     Convert a value with its unit (as a tuple) to SI units.
@@ -42,10 +65,11 @@ def set_variables(hfss: Hfss, values: Iterable[ValuedVariable] | None):
 
 
 def set_variable(hfss: Hfss, value: ValuedVariable):
-    current_value = get_variable(hfss, value.name)
-    new_value = convert_to_si(value.value, value.unit)
-    if not np.isclose(current_value, new_value):
-        hfss[value.name] = value.to_string()
+    # current_value = get_variable(hfss, value.name)
+    # current_value_in_units = convert_from_si(current_value, value.unit)
+    # new_value = convert_to_si(value.value, value.unit)
+    # if not np.isclose(current_value, new_value):
+    hfss[value.name] = value.to_string()
 
 
 def get_variable(hfss: Hfss, variable_name):
