@@ -1,0 +1,110 @@
+builder:
+  builder: null
+
+config_project:
+  cores: 24
+  design_name: Dualrail_transmon_purcell
+  gpus: 0
+  non_graphical: true
+  original_path: /home/projects/serger/eyalda/playground/Non_Symmetric_Purcell/DRS_NonSymmetricPurcell_DoubleCavity2024.aedt
+  path: DRS_NonSymmetricPurcell_DoubleCavity2024.aedt
+  version: '2024.2'
+
+hfss_variables: null
+
+junctions:
+- inductance_variable_name: Lj
+  name: line_jj_up
+- inductance_variable_name: Lj
+  name: line_jj_low
+
+modes_and_labels:
+- labels:
+  - 0L
+  - purcell
+  - readout
+  modes:
+  - args:
+      label: 0L
+      mode_number: 1
+    inference_type: manual
+  - args:
+      min_or_max: min
+      num: 2
+      ordered_labels:
+      - purcell
+      - readout
+      quantity: q_factor
+    inference_type: order
+- labels:
+  - 1L
+  - purcell
+  - readout
+  modes:
+  - args:
+      label: 1L
+      mode_number: 2
+    inference_type: manual
+  - args:
+      min_or_max: min
+      num: 2
+      ordered_labels:
+      - purcell
+      - readout
+      quantity: q_factor
+    inference_type: order
+- labels:
+  - 0L
+  - cavity_low
+  - cavity_high
+  modes:
+  - args:
+      label: 0L
+      mode_number: 1
+    inference_type: manual
+  - args:
+      label: cavity_low
+      mode_number: 3
+    inference_type: manual
+  - args:
+      label: cavity_high
+      mode_number: 4
+    inference_type: manual
+- labels:
+  - 1L
+  - cavity_low
+  - cavity_high
+  modes:
+  - args:
+      label: 1L
+      mode_number: 2
+    inference_type: manual
+  - args:
+      label: cavity_low
+      mode_number: 3
+    inference_type: manual
+  - args:
+      label: cavity_high
+      mode_number: 4
+    inference_type: manual
+sweep:
+  args:
+    variables:
+    - name: Purcell_lead_length
+      unit: mm
+      values:
+      - 0.5
+      # - 0.6
+      # - 0.7
+      # - 0.8
+      # - 0.85
+      # - 0.9
+      # - 0.95
+      # - 1
+      # - 1.05
+      # - 1.1
+      # - 1.2
+      # - 1.3
+      # - 1.4
+      # - 1.5
+  name: product
