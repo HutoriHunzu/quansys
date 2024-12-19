@@ -76,8 +76,11 @@ class EprCalculator:
         idx = participation_ratio_induction > 0.15  # Mask for where to scale
         idx_cap = participation_ratio_capacitance > 0.15
 
-        participation_ratio_induction[idx] *= Pm_norm[idx.flatten()]
-        participation_ratio_capacitance[idx_cap] *= Pm_cap_norm[idx.flatten()]
+        pm_norm_expanded = np.tile(Pm_norm[:, None], participation_ratio_induction.shape[1])
+        pm_cap_norm_expanded = np.tile(Pm_cap_norm[:, None], participation_ratio_capacitance.shape[1])
+
+        participation_ratio_induction[idx] *= pm_norm_expanded[idx]
+        participation_ratio_capacitance[idx_cap] *= pm_cap_norm_expanded[idx_cap]
         # Pm = Pm.mul(Pm_norm, axis=0)
         # Pm_cap = Pm_cap.mul(Pm_cap_norm, axis=0)
 

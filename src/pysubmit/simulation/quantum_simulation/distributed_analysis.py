@@ -65,7 +65,10 @@ class DistributedAnalysis:
 
     def add_expression(self, expr, assignment=""):
         if not self.field_calculator.is_expression_defined(expr['name']):
-            self.field_calculator.add_expression(expr, assignment)
+            v = self.field_calculator.add_expression(expr, assignment)
+            if not v:
+                raise ValueError(f"Couldn't add expression {expr}, "
+                                 f"check if assignment = {assignment} appears in the design")
 
     def calc_total_electric_energy(self, use_smooth=False):
 

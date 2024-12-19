@@ -5,8 +5,9 @@ config_project:
   cores: 24
   design_name: Dualrail_transmon_purcell
   gpus: 0
-  non_graphical: true
-  original_path: /home/projects/serger/eyalda/playground/Non_Symmetric_Purcell/DRS_NonSymmetricPurcell_DoubleCavity2024.aedt
+  non_graphical: false
+  max_passes: 1
+  min_passes: 1
   path: DRS_NonSymmetricPurcell_DoubleCavity2024.aedt
   version: '2024.2'
 
@@ -14,9 +15,9 @@ hfss_variables: null
 
 junctions:
 - inductance_variable_name: Lj
-  name: line_jj_up
+  name: Line_jj_up
 - inductance_variable_name: Lj
-  name: line_jj_low
+  name: Line_jj_low
 
 modes_and_labels:
 - labels:
