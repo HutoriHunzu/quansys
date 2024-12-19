@@ -15,8 +15,8 @@ class EprDiagResult:
 @dataclass
 class ParsedJunctionValues:
     info: ConfigJunction
-    frequency: ValuedVariable
-    quality_factor: ValuedVariable
+    # frequency: ValuedVariable
+    # quality_factor: ValuedVariable
     inductance: ValuedVariable
     capacitance: ValuedVariable = field(default_factory=lambda: ValuedVariable(2e-15))
 

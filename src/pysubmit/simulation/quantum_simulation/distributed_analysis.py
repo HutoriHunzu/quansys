@@ -322,14 +322,14 @@ class DistributedAnalysis:
 
         def helper():
             for info in self.junctions_infos:
-                frequency = label_to_freq_and_qfactor[info.label]['freq']
-                q_factor = label_to_freq_and_qfactor[info.label]['q_factor']
+                # frequency = label_to_freq_and_qfactor[info.label]['freq']
+                # q_factor = label_to_freq_and_qfactor[info.label]['q_factor']
                 inductance, capacitance = self.get_inductance_and_capacitance(info.inductance_variable_name)
 
                 yield ParsedJunctionValues(
                     info=info,
-                    frequency=ValuedVariable(name='frequency', value=frequency, unit='hz'),
-                    quality_factor=ValuedVariable(name='q_factor', value=q_factor),
+                    # frequency=ValuedVariable(name='frequency', value=frequency, unit='hz'),
+                    # quality_factor=ValuedVariable(name='q_factor', value=q_factor),
                     inductance=ValuedVariable(name='inductance', value=inductance, unit='H'),
                     capacitance=ValuedVariable(name='capacitance', value=capacitance, unit=''),
                 )
