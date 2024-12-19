@@ -10,7 +10,6 @@ config_project:
 
 junctions:
   - name: "line_jj1"
-    label: "transmon"
     inductance_variable_name: "Lj"
 
 modes_and_labels:

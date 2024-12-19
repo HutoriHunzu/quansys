@@ -15,8 +15,6 @@ class EprDiagResult:
 @dataclass
 class ParsedJunctionValues:
     info: ConfigJunction
-    # frequency: ValuedVariable
-    # quality_factor: ValuedVariable
     inductance: ValuedVariable
     capacitance: ValuedVariable = field(default_factory=lambda: ValuedVariable(2e-15))
 
@@ -99,7 +97,7 @@ class ParticipationDataset:
         inductances = []
         capacitances = []
 
-        junctions_dict = dict(list(map(lambda x: (x.info.label, x), junctions_infos)))
+        # junctions_dict = dict(list(map(lambda x: (x.info.name, x), junctions_infos)))
 
         for label, instance in label_to_junction_dataset_dict.items():
             labels_order.append(label)
@@ -119,10 +117,9 @@ class ParticipationDataset:
             frequencies.append(labels_to_freq_and_quality_factors[label]['freq'])
             quality_factors.append(labels_to_freq_and_quality_factors[label]['q_factor'])
 
-            junction = junctions_dict.get(label)
-            if junction:
-                capacitances.append(junction.capacitance.value)
-                inductances.append(junction.inductance.value)
+        for junction in junctions_infos:
+            capacitances.append(junction.capacitance.value)
+            inductances.append(junction.inductance.value)
 
         return cls(
             junctions_infos=junctions_infos,

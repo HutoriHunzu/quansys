@@ -65,7 +65,7 @@ $begin 'AnsoftProject'
 	$end 'geometry3deditor'
 	ReadVersion=12
 	$begin 'DesignMgrEnvironment'
-		CompInstCounter=46
+		CompInstCounter=51
 		GPortCounter=0
 		NetCounter=0
 		Alias('Ieee;Simplorer Elements\\Ieee', 'Std;Simplorer Elements\\Std', 'Basic_VHDLAMS;Simplorer Elements\\Basic Elements VHDLAMS\\Basic Elements VHDLAMS', 'Digital_Elements;Simplorer Elements\\Digital Elements\\Digital Elements', 'Transformations;Simplorer Elements\\Tools\\Transformations\\Transformations', 'HEV_VHDLAMS;Simplorer Elements\\HEV VHDLAMS\\HEV VHDLAMS', 'automotive_vda;Simplorer Elements\\VDALibs VHDLAMS\\automotive_vda', 'example_boardnet;Simplorer Elements\\VDALibs VHDLAMS\\example_boardnet', 'example_ecar;Simplorer Elements\\VDALibs VHDLAMS\\example_ecar', 'fundamentals_vda;Simplorer Elements\\VDALibs VHDLAMS\\fundamentals_vda', 'hybrid_emc_vda;Simplorer Elements\\VDALibs VHDLAMS\\hybrid_emc_vda', 'megma;Simplorer Elements\\VDALibs VHDLAMS\\megma', 'modelica_rotational;Simplorer Elements\\VDALibs VHDLAMS\\modelica_rotational', 'modelica_thermal;Simplorer Elements\\VDALibs VHDLAMS\\modelica_thermal', 'modelica_translational;Simplorer Elements\\VDALibs VHDLAMS\\modelica_translational', 'spice2vhd;Simplorer Elements\\VDALibs VHDLAMS\\spice2vhd', 'spice2vhd_devices;Simplorer Elements\\VDALibs VHDLAMS\\spice2vhd_devices', 'aircraft_electrical_vhdlams;Simplorer Elements\\Aircraft Electrical VHDLAMS\\Aircraft Electrical VHDLAMS', 'power_system_vhdlams;Simplorer Elements\\Power System VHDLAMS\\Power System VHDLAMS')
@@ -181,7 +181,7 @@ $begin 'AnsoftProject'
 		$end 'Scripts'
 		$begin 'Symbols'
 			$begin 'cavity_and_chip'
-				ModTime=1734560560
+				ModTime=1734600326
 				Library=''
 				ModSinceLib=false
 				LibLocation='Project'
@@ -209,7 +209,7 @@ $begin 'AnsoftProject'
 		$end 'Symbols'
 		$begin 'DefInfo'
 			design(1002, 0, 0, 0, '', 1726408440, '', 'design', '', '', '', '', '', 'Design.bmp', '', 'Project', '', '', 1726408440, '', 0, 0)
-			cavity_and_chip(1002, 0, 0, 0, '', 1734560560, '', 'cavity_and_chip', '', '', '', '', '', 'Design.bmp', '', 'Project', '', '', 1734560560, '', 0, 0)
+			cavity_and_chip(1002, 0, 0, 0, '', 1734600326, '', 'cavity_and_chip', '', '', '', '', '', 'Design.bmp', '', 'Project', '', '', 1734600326, '', 0, 0)
 		$end 'DefInfo'
 		$begin 'Compdefs'
 			$begin 'design'
@@ -253,7 +253,7 @@ $begin 'AnsoftProject'
 			$end 'cavity_and_chip'
 		$end 'Compdefs'
 	$end 'Definitions'
-	DesignIDServer=101
+	DesignIDServer=111
 	MoveBackwards=false
 	$begin 'HFSSModel'
 		RepRewriteV2=true
@@ -12087,7 +12087,7 @@ $begin 'AnsoftProject'
 	$begin 'HFSSModel'
 		RepRewriteV2=true
 		Name='cavity_and_chip'
-		DesignID=99
+		DesignID=109
 		'Allow Material Override'=false
 		'Perform Minimal validation'=false
 		$begin 'TemperatureSettings'
@@ -12165,16 +12165,16 @@ $begin 'AnsoftProject'
 				VariableProp('pin_3_length', 'UD', '', '6.75mm', oa(i=false, int=false, Min='3.375mm', Max='10.125mm', MinStep='0.0675mm', MaxStep='0.675mm', MinFocus='3.375mm', MaxFocus='10.125mm', UseManufacturableValues='false', Level='[3.375: 10.125] mm'), sa(i=false, int=false, Min='3.375mm', Max='10.125mm', IDisp='0.675mm'), ta(i=false, int=false, Step='0.675mm', Min='3.375mm', Max='10.125mm'))
 				VariableProp('pin_4_length', 'UD', '', '0mm', oa(i=false, int=false, Min='-1mm', Max='1mm', MinStep='0.02mm', MaxStep='0.2mm', MinFocus='-1mm', MaxFocus='1mm', UseManufacturableValues='false', Level='[-1: 1] mm'), sa(i=false, int=false, Min='-1mm', Max='1mm', IDisp='0.2mm'), ta(i=false, int=false, Step='0.2mm', Min='-1mm', Max='1mm'))
 				VariableProp('maximum_mesh_size_mm', 'UD', '', '2mm', oa(i=false, int=false, Min='1mm', Max='3mm', MinStep='0.02mm', MaxStep='0.2mm', MinFocus='1mm', MaxFocus='3mm', UseManufacturableValues='false', Level='[1: 3] mm'), sa(i=false, int=false, Min='1mm', Max='3mm', IDisp='0.2mm'), ta(i=false, int=false, Step='0.2mm', Min='1mm', Max='3mm'))
+				VariableProp('ChipBase_y', 'UD', '', '-0.15mm', oa(i=false, int=false, Min='-0.225mm', Max='-0.075mm', MinStep='0.0015mm', MaxStep='0.015mm', MinFocus='-0.225mm', MaxFocus='-0.075mm', UseManufacturableValues='false', Level='[-0.225: -0.075] mm'), sa(i=false, int=false, Min='-0.225mm', Max='-0.075mm', IDisp='0.015mm'), ta(i=false, int=false, Step='0.015mm', Min='-0.225mm', Max='-0.075mm'))
 				VariableProp('ChipBase_x', 'UD', '', '-1mm', oa(i=false, int=false, Min='-1.5mm', Max='-0.5mm', MinStep='0.01mm', MaxStep='0.1mm', MinFocus='-1.5mm', MaxFocus='-0.5mm', UseManufacturableValues='false', Level='[-1.5: -0.5] mm'), sa(i=false, int=false, Min='-1.5mm', Max='-0.5mm', IDisp='0.1mm'), ta(i=false, int=false, Step='0.1mm', Min='-1.5mm', Max='-0.5mm'))
+				VariableProp('ChipBase_length', 'UD', '', '22.8mm', oa(i=false, int=false, Min='11.4mm', Max='34.2mm', MinStep='0.228mm', MaxStep='2.28mm', MinFocus='11.4mm', MaxFocus='34.2mm', UseManufacturableValues='false', Level='[11.4: 34.2] mm'), sa(i=false, int=false, Min='11.4mm', Max='34.2mm', IDisp='2.28mm'), ta(i=false, int=false, Step='2.28mm', Min='11.4mm', Max='34.2mm'))
 				VariableProp('ChipBase_end', 'UD', '', 'ChipBase_length + ChipBase_z')
+				VariableProp('ChipBase_width', 'UD', '', '2mm', oa(i=false, int=false, Min='1mm', Max='3mm', MinStep='0.02mm', MaxStep='0.2mm', MinFocus='1mm', MaxFocus='3mm', UseManufacturableValues='false', Level='[1: 3] mm'), sa(i=false, int=false, Min='1mm', Max='3mm', IDisp='0.2mm'), ta(i=false, int=false, Step='0.2mm', Min='1mm', Max='3mm'))
 				VariableProp('ChipBase_z', 'UD', '', '-22mm - spacer')
 				VariableProp('ChipBase_thickness', 'UD', '', '0.3mm', oa(i=false, int=false, Min='0.15mm', Max='0.45mm', MinStep='0.003mm', MaxStep='0.03mm', MinFocus='0.15mm', MaxFocus='0.45mm', UseManufacturableValues='false', Level='[0.15: 0.45] mm'), sa(i=false, int=false, Min='0.15mm', Max='0.45mm', IDisp='0.03mm'), ta(i=false, int=false, Step='0.03mm', Min='0.15mm', Max='0.45mm'))
-				VariableProp('ChipBase_length', 'UD', '', '22.8mm', oa(i=false, int=false, Min='11.4mm', Max='34.2mm', MinStep='0.228mm', MaxStep='2.28mm', MinFocus='11.4mm', MaxFocus='34.2mm', UseManufacturableValues='false', Level='[11.4: 34.2] mm'), sa(i=false, int=false, Min='11.4mm', Max='34.2mm', IDisp='2.28mm'), ta(i=false, int=false, Step='2.28mm', Min='11.4mm', Max='34.2mm'))
-				VariableProp('ChipBase_width', 'UD', '', '2mm', oa(i=false, int=false, Min='1mm', Max='3mm', MinStep='0.02mm', MaxStep='0.2mm', MinFocus='1mm', MaxFocus='3mm', UseManufacturableValues='false', Level='[1: 3] mm'), sa(i=false, int=false, Min='1mm', Max='3mm', IDisp='0.2mm'), ta(i=false, int=false, Step='0.2mm', Min='1mm', Max='3mm'))
-				VariableProp('ChipBase_y', 'UD', '', '-0.15mm', oa(i=false, int=false, Min='-0.225mm', Max='-0.075mm', MinStep='0.0015mm', MaxStep='0.015mm', MinFocus='-0.225mm', MaxFocus='-0.075mm', UseManufacturableValues='false', Level='[-0.225: -0.075] mm'), sa(i=false, int=false, Min='-0.225mm', Max='-0.075mm', IDisp='0.015mm'), ta(i=false, int=false, Step='0.015mm', Min='-0.225mm', Max='-0.075mm'))
 				VariableProp('Lj', 'UD', '', '12nH', oa(i=false, int=false, Min='5.5nH', Max='16.5nH', MinStep='0.11nH', MaxStep='1.1nH', MinFocus='5.5nH', MaxFocus='16.5nH', UseManufacturableValues='false', Level='[5.5: 16.5] nH'), sa(i=false, int=false, Min='5.5nH', Max='16.5nH', IDisp='1.1nH'), ta(i=false, int=false, Step='1.1nH', Min='5.5nH', Max='16.5nH'))
 			$end 'Properties'
-			VariableOrders[37: 'transmon_coupler_a', 'transmon_coupler_b', 'transmon_wg_radius', 'half_cell_Rc', 'half_cell_Lc', 'half_cell_fillet_radius', 'coupler_a', 'coupler_b', 'Iris_radius', 'full_cell_Rc', 'full_cell_Lc', 'cavity_drive_wg_radius', 'cavity_drive_wg_length', 'cavity_z_end', 'cavity_z_midpoint', 'cavity_drive_pin_diamter', 'cavity_drive_pin_length', 'cavity_drive_pin_encloser_diamter', 'cavity_drive_pin_encloser_length', 'sapphire_house_length', 'spacer', 'sapphire_house_pins_diameter', 'sapphire_house_pins_waveguide_diameter', 'sapphire_house_pins_waveguide_length', 'pin_1_length', 'pin_2_length', 'pin_3_length', 'pin_4_length', 'maximum_mesh_size_mm', 'ChipBase_x', 'ChipBase_end', 'ChipBase_z', 'ChipBase_thickness', 'ChipBase_length', 'ChipBase_width', 'ChipBase_y', 'Lj']
+			VariableOrders[37: 'transmon_coupler_a', 'transmon_coupler_b', 'transmon_wg_radius', 'half_cell_Rc', 'half_cell_Lc', 'half_cell_fillet_radius', 'coupler_a', 'coupler_b', 'Iris_radius', 'full_cell_Rc', 'full_cell_Lc', 'cavity_drive_wg_radius', 'cavity_drive_wg_length', 'cavity_z_end', 'cavity_z_midpoint', 'cavity_drive_pin_diamter', 'cavity_drive_pin_length', 'cavity_drive_pin_encloser_diamter', 'cavity_drive_pin_encloser_length', 'sapphire_house_length', 'spacer', 'sapphire_house_pins_diameter', 'sapphire_house_pins_waveguide_diameter', 'sapphire_house_pins_waveguide_length', 'pin_1_length', 'pin_2_length', 'pin_3_length', 'pin_4_length', 'maximum_mesh_size_mm', 'ChipBase_y', 'ChipBase_x', 'ChipBase_length', 'ChipBase_end', 'ChipBase_width', 'ChipBase_z', 'ChipBase_thickness', 'Lj']
 			$begin 'Editor3D Doc Preferences'
 				BackgroundColorVersion=1
 				'Plane Background'=0
@@ -16517,7 +16517,7 @@ $begin 'AnsoftProject'
 			$begin 'Boundaries'
 				NextUniqueID=4
 				MoveBackwards=false
-				$begin 'Lump_LVLHQZ'
+				$begin 'Lump_KS4SZI'
 					ID=0
 					BoundType='Lumped RLC'
 					IsComponent=false
@@ -16557,8 +16557,8 @@ $begin 'AnsoftProject'
 					Resistance='50ohm'
 					UseInduct=false
 					UseCap=false
-				$end 'Lump_LVLHQZ'
-				$begin 'Lump_LGMEPT'
+				$end 'Lump_KS4SZI'
+				$begin 'Lump_1XQHVM'
 					ID=1
 					BoundType='Lumped RLC'
 					IsComponent=false
@@ -16598,7 +16598,7 @@ $begin 'AnsoftProject'
 					Resistance='50ohm'
 					UseInduct=false
 					UseCap=false
-				$end 'Lump_LGMEPT'
+				$end 'Lump_1XQHVM'
 				$begin 'JJ_inductance'
 					ID=2
 					BoundType='Lumped RLC'
@@ -16639,14 +16639,14 @@ $begin 'AnsoftProject'
 					Inductance='Lj'
 					UseCap=false
 				$end 'JJ_inductance'
-				$begin 'PerfE_SMRWP7'
+				$begin 'PerfE_V5PC1R'
 					ID=3
 					BoundType='Perfect E'
 					IsComponent=false
 					Objects(181, 202)
 					ParentBndID=-1
 					InfGroundPlane=false
-				$end 'PerfE_SMRWP7'
+				$end 'PerfE_V5PC1R'
 			$end 'Boundaries'
 			$begin 'ProductSpecificData'
 				$begin 'SBRTxRxSettings'
@@ -17138,13 +17138,28 @@ $begin 'AnsoftProject'
 								Units='mm'
 							$end 'Sweep'
 							$begin 'Sweep'
+								Variable='ChipBase_y'
+								Column='-0.15mm'
+								Units='mm'
+							$end 'Sweep'
+							$begin 'Sweep'
 								Variable='ChipBase_x'
 								Column='-1mm'
 								Units='mm'
 							$end 'Sweep'
 							$begin 'Sweep'
+								Variable='ChipBase_length'
+								Column='22.8mm'
+								Units='mm'
+							$end 'Sweep'
+							$begin 'Sweep'
 								Variable='ChipBase_end'
 								Column='0.799000000000001mm'
+								Units='mm'
+							$end 'Sweep'
+							$begin 'Sweep'
+								Variable='ChipBase_width'
+								Column='2mm'
 								Units='mm'
 							$end 'Sweep'
 							$begin 'Sweep'
@@ -17155,21 +17170,6 @@ $begin 'AnsoftProject'
 							$begin 'Sweep'
 								Variable='ChipBase_thickness'
 								Column='0.3mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='ChipBase_length'
-								Column='22.8mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='ChipBase_width'
-								Column='2mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='ChipBase_y'
-								Column='-0.15mm'
 								Units='mm'
 							$end 'Sweep'
 							$begin 'Sweep'
@@ -17298,13 +17298,13 @@ $begin 'AnsoftProject'
 		Notes=$begin_cdata$ $end_cdata$
 		$begin 'AnimationSetups'
 		$end 'AnimationSetups'
-		CacheHeaderFile='HDR0BA924400173456057113.tmp'
+		CacheHeaderFile='HDR06EC22924173460033713.tmp'
 	$end 'HFSSModel'
 	$begin 'DataInstances'
 		DesignEditor='TopLevel'
+		Refdes('49', 'U1')
 		Refdes('7', 'U7')
-		Refdes('44', 'U2')
-		Refdes('45', 'U1')
+		Refdes('50', 'U2')
 		$begin 'CompInstances'
 			$begin 'Compinst'
 				ID='7'
@@ -17320,12 +17320,12 @@ $begin 'AnsoftProject'
 				$end 'Parameters'
 			$end 'Compinst'
 			$begin 'Compinst'
-				ID='45'
+				ID='50'
 				Status='Status'
 				CompName='cavity_and_chip'
 				GatesInUse()
 				$begin 'Properties'
-					TextProp('ID', 'SRID', '', '45')
+					TextProp('ID', 'SRID', '', '50')
 				$end 'Properties'
 			$end 'Compinst'
 		$end 'CompInstances'
@@ -21959,9 +21959,9 @@ $begin 'AnsoftProject'
 		$end 'Instance'
 		$begin 'Instance'
 			DesignEditor='cavity_and_chip'
-			ID='45'
+			ID='50'
 			$begin 'HfssDesignInstance'
-				DesignInstanceID=100
+				DesignInstanceID=110
 				$begin 'WindowPosition'
 					$begin 'EditorWindow'
 						Circuit(Editor3d(View('View Orientation Gadget'=1, WindowPos(3, -1, -1, -8, -31, 104, 104, 1543, 587), OrientationMatrix(0.389711409807205, -0.224999979138374, 0.318197995424271, 0, 0.389711409807205, 0.224999979138374, -0.318197995424271, 0, 0, 0.450000047683716, 0.318198025226593, 0, 0, 0, -5.75459384918213, 1, 0, -1.63173222541809, 1.63173222541809, -1, 1, -176.950378417969, 188.459564208984), Drawings[18: 'cavity', 'transmon_pin', 'pin_3', 'pin_1_wg_rlc_bound', 'pin_3_wg_rlc_bound', 'cavity_mesh', 'JJ', 'line_jj1', 'Transmon1', 'Transmon2', 'ChipBase', 'jj_meshbox', 'trpad_meshbox', 'JJ_fine_mesh', 'saphire_mesh', 'trpad_meshbox', 'jj_meshbox', 'perfect_e_mesh'], 'View Data'('Render Mode'=1, 'Show Ruler'=1, 'Coordinate Systems View Mode'=1, 'CS Triad View Mode'=0, 'Render Facets'=1, GridVisible=1, GridAutoAdjust=1, GridAutoExtents=1, GridType='Rect', GridStyle='Line', NumPixels=30, dXForGrid=0.2, dYForGrid=0.2, dZForGrid=0.2, dRForGrid=0.2, dThetaForGrid=10), ClipPlanes(ClipPlaneOptions(DisableWhenDrawingNewPlane=true, ForceOpqaueForUnclipped=false, ShowClipped=false, Transparency=0, HandleColor=16776960)))))
