@@ -4,8 +4,18 @@ from ..config_handler import ConfigProject
 
 
 def run(hfss: Hfss, config_project: ConfigProject) -> Dict[int, Dict[str, float]]:
+    # make sure setup is correct
+    setup = hfss.get_setup(config_project.setup_name)
+
+    if config_project.min_passes:
+        setup.props['MinimumConvergedPasses'] = config_project.min_passes
+        setup.props['MinimumPasses'] = config_project.min_passes
+
+    if config_project.max_passes:
+        setup.props['MaximumPasses'] = config_project.max_passes
+
     # Analyze
-    hfss.analyze_setup('Setup1', cores=config_project.cores, gpus=config_project.gpus)
+    setup.analyze(cores=config_project.cores, gpus=config_project.gpus)
 
     # Save and exit
     hfss.save_project()

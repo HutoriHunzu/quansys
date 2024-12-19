@@ -7,6 +7,7 @@ import pandas as pd
 from abc import ABC, abstractmethod
 from ansys.aedt.core.hfss import Hfss
 from pathlib import Path
+from copy import deepcopy
 
 
 @dataclass
@@ -731,7 +732,7 @@ class SystemModeler():
 
 def build(
         hfss: Hfss,
-        design_name: str,
+        config_project,
         cavity_params: dict = None,
         couplers_params: dict = None):
     if cavity_params is None:
@@ -751,12 +752,12 @@ def build(
 
     hfss.set_active_design('design')
 
-    hfss.delete_design(design_name)
+    hfss.delete_design(config_project.design_name)
 
     hfss.save_project()
 
 
-    hfss.insert_design(design_name, 'Eigenmode')
+    hfss.insert_design(config_project.design_name, 'Eigenmode')
 
     # hfss.modeler.delete('cavity')
 
@@ -799,7 +800,7 @@ def build(
     # hfss.modeler.copy(['ChipBase'])  # Copy the object by its name
     hfss.modeler.copy(['ChipBase', 'JJ', 'Transmon1', 'Transmon2', 'jj_meshbox', 'trpad_meshbox', 'line_jj1'])  # Copy the object by its name
 
-    hfss.set_active_design(design_name)
+    hfss.set_active_design(config_project.design_name)
 
     # Paste the object into the target design
     hfss.modeler.paste()
@@ -813,7 +814,11 @@ def build(
 
     hfss.mesh.initial_mesh_settings.props['MeshMethod'] = 'AnsoftClassic'
 
-    hfss.create_setup('Setup1', **setup.props)
+    props = setup.props.copy()
+    props.pop('ID')
+    props.pop('SetupType')
+    props['setup_type'] = 'HFSSEigen'
+    hfss.create_setup(config_project.setup_name, **props)
 
     hfss.save_project()
 

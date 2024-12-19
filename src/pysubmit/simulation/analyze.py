@@ -18,7 +18,7 @@ def main(config: Config):
               design=config_project.design_name, project=config_project.path,
               close_on_exit=True, remove_lock=True, non_graphical=config_project.non_graphical) as hfss:
         # check for build
-        for build_params in config.builder.build(hfss):
+        for build_params in config.builder.build(hfss, config_project):
             #
 
             _analyze_sweep(hfss,

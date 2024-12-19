@@ -4,6 +4,9 @@ config_project:
   path: "./CavityAndChip.aedt"
   design_name: "cavity_and_chip"
   version: "2024.2"
+  setup_name: "Setup1"
+  max_passes: 3
+  min_passes: 2
   non_graphical: False
   cores: 12
   gpus: 0
@@ -56,7 +59,6 @@ sweep:
 builder:
   builder:
     type: 'two_mode_srf_cavity'
-    design_name: 'cavity_and_chip'
     sweep:
       name: 'product'
       args:

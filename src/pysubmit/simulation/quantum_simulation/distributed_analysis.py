@@ -45,10 +45,12 @@ def parse_expression_filetxt(txt):
     return float(txt.split()[-1])
 
 
-def calculator_read(calculator, expression_name, temp_filename):
-    calculator.calculator_write(expression_name, temp_filename)
-    txt = read_and_delete(temp_filename)
-    return parse_expression_filetxt(txt)
+def calculator_read(calculator, expression_name):
+    return float(calculator.evaluate(expression_name))
+
+    # calculator.calculator_write(expression_name, temp_filename)
+    # txt = read_and_delete(temp_filename)
+    # return parse_expression_filetxt(txt)
 
 
 class DistributedAnalysis:
@@ -96,8 +98,7 @@ class DistributedAnalysis:
 
         self.add_expression(expression)
 
-        total_energy_temp_file = str(Path('total_electric_energy_tempfile.reg').absolute())
-        return calculator_read(self.field_calculator, expression_name, total_energy_temp_file)
+        return calculator_read(self.field_calculator, expression_name)
 
     def calc_total_magnetic_energy(self, use_smooth=False):
 
@@ -129,8 +130,7 @@ class DistributedAnalysis:
         }
 
         self.add_expression(expression)
-        total_energy_temp_file = str(Path('total_magnetic_energy_tempfile.reg').absolute())
-        return calculator_read(self.field_calculator, expression_name, total_energy_temp_file)
+        return calculator_read(self.field_calculator, expression_name)
 
     def set_mode(self, mode):
         mode = str(mode)
@@ -193,10 +193,8 @@ class DistributedAnalysis:
 
         self.add_expression(expression_real, assignment=line_object_name)
         self.add_expression(expression_imag, assignment=line_object_name)
-        fname_real = str(Path(f'{expression_name_real}_temp.reg').absolute())
-        fname_imag = str(Path(f'{expression_name_imag}_temp.reg').absolute())
-        v_real = calculator_read(self.field_calculator, expression_name_real, fname_real)
-        v_imag = calculator_read(self.field_calculator, expression_name_imag, fname_imag)
+        v_real = calculator_read(self.field_calculator, expression_name_real)
+        v_imag = calculator_read(self.field_calculator, expression_name_imag)
 
         peak_voltage = np.sign(v_real) * np.sqrt(v_real ** 2 + v_imag ** 2)
         omega = 2 * np.pi * freq

@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from typing import Literal, Iterable
+
+from ..project_scheme import ConfigProject
 from ..variable_scheme import Variable, ValuedVariable, ConfigSweep
 
 from .designs import two_mode_srf_cavity
@@ -10,14 +12,13 @@ SUPPORTED_BUILDERS = ()
 
 class TwoModesCavity(BaseModel):
     type: Literal['two_mode_srf_cavity']
-    design_name: str
 
     sweep: ConfigSweep | None
 
-    def build(self, hfss) -> Generator[dict, None, None]:
+    def build(self, hfss, config_project: ConfigProject) -> Generator[dict, None, None]:
         for variables in self.prepare_variables():
             yield two_mode_srf_cavity.build(hfss,
-                                            self.design_name,
+                                            config_project,
                                             cavity_params=variables)
 
     def prepare_variables(self) -> Iterable[dict]:
@@ -32,8 +33,8 @@ class TwoModesCavity(BaseModel):
 class ConfigBuilder(BaseModel):
     builder: TwoModesCavity | None = None
 
-    def build(self, hfss) -> Iterable[dict]:
+    def build(self, hfss, config_project: ConfigProject) -> Iterable[dict]:
         if self.builder is None:
             return [{}]
 
-        return self.builder.build(hfss)
+        return self.builder.build(hfss, config_project)
