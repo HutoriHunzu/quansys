@@ -15,7 +15,7 @@ def main(config: Config):
 
     config_project = config.config_project
     with Hfss(version=config_project.version, new_desktop=False,
-              design=config_project.design_name, project=config_project.path,
+              design=config_project.design_name, project=config_project.execution_dir / config_project.path,
               close_on_exit=True, remove_lock=True, non_graphical=config_project.non_graphical) as hfss:
         # check for build
         for build_params in config.builder.build(hfss, config_project):
