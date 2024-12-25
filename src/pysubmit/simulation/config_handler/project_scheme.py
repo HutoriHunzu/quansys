@@ -16,7 +16,7 @@ class ConfigProject(BaseModel):
     original_path: str | None = None
 
     @field_validator("execution_dir", mode="before")
-    def convert_to_path(self, value):
+    def convert_to_path(cls, value):
         # Ensure the value is converted to a Path object
         if isinstance(value, str):
             return Path(value)
