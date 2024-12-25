@@ -67,11 +67,12 @@ def _analyze_single_variation(hfss: Hfss,
         variables_as_dict = dict(map(lambda x: (x.name, x.to_string()), hfss_variables))
         tag_key = dict(**tag_key, **variables_as_dict)
 
-    json_write('tag.json', tag_key)
+
+    json_write(config_project.execution_dir / 'tag.json', tag_key)
 
     # call for classical simulation
     mode_to_freq_and_q_factor = classical_run(hfss, config_project)
-    json_write('classical_results.json', mode_to_freq_and_q_factor)
+    json_write(config_project.execution_dir / 'classical_results.json', mode_to_freq_and_q_factor)
 
     # write project
     # export profile and convergence
@@ -81,8 +82,8 @@ def _analyze_single_variation(hfss: Hfss,
     prof_path = str(unique_name_by_counter(Path('profile.prof')).resolve())
     conv_path = str(unique_name_by_counter(Path('convergence.conv')).resolve())
     variables_path = str(unique_name_by_counter(Path('variables.csv')).resolve())
-    hfss.export_profile('Setup1', variation=variation, output_file=prof_path)
-    hfss.export_convergence('Setup1', variations=variation, output_file=conv_path)
+    hfss.export_profile('Setup1', variation=variation, output_file=config_project.execution_dir / prof_path)
+    hfss.export_convergence('Setup1', variations=variation, output_file=config_project.execution_dir / conv_path)
     hfss.export_variables_to_csv(variables_path)
 
     if not (junctions and modes_and_labels_lst):
@@ -97,7 +98,7 @@ def _analyze_single_variation(hfss: Hfss,
 
         # infer name
         result_name = '_'.join(mode_to_labels.values())
-        json_write(f'{result_name}.json', quantum_result)
+        json_write(config_project.execution_dir / f'{result_name}.json', quantum_result)
 
 
 def _analyze_sweep(hfss: Hfss,
