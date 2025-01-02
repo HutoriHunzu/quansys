@@ -12,12 +12,13 @@ from .builder_scheme import ConfigBuilder
 
 
 class Config(BaseModel):
+    name: str
     config_project: ConfigProject
     junctions: List[ConfigJunction] | None = None
     modes_and_labels: List[ModesAndLabels] | None = None
     hfss_variables: List[ValuedVariable] | None = None
     sweep: ConfigSweep | None = None
-    builder: ConfigBuilder | None = ConfigBuilder()
+    config_builder: ConfigBuilder | None = None
 
 
 def load(config_path) -> Config:

@@ -3,9 +3,9 @@ from typing import Dict
 from ..config_handler import ConfigProject
 
 
-def run(hfss: Hfss, config_project: ConfigProject) -> Dict[int, Dict[str, float]]:
+def run(hfss: Hfss, setup, config_project: ConfigProject) -> Dict[int, Dict[str, float]]:
     # make sure setup is correct
-    setup = hfss.get_setup(config_project.setup_name)
+    # setup = hfss.get_setup(config_project.setup_name)
 
     if config_project.min_passes:
         setup.props['MinimumConvergedPasses'] = config_project.min_passes

@@ -1,1 +1,1 @@
-from .builder_scheme import ConfigBuilder
+from .builder_scheme import ConfigBuilder, Builder

@@ -4,7 +4,7 @@ from pathlib import Path
 
 class ConfigProject(BaseModel):
     path: str
-    design_name: str
+    design_name: str | None = None
     execution_dir: Path | None = ''
     setup_name: str = 'Setup1'
     min_passes: int | None = None
@@ -16,6 +16,7 @@ class ConfigProject(BaseModel):
     original_path: str | None = None
 
     @field_validator("execution_dir", mode="before")
+    @classmethod
     def convert_to_path(cls, value):
         # Ensure the value is converted to a Path object
         if isinstance(value, str):

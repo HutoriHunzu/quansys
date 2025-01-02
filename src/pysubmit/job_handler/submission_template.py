@@ -56,7 +56,7 @@ def get_bsub_submission_script(execution_dir: Path,
         queue = 'short'
 
     return f"""#!/bin/bash
-
+    
     # Submit the bsub job to execute hfss_run.sh
     bsub -J hfss_job$project_name \\
         -q {queue} \\
@@ -68,3 +68,47 @@ def get_bsub_submission_script(execution_dir: Path,
         -cwd {execution_dir.resolve()} \\
         {shorter_simulation_script_path}
     """
+
+#     f"""
+#     REMOTE_TMP_DIR=${TMPDIR:-/tmp}/hfss_${USER}_$$
+#     RESULTS_DIR="{execution_dir.resolve()}/results"
+#
+#     # Create results directory locally if not already present
+#     mkdir -p "$RESULTS_DIR"
+#
+#     # Copy necessary files to the remote node's temporary directory
+#     bsub -J hfss_job$project_name \
+#         -q {queue} \
+#         -oo lsf_output_%J.log \
+#         -eo lsf_error_%J.err \
+#         -n {config_project.cores} \
+#         -W 02:00 \
+#         -R "rusage[mem=20000] span[hosts=1]" \\{gpu_string} \
+#         -cwd "$RESULTS_DIR" \
+#         <<EOF
+#
+#     #!/bin/bash
+#
+#     # Create temporary directory on the remote node
+#     mkdir -p "$REMOTE_TMP_DIR"
+#
+#     # Copy project files to the remote temporary directory
+#     cp {execution_dir.resolve()}/* "$REMOTE_TMP_DIR"
+#
+#     # Load the HFSS module/environment if necessary
+#     module load hfss
+#
+#     # Run HFSS
+#     cd "$REMOTE_TMP_DIR"
+#     hfss -batchsolve -ng -monitor -input my_project.aedt
+#
+#     # Copy results back to the execution directory
+#     cp "$REMOTE_TMP_DIR"/* "$RESULTS_DIR"
+#
+#     # Clean up the temporary directory
+#     rm -rf "$REMOTE_TMP_DIR"
+#
+#     EOF
+#
+#
+# """

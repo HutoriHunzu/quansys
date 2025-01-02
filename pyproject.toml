@@ -9,6 +9,7 @@ dependencies = [
     "qutip",
     "pyaedt[all]",
     "pint",
+    "h5py>=3.12.1",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
