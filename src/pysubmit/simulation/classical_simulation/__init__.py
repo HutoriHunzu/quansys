@@ -1,2 +1,8 @@
-from .eigenmode import run as run_eigenmode
-from .driven_model import run as run_driven_model
+from .eigenmode import EignModeAnalysis
+from .driven_model import DriveModelAnalysis
+
+from pydantic import TypeAdapter, Field
+from typing_extensions import Annotated
+
+SUPPORTED_ANALYSIS = (EignModeAnalysis | DriveModelAnalysis)
+ANALYSIS_ADAPTER = TypeAdapter(Annotated[SUPPORTED_ANALYSIS, Field(discriminator="type")])

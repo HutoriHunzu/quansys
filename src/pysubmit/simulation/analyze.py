@@ -6,7 +6,7 @@ from pathlib import Path
 from .config_handler import Config, ConfigProject, ConfigJunction, ConfigSweep, ModesAndLabels, ValuedVariable
 from .config_handler.builder_scheme import Builder
 
-from .classical_simulation import run_eigenmode, run_driven_model
+from .classical_simulation import ANALYSIS_ADAPTER
 from .quantum_simulation import quantum_run
 from .hfss_common import variable_handler
 # from .json_utils import json_write, unique_name_by_counter
@@ -16,10 +16,25 @@ import h5py
 
 
 def main(config: Config):
+
     # initialize a file to save data
     handler = HDF5Handler('data.h5', config.name)
 
     # build phase
+    # essentially support different approaches to builds
+    # eventually should result in having a working design and a setup
+    # should be in the following form:
+    # design name, setup name
+
+    # sweep support for the build phase can be in two parts:
+    # either part of the build phase itself
+    # of as a hook before running the analysis
+
+    # in summary:
+    # build phase options should be:
+    # function(hfss, args: dict) --> Iterable[design_name, setup_name]
+
+
     # variables settings
     # initialize setups?
     # check status
@@ -70,6 +85,7 @@ def main(config: Config):
 
 
 def _analyze_single_variation(hfss: Hfss,
+                              setup_type: str,
                               setup,
                               config_project: ConfigProject,
                               handler: HDF5Handler,
@@ -91,31 +107,23 @@ def _analyze_single_variation(hfss: Hfss,
 
     # writing tag
     handler.add_data('tag', tag_key)
-    # json_write(Path('tag.json'), tag_key)
 
-    # check if it is driven model or not
-    if setup.props['SetupType'] == 'HfssDrivenAuto':
-        freq_to_s_parameter = run_driven_model(hfss, setup, config_project)
-        handler.add_data('s_11_parameter', freq_to_s_parameter)
+    # creating analysis
+    analysis_parameters = {'type': setup_type,
+                           'hfss': hfss,
+                           'config_project': config_project,
+                           'setup': setup}
 
-        # json_write(Path('classical_results.json'), freq_to_s_parameter)
-        return
+    analysis_instance = ANALYSIS_ADAPTER.validate_python(**analysis_parameters)
 
-    # call for classical simulation
-    mode_to_freq_and_q_factor = run_eigenmode(hfss, setup, config_project)
-    # json_write(Path('classical_results.json'), mode_to_freq_and_q_factor)
-    handler.add_data('eigenmode', mode_to_freq_and_q_factor)
-    # json_write(Path('classical_results.json'), mode_to_freq_and_q_factor)
+    # make analysis
+    analysis_instance.analyze()
 
-    # write project
-    # export profile and convergence
-    # variation = ' '.join(map(lambda x: f'{x[0]}={x[1].evaluated_value}', hfss.variable_manager.variables.items()))
-    # prof_path = str(unique_name_by_counter(Path('profile.prof')).resolve())
-    # conv_path = str(unique_name_by_counter(Path('convergence.conv')).resolve())
-    # variables_path = str(unique_name_by_counter(Path('variables.csv')).resolve())
-    # hfss.export_profile(setup.name, variation=variation, output_file=prof_path)
-    # hfss.export_convergence(setup.name, variations=variation, output_file=conv_path)
-    # hfss.export_variables_to_csv(variables_path)
+    # get results
+    format_name, data = analysis_instance.format()
+
+    # save results
+    handler.add_data(format_name, data)
 
     if not (junctions and modes_and_labels_lst):
         return
