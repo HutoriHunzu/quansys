@@ -1,5 +1,4 @@
 from ansys.aedt.core.hfss import Hfss
-from ansys.aedt.core.modules.setup_templates import HFSSDrivenAuto
 from typing import List, Iterable
 from pathlib import Path
 
@@ -10,15 +9,24 @@ from .classical_simulation import ANALYSIS_ADAPTER
 from .quantum_simulation import quantum_run
 from .hfss_common import variable_handler
 # from .json_utils import json_write, unique_name_by_counter
-from ..shared.data_handler import HDF5Handler
-
-import h5py
+from pysubmit.simulation.data_handler.data_handler import HDF5Handler
+from session_handler.session import start_hfss_session
 
 
 def main(config: Config):
-
     # initialize a file to save data
     handler = HDF5Handler('data.h5', config.name)
+
+    with start_hfss_session(config.session_parameters) as hfss:
+
+        builder = config.builder
+
+        for builder_interface in builder.build(hfss, handler):
+            # calling for sweep if necessary
+
+            pass
+
+        pass
 
     # build phase
     # essentially support different approaches to builds
@@ -33,7 +41,6 @@ def main(config: Config):
     # in summary:
     # build phase options should be:
     # function(hfss, args: dict) --> Iterable[design_name, setup_name]
-
 
     # variables settings
     # initialize setups?

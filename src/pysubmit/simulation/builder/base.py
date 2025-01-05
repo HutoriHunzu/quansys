@@ -1,7 +1,8 @@
 from typing import Iterable
-from pydantic import BaseModel, BeforeValidator
+from pydantic import BaseModel
 from abc import ABC, abstractmethod
 from .builder_interface import BuildInterface
+from ..data_handler.data_handler import HDF5Handler
 
 from ansys.aedt.core.hfss import Hfss
 
@@ -9,7 +10,7 @@ from ansys.aedt.core.hfss import Hfss
 class BaseBuilder(BaseModel, ABC):
 
     @abstractmethod
-    def build(self, hfss: Hfss, **kwargs) -> Iterable[BuildInterface]:
+    def build(self, hfss: Hfss, data_handler: HDF5Handler) -> Iterable[BuildInterface]:
         pass
 
     # def prepare_hfss(self, hfss=None):

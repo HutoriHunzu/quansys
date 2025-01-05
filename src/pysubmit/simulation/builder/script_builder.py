@@ -32,9 +32,11 @@ class ScriptBuilder(BaseBuilder):
     path: PATH_TYPE
     args: dict
 
-    def build(self, hfss, **kwargs) -> Iterable[BuildInterface]:
+    def build(self, hfss, data_handler) -> Iterable[BuildInterface]:
 
         module = self._load_user_module()
+
+        kwargs = {'data_handler': data_handler}
 
         builder_interface_generator = module.builder(hfss, **kwargs)
 

@@ -6,14 +6,18 @@ import yaml
 
 from .junction_scheme import ConfigJunction
 from .project_scheme import ConfigProject
+from .session_config import SessionParameters
 from .variable_scheme import ValuedVariable, ConfigSweep
 from .modes_labels_scheme import ModesAndLabels
 from .builder_scheme import ConfigBuilder
+from ..builder import SUPPORTED_BUILDERS
 
 
 class Config(BaseModel):
     name: str
-    config_project: ConfigProject
+    session_parameters: SessionParameters
+    builder: SUPPORTED_BUILDERS
+
     junctions: List[ConfigJunction] | None = None
     modes_and_labels: List[ModesAndLabels] | None = None
     hfss_variables: List[ValuedVariable] | None = None

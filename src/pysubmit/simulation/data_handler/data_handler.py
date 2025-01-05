@@ -119,7 +119,7 @@ def print_hdf5_tree(name, obj):
 
 if __name__ == '__main__':
     # Initialize the handler
-    handler = HDF5Handler('example.h5', 'MyProject')
+    handler = HDF5Handler('../../shared/example.h5', 'MyProject')
 
     # Add metadata
     # with handler.get_group('metadata') as metadata_group:

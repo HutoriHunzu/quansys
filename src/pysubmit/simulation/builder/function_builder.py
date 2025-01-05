@@ -11,7 +11,8 @@ class FunctionBuilder(BaseBuilder):
     function: Callable[[Hfss, ...], Iterable[dict]]
     args: dict = Field(default_factory=dict)
 
-    def build(self, hfss, **kwargs) -> Iterable[BuildInterface]:
+    def build(self, hfss, data_handler) -> Iterable[BuildInterface]:
+        kwargs = {'data_handler': data_handler}
         combined_args = dict(**self.args, **kwargs)
 
         builder_interface_generator = self.function(hfss, **combined_args)

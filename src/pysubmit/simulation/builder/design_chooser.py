@@ -23,7 +23,7 @@ class DesignChooser(BaseBuilder):
     design_names: NAMES_TYPE
     setup_names: NAMES_TYPE
 
-    def build(self, hfss: Hfss, **kwargs) -> Iterable[BuildInterface]:
+    def build(self, hfss: Hfss, data_handler) -> Iterable[BuildInterface]:
         for design_name, setup_name in zip(self.design_names, self.setup_names):
             hfss.set_active_design(design_name)
             yield BuildInterface(
