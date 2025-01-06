@@ -10,7 +10,7 @@ from .structures import (ValuedVariable,
                          ParticipationJunctionDataset,
                          ParticipationDataset)
 
-from ..config_handler.junction_scheme import ConfigJunction
+from pysubmit.simulation.config_handler.junction_scheme import ConfigJunction
 
 
 def inverse_dict(d: dict):

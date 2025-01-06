@@ -1,8 +1,8 @@
 from typing import Dict, Tuple, Any, List
 from numpy.typing import NDArray
 from dataclasses import dataclass, field
-from ..config_handler.junction_scheme import ConfigJunction
-from ..config_handler.variable_scheme import ValuedVariable
+from pysubmit.simulation.config_handler.junction_scheme import ConfigJunction
+from pysubmit.simulation.config_handler.variable_scheme import ValuedVariable
 import numpy as np
 
 

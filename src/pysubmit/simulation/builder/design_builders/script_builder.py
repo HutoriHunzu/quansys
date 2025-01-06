@@ -1,4 +1,4 @@
-from .base import BaseBuilder
+from .base import BaseBuilder, BuildInterface, HDF5Handler
 from typing import Literal, Iterable
 from pathlib import Path
 import sys
@@ -6,7 +6,7 @@ import importlib
 from typing_extensions import Annotated
 from pydantic import BeforeValidator, AfterValidator
 
-from .builder_interface import BuildInterface
+from ansys.aedt.core.hfss import Hfss
 
 
 def ensure_path(value: Path | str) -> Path:
@@ -32,13 +32,15 @@ class ScriptBuilder(BaseBuilder):
     path: PATH_TYPE
     args: dict
 
-    def build(self, hfss, data_handler) -> Iterable[BuildInterface]:
+    def build(self, hfss: Hfss,
+              data_handler: HDF5Handler | None = None,
+              parameters: dict | None = None) -> Iterable[BuildInterface]:
 
         module = self._load_user_module()
 
-        kwargs = {'data_handler': data_handler}
-
-        builder_interface_generator = module.builder(hfss, **kwargs)
+        builder_interface_generator = module.builder(hfss,
+                                                     data_handler=data_handler,
+                                                     parameters=parameters)
 
         for elem in builder_interface_generator:
             yield BuildInterface(

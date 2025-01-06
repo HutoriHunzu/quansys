@@ -5,12 +5,34 @@ from pathlib import Path
 from .config_handler import Config, ConfigProject, ConfigJunction, ConfigSweep, ModesAndLabels, ValuedVariable
 from .config_handler.builder_scheme import Builder
 
-from .classical_simulation import ANALYSIS_ADAPTER
-from .quantum_simulation import quantum_run
+from pysubmit.simulation.analysis.classical_simulation import ANALYSIS_ADAPTER
+from pysubmit.simulation.analysis.quantum_epr import quantum_run
 from .hfss_common import variable_handler
 # from .json_utils import json_write, unique_name_by_counter
 from pysubmit.simulation.data_handler.data_handler import HDF5Handler
 from session_handler.session import start_hfss_session
+
+from .builder import BuildInterface
+
+
+
+def analyze(interface: BuildInterface):
+
+
+
+    pass
+
+
+def construct_design(config: Config, hfss: Hfss, data_handler: HDF5Handler):
+    # build phase
+    pipeline = config.pipeline
+
+    for builder_interface in pipeline.gen(hfss, data_handler):
+
+
+
+
+
 
 
 def main(config: Config):
@@ -18,56 +40,53 @@ def main(config: Config):
     handler = HDF5Handler('data.h5', config.name)
 
     with start_hfss_session(config.session_parameters) as hfss:
-
-        builder = config.builder
-
-        for builder_interface in builder.build(hfss, handler):
-            # calling for sweep if necessary
-
-            pass
+        analyze(config, hfss, data_handler=handler)
 
         pass
 
-    # build phase
-    # essentially support different approaches to builds
-    # eventually should result in having a working design and a setup
-    # should be in the following form:
-    # design name, setup name
+    pass
 
-    # sweep support for the build phase can be in two parts:
-    # either part of the build phase itself
-    # of as a hook before running the analysis
 
-    # in summary:
-    # build phase options should be:
-    # function(hfss, args: dict) --> Iterable[design_name, setup_name]
+# build phase
+# essentially support different approaches to builds
+# eventually should result in having a working design and a setup
+# should be in the following form:
+# design name, setup name
 
-    # variables settings
-    # initialize setups?
-    # check status
+# sweep support for the build phase can be in two parts:
+# either part of the build phase itself
+# of as a hook before running the analysis
 
-    config_project = config.config_project
+# in summary:
+# build phase options should be:
+# function(hfss, args: dict) --> Iterable[design_name, setup_name]
 
-    builder = Builder(config.config_builder)
+# variables settings
+# initialize setups?
+# check status
 
-    with Hfss(version=config_project.version, new_desktop=False,
-              design=config_project.design_name, project=str(Path(config_project.path).resolve()),
-              close_on_exit=True, remove_lock=True, non_graphical=config_project.non_graphical) as hfss:
-        # check for build
+config_project = config.config_project
 
-        for setup, build_tag in builder.yield_design(hfss):
-            #
+builder = Builder(config.config_builder)
 
-            _analyze_sweep(hfss,
-                           setup,
-                           config_project,
-                           handler,
-                           junctions=config.junctions,
-                           modes_and_labels_lst=config.modes_and_labels,
-                           hfss_sweep=config.sweep,
-                           tag_key=build_tag)
+with Hfss(version=config_project.version, new_desktop=False,
+          design=config_project.design_name, project=str(Path(config_project.path).resolve()),
+          close_on_exit=True, remove_lock=True, non_graphical=config_project.non_graphical) as hfss:
+    # check for build
 
-        # _analysis(hfss, config)
+    for setup, build_tag in builder.yield_design(hfss):
+        #
+
+        _analyze_sweep(hfss,
+                       setup,
+                       config_project,
+                       handler,
+                       junctions=config.junctions,
+                       modes_and_labels_lst=config.modes_and_labels,
+                       hfss_sweep=config.sweep,
+                       tag_key=build_tag)
+
+    # _analysis(hfss, config)
 
 
 #

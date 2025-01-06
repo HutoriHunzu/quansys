@@ -4,7 +4,7 @@ from pysubmit.simulation.config_handler import ConfigProject
 from pydantic import BaseModel, TypeAdapter
 from ansys.aedt.core.hfss import Hfss
 
-from ..config_handler.junction_scheme import ConfigJunction
+from pysubmit.simulation.config_handler.junction_scheme import ConfigJunction
 from .structures import QuantumResult
 from .distributed_analysis import DistributedAnalysis
 from .epr_calculator import EprCalculator

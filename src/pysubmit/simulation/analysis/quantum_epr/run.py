@@ -2,7 +2,7 @@ from ansys.aedt.core.hfss import Hfss
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-from ..config_handler.junction_scheme import ConfigJunction
+from pysubmit.simulation.config_handler.junction_scheme import ConfigJunction
 from .structures import QuantumResult
 from .distributed_analysis import DistributedAnalysis
 from .epr_calculator import EprCalculator

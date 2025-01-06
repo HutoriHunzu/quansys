@@ -1,8 +1,7 @@
 from pydantic import BaseModel
 from typing import Literal, List, Dict, Tuple
-from itertools import islice
 
-from ...quantum_simulation.distributed_analysis import inverse_dict
+from pysubmit.simulation.analysis.quantum_epr.distributed_analysis import inverse_dict
 
 
 class InferenceBase(BaseModel):

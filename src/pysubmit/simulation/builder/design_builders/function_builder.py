@@ -1,8 +1,7 @@
 from pydantic import Field
-from .base import BaseBuilder
+from .base import BaseBuilder, BuildInterface, HDF5Handler
 from typing import Literal, Callable, Iterable
 
-from .builder_interface import BuildInterface
 from ansys.aedt.core.hfss import Hfss
 
 
@@ -11,7 +10,8 @@ class FunctionBuilder(BaseBuilder):
     function: Callable[[Hfss, ...], Iterable[dict]]
     args: dict = Field(default_factory=dict)
 
-    def build(self, hfss, data_handler) -> Iterable[BuildInterface]:
+    def build(self, hfss: Hfss, data_handler: HDF5Handler | None = None,
+              parameters: dict | None = None) -> Iterable[BuildInterface]:
         kwargs = {'data_handler': data_handler}
         combined_args = dict(**self.args, **kwargs)
 
