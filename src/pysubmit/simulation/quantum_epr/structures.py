@@ -2,7 +2,7 @@ from typing import Dict, Tuple, Any, List
 from numpy.typing import NDArray
 from dataclasses import dataclass, field, asdict
 from pydantic import BaseModel
-from ...shared.variables import ValuedVariable
+from ...shared import variables_types
 import numpy as np
 
 
@@ -20,8 +20,8 @@ class EprDiagResult:
 @dataclass
 class ParsedJunctionValues:
     info: ConfigJunction
-    inductance: ValuedVariable
-    capacitance: ValuedVariable = field(default_factory=lambda: ValuedVariable(2e-15))
+    inductance: variables_types.Value
+    capacitance: variables_types.Value = field(default_factory=lambda: variables_types.Value(value=2e-15))
 
 
 # T = TypeVar('T', bound='ParticipationDataset')

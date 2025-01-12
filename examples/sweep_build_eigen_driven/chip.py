@@ -1,103 +1,160 @@
 from ansys.aedt.core.hfss import Hfss
 
-from pysubmit.shared.variables import ValuedVariable
+# from pysubmit.shared.variables import ValuedVariable
 
-from drawing.designs.chip_house_cylinder.config import ChipHouseCylinderConfig, Variable
 from drawing.meader.euler import meander_euler
 from drawing.export_to_pyaedt.parser import parse_component, ExportConfig
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from enum import StrEnum, auto
 from typing import Literal
+
+
+class Value(BaseModel):
+    value: float
+    unit: str = 'mm'
+
+    def to_str(self):
+        return f'{self.value}{self.unit}'
+
+
+# class ChipVars(StrEnum):
+#     pass
+
+class VarsNames(StrEnum):
+    spacer_length = auto()
+    chip_house_length = auto()
+    chip_house_radius = auto()
+
+    chip_base_length = auto()
+    chip_base_thickness = auto()
+    chip_base_width = auto()
+
+    pin_waveguide_radius = auto()
+    pin_waveguide_length = auto()
+    pin_conductor_radius = auto()
+
+    pin_a_location = auto()
+    pin_b_location = auto()
+    pin_c_location = auto()
+    pin_c_length = auto()
+    pin_d_location = auto()
+
+
+class MeanderArgs(BaseModel):
+    wire_width: int = 100
+    height: int = 1500
+    padding_length: int = 500
+    spacing: int = 200
+    radius: int = 50
+    num_turns: int = 9
 
 
 class ChipHouseCylinderParameters(BaseModel):
     ## type: Literal['chip_house_cylinder'] = 'chip_house_cylinder'
 
-    spacer_length: ValuedVariable
-    chip_house_length: ValuedVariable
-    chip_house_radius: ValuedVariable
+    spacer_length: Value = Value(value=1)
+    chip_house_length: Value = Value(value=26)
+    chip_house_radius: Value = Value(value=2)
 
-    chip_base_length: ValuedVariable
-    chip_base_thickness: ValuedVariable
-    chip_base_width: ValuedVariable
-    chip_base_material: str
+    chip_base_length: Value = Value(value=22)
+    chip_base_thickness: Value = Value(value=381, unit='um')
+    chip_base_width: Value = Value(value=2)
+    chip_base_material: str = 'silicon'
 
-    pin_waveguide_radius: ValuedVariable
-    pin_waveguide_length: ValuedVariable
-    pin_conductor_radius: ValuedVariable
+    pin_waveguide_radius: Value = Value(value=0.575)
+    pin_waveguide_length: Value = Value(value=6)
+    pin_conductor_radius: Value = Value(value=0.25)
 
-    pin_a_location: ValuedVariable
-    pin_b_location: ValuedVariable
-    pin_c_location: ValuedVariable
-    pin_c_length: ValuedVariable
-    pin_d_location: ValuedVariable
+    pin_a_location: Value = Value(value=8)
+    pin_b_location: Value = Value(value=11)
+    pin_c_location: Value = Value(value=15)
+    pin_c_length: Value = Value(value=6)
+    pin_d_location: Value = Value(value=18)
 
-    meander_type: str
-    meander_args: dict
+    meander_type: str = 'euler'
+    meander_args: MeanderArgs = MeanderArgs()
 
 
-def build(hfss: Hfss, parameters: dict):
-    parameters = ChipHouseCylinderParameters(**parameters)
+def build(hfss: Hfss,
+          design_name: str = 'my_design',
+          setup_name: str = 'Setup1',
+          **kwargs):
+    # creating design
+
+    hfss.set_active_design('temp')
+
+    if design_name in hfss.design_list:
+        hfss.delete_design(design_name)
+
+    hfss.save_project()
+
+    hfss.insert_design(design_name, 'Eigenmode')
+    hfss.set_active_design(design_name)
+
+    # parameters = parameters or {}
+
+    parameters = ChipHouseCylinderParameters(**kwargs)
 
     modeler = hfss.modeler
 
     variables_names = list(
         map(lambda x: x[0],
-            filter(lambda x: x[1].annotation == ValuedVariable, ChipHouseCylinderParameters.model_fields.items())
+            filter(lambda x: x[1].annotation == Value, ChipHouseCylinderParameters.model_fields.items())
             )
     )
 
     for name in variables_names:
         v = getattr(parameters, name)
-        hfss[v.name] = v.to_string()
+        hfss[name] = v.to_str()
 
     # CHIP HOUSE
     chip_house_back_cylinder_a = modeler.create_cylinder(orientation='Z',
-                                                         origin=[0, 2.5, f'-{parameters.chip_house_length.name}'],
+                                                         origin=[0, 2.5, f'-{VarsNames.chip_house_length}'],
                                                          radius=3.5,
-                                                         height=f'-{parameters.spacer_length.name}',
+                                                         height=f'-{VarsNames.spacer_length}',
                                                          name='chip_house_back_cylinder_a', material='vacuum')
 
     chip_house_back_cylinder_b = modeler.create_cylinder(orientation='Z',
-                                                         origin=[0, -2.5, f'-{parameters.chip_house_length.name}'],
+                                                         origin=[0, -2.5, f'-{VarsNames.chip_house_length}'],
                                                          radius=3.5,
-                                                         height=f'-{parameters.spacer_length.name}',
+                                                         height=f'-{VarsNames.spacer_length}',
                                                          name='chip_house_back_cylinder_b', material='vacuum')
 
-    chip_house_back_rect = modeler.create_box(origin=[-3.5, -2.5, f'-{parameters.chip_house_length.name}'],
-                                              sizes=[7, 5, f'-{parameters.spacer_length.name}'],
+    chip_house_back_rect = modeler.create_box(origin=[-3.5, -2.5, f'-{VarsNames.chip_house_length}'],
+                                              sizes=[7, 5, f'-{VarsNames.spacer_length}'],
                                               name='chip_house_back_rect', material='vacuum')
 
     chip_house_cylinder = modeler.create_cylinder(orientation='Z',
-                                                  origin=[0, 0, f'-{parameters.chip_house_length.name}'],
-                                                  radius=parameters.chip_house_radius.name,
-                                                  height=parameters.chip_house_length.name,
+                                                  origin=[0, 0, f'-{VarsNames.chip_house_length}'],
+                                                  radius=VarsNames.chip_house_radius,
+                                                  height=VarsNames.chip_house_length,
                                                   name='chip_house_waveguide', material='vacuum')
 
     # # Creating pin wgs
 
     pin_wg_1 = modeler.create_cylinder(orientation='Y',
-                                       origin=[0, 0, f'-{parameters.pin_a_location.name}'],
-                                       radius=parameters.pin_waveguide_radius.name,
-                                       height=f'{parameters.chip_house_radius.name} + {parameters.pin_waveguide_length.name}',
+                                       origin=[0, 0, f'-{VarsNames.pin_a_location}'],
+                                       radius=VarsNames.pin_waveguide_radius,
+                                       height=f'{VarsNames.chip_house_radius} + {VarsNames.pin_waveguide_length}',
                                        name=f'chip_pin_a_waveguide', material='vacuum')
 
     pin_wg_2 = modeler.create_cylinder(orientation='Y',
-                                       origin=[0, 0, f'-{parameters.pin_b_location.name}'],
-                                       radius=parameters.pin_waveguide_radius.name,
-                                       height=f'-{parameters.chip_house_radius.name} - {parameters.pin_waveguide_length.name}',
+                                       origin=[0, 0, f'-{VarsNames.pin_b_location}'],
+                                       radius=VarsNames.pin_waveguide_radius,
+                                       height=f'-{VarsNames.chip_house_radius} - {VarsNames.pin_waveguide_length}',
                                        name=f'chip_pin_b_waveguide', material='vacuum')
 
     pin_wg_3 = modeler.create_cylinder(orientation='Y',
-                                       origin=[0, 0, f'-{parameters.pin_c_location.name}'],
-                                       radius=parameters.pin_waveguide_radius.name,
-                                       height=f'{parameters.chip_house_radius.name} + {parameters.pin_waveguide_length.name}',
+                                       origin=[0, 0, f'-{VarsNames.pin_c_location}'],
+                                       radius=VarsNames.pin_waveguide_radius,
+                                       height=f'{VarsNames.chip_house_radius} + {VarsNames.pin_waveguide_length}',
                                        name=f'chip_pin_c_waveguide', material='vacuum')
 
     pin_wg_4 = modeler.create_cylinder(orientation='Y',
-                                       origin=[0, 0, f'-{parameters.pin_d_location.name}'],
-                                       radius=parameters.pin_waveguide_radius.name,
-                                       height=f'-{parameters.chip_house_radius.name} - {parameters.pin_waveguide_length.name}',
+                                       origin=[0, 0, f'-{VarsNames.pin_d_location}'],
+                                       radius=VarsNames.pin_waveguide_radius,
+                                       height=f'-{VarsNames.chip_house_radius} - {VarsNames.pin_waveguide_length}',
                                        name=f'chip_pin_d_waveguide', material='vacuum')
 
     # adding pins
@@ -112,10 +169,10 @@ def build(hfss: Hfss, parameters: dict):
     #
     pin_3 = modeler.create_cylinder(orientation='Y',
                                     origin=[0,
-                                            f'{parameters.chip_house_radius.name} + {parameters.pin_waveguide_length.name}',
-                                            f'-{parameters.pin_c_location.name}'],
-                                    radius=parameters.pin_conductor_radius.name,
-                                    height=f'-{parameters.pin_c_length.name}',
+                                            f'{VarsNames.chip_house_radius} + {VarsNames.pin_waveguide_length}',
+                                            f'-{VarsNames.pin_c_location}'],
+                                    radius=VarsNames.pin_conductor_radius,
+                                    height=f'-{VarsNames.pin_c_length}',
                                     name=f'pin_3', material='perfect conductor')
 
     top_face_z = pin_wg_3.bottom_face_z
@@ -144,16 +201,16 @@ def build(hfss: Hfss, parameters: dict):
     modeler.unite(vacuum_objects)
 
     # BUILD CHIP
-    chip_base = modeler.create_box(origin=[f'-{parameters.chip_base_width.name} / 2',
-                                           f'-{parameters.chip_base_thickness.name} / 2',
-                                           f'-{parameters.chip_house_length.name} - {parameters.spacer_length.name}'],
-                                   sizes=[parameters.chip_base_width.name,
-                                          parameters.chip_base_thickness.name,
-                                          parameters.chip_base_length.name],
+    chip_base = modeler.create_box(origin=[f'-{VarsNames.chip_base_width} / 2',
+                                           f'-{VarsNames.chip_base_thickness} / 2',
+                                           f'-{VarsNames.chip_house_length} - {VarsNames.spacer_length}'],
+                                   sizes=[VarsNames.chip_base_width,
+                                          VarsNames.chip_base_thickness,
+                                          VarsNames.chip_base_length],
                                    name='chip_base', material=parameters.chip_base_material)
 
     # adding meander
-    meander = meander_euler(**parameters.meander_args)
+    meander = meander_euler(**dict(parameters.meander_args))
     export_config = ExportConfig(
         name='readout',
         unit="um",
@@ -175,8 +232,8 @@ def build(hfss: Hfss, parameters: dict):
     hfss.assign_perfecte_to_sheets(readout.name)
 
     hfss['readout_e1_x'] = '0'
-    hfss['readout_e1_y'] = f'{parameters.chip_base_thickness.name} / 2'
-    hfss['readout_e1_z'] = f'-{parameters.chip_base_length.name} / 2'
+    hfss['readout_e1_y'] = f'{VarsNames.chip_base_thickness} / 2'
+    hfss['readout_e1_z'] = f'-{VarsNames.chip_base_length} / 2'
 
     # add a bbox as non model for meshing
     readout_mesh_box = modeler.create_box(origin=['-readout_e1_x - readout_size_x / 2',
@@ -184,7 +241,7 @@ def build(hfss: Hfss, parameters: dict):
                                                   'readout_e1_z'],
                                           sizes=['readout_size_x', 'readout_size_y + 1mm', 'readout_size_z'],
                                           name='readout_mesh_box',
-                                          non_model=True
+                                          model=False
                                           )
 
     basic_eigenmode_properties = {
@@ -207,10 +264,12 @@ def build(hfss: Hfss, parameters: dict):
         'UseMaxTetIncrease': False
     }
 
-    hfss.create_setup('Setup1')
-    setup = hfss.get_setup('Setup1')
+    hfss.create_setup(setup_name)
+    setup = hfss.get_setup(setup_name)
     hfss.save_project()
-    setup.props(**basic_eigenmode_properties)
+    setup.update(basic_eigenmode_properties)
+    hfss.save_project()
+    # setup.props(**basic_eigenmode_properties)
 
     driven_setup = {'Name': 'Setup1',
                     'Enabled': True,
@@ -258,36 +317,7 @@ def build(hfss: Hfss, parameters: dict):
 
 
 if __name__ == '__main__':
-    example_config = ChipHouseCylinderConfig(
-        type='chip_house_cylinder',
-        spacer_length=Variable(name='spacer_length', value=1, unit='mm'),
-        chip_house_length=Variable(name='chip_house_length', value=26, unit='mm'),
-        chip_house_radius=Variable(name='chip_house_radius', value=2, unit='mm'),
-
-        chip_base_length=Variable(name='chip_base_length', value=22, unit='mm'),
-        chip_base_thickness=Variable(name='chip_base_thickness', value=381, unit='um'),
-        chip_base_width=Variable(name='chip_base_width', value=2, unit='mm'),
-        chip_base_material='silicon',
-
-        pin_waveguide_radius=Variable(name='pin_waveguide_radius', value=0.575, unit='mm'),
-        pin_waveguide_length=Variable(name='pin_waveguide_length', value=6, unit='mm'),
-        pin_conductor_radius=Variable(name='pin_conductor_radius', value=0.25, unit='mm'),
-
-        pin_a_location=Variable(name='chip_pin_a_location', value=8, unit='mm'),
-        pin_b_location=Variable(name='chip_pin_b_location', value=11, unit='mm'),
-        pin_c_location=Variable(name='chip_pin_c_location', value=15, unit='mm'),
-        pin_c_length=Variable(name='chip_pin_c_length', value=6, unit='mm'),
-        pin_d_location=Variable(name='chip_pin_d_location', value=18, unit='mm'),
-
-        meander_type='euler',
-        meander_args={
-            'wire_width': 100,
-            'height': 1500,
-            'padding_length': 500,
-            'spacing': 200,
-            'radius': 50,
-            'num_turns': 9
-        }
+    example_config = ChipHouseCylinderParameters(
 
         # sapphire_house_pins_diameter: float = 0.5
         # sapphire_house_pins_waveguide_diameter: float = 1.15

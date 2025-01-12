@@ -1,4 +1,4 @@
-from .base import BaseBuilder, HDF5Handler
+from .base import BaseBuilder, DataHandler
 from typing import Literal, Iterable
 from pathlib import Path
 import sys
@@ -33,14 +33,15 @@ class ScriptBuilder(BaseBuilder):
     args: dict
 
     def build(self, hfss: Hfss,
-              data_handler: HDF5Handler | None = None,
-              parameters: dict | None = None):
+              data_handler: DataHandler | None = None,
+              parameters: dict | None = None) -> dict:
 
         module = self._load_user_module()
 
-        module.builder(hfss,
-                       data_handler=data_handler,
-                       parameters=parameters)
+        parameters = parameters or {}
+        combined_args = dict(**self.args, **parameters)
+
+        return module.build(hfss, **combined_args)
 
     def _load_user_module(self):
         """

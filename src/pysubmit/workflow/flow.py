@@ -26,11 +26,10 @@ def _create_build_and_generate_tag(builder, sweep, hfss, data_handler):
     if sweep is None:
         lst_build_parameters = [None]
     else:
-        lst_build_parameters = sweep.gen_as_dict()
+        lst_build_parameters = sweep.gen()
 
     for build_parameters in lst_build_parameters:
 
-        # tag = {}
         if builder:
             builder.build(hfss, parameters=build_parameters)
 

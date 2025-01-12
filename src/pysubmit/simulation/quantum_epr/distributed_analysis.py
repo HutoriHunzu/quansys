@@ -5,11 +5,12 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Iterable, TypeVar, Type
 from dataclasses import dataclass, field
 from numpy.typing import NDArray
-from .structures import (ValuedVariable,
+from .structures import (variables_types,
                          ParsedJunctionValues,
                          ParticipationJunctionDataset,
                          ParticipationDataset,
                          ConfigJunction)
+
 
 # from pysubmit.simulation.config_handler.junction_scheme import ConfigJunction
 
@@ -332,8 +333,8 @@ class DistributedAnalysis:
                     info=info,
                     # frequency=ValuedVariable(name='frequency', value=frequency, unit='hz'),
                     # quality_factor=ValuedVariable(name='q_factor', value=q_factor),
-                    inductance=ValuedVariable(name='inductance', value=inductance, unit='H'),
-                    capacitance=ValuedVariable(name='capacitance', value=capacitance, unit=''),
+                    inductance=variables_types.Value(value=inductance, unit='H'),
+                    capacitance=variables_types.Value(value=capacitance, unit=''),
                 )
 
         return tuple(helper())

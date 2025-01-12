@@ -6,6 +6,10 @@ from .session_handler import SessionParameters
 from .data_handler import DataParameters
 from ..simulation import SUPPORTED_ANALYSIS
 
+from pydantic_yaml import to_yaml_file, parse_yaml_file_as
+from pathlib import Path
+
+
 
 class WorkflowConfig(BaseModel):
     session_parameters: SessionParameters
@@ -19,5 +23,12 @@ class WorkflowConfig(BaseModel):
 
     # simulation
     # setup_sweep: SUPPORTED_SWEEPS | None = None
+
+    def save_to_yaml(self, path: str | Path):
+        to_yaml_file(path, self, map_indent=4)
+
+    @classmethod
+    def load_from_yaml(cls, path: str | Path):
+        return parse_yaml_file_as(cls, path)
 
 

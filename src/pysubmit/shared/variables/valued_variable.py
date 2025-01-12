@@ -4,6 +4,12 @@ from functools import reduce
 
 VALUE_TYPE = float | str | bool
 
+class Value(BaseModel):
+    value: VALUE_TYPE
+    unit: str = ''
+
+    def to_str(self):
+        return f'{self.value}{self.unit}'
 
 class ValuedVariable(BaseModel):
     name: str
@@ -21,6 +27,10 @@ class ValuedVariable(BaseModel):
     def to_dict(self):
         return {self.name: self.get_value()}
 
+    def as_name_value(self):
+        return {self.name: Value(value=self.value,
+                                 unit=self.unit)}
+
     @classmethod
     def iterable_to_dict(cls, values: Iterable['ValuedVariable']):
-        return reduce(lambda x, y: {**x, **y.to_dict()}, values, {})
+        return reduce(lambda x, y: {**x, **y.as_name_value()}, values, {})

@@ -1,22 +1,24 @@
-from ....shared.variables import ValuedVariable
+from ....shared.variables_types import GenericValue, Value
 from ansys.aedt.core import Hfss
 from typing import Iterable
 from functools import partial
+from pydantic import TypeAdapter
+
+SupportedInputType = dict[str, GenericValue | Value]
+InputAdapter = TypeAdapter(SupportedInputType)
 
 
-def set_variables(hfss: Hfss, values: Iterable[ValuedVariable] | None):
-    if values is None:
+def set_variables(hfss: Hfss, variables: SupportedInputType):
+    if variables is None or variables == {}:
         return
-    helper = partial(set_variable, hfss)
-    list(map(helper, values))
+
+    instance = InputAdapter.validate_python(variables)
+    for k, v in instance.items():
+        set_variable(hfss, k, v.to_str())
 
 
-def set_variable(hfss: Hfss, value: ValuedVariable):
-    # current_value = get_variable(hfss, value.name)
-    # current_value_in_units = convert_from_si(current_value, value.unit)
-    # new_value = convert_to_si(value.value, value.unit)
-    # if not np.isclose(current_value, new_value):
-    hfss[value.name] = value.to_string()
+def set_variable(hfss: Hfss, name: str, value: str):
+    hfss[name] = value
 
 
 def get_variable(hfss: Hfss, variable_name):
