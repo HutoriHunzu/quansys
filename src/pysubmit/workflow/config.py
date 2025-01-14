@@ -9,6 +9,16 @@ from ..simulation import SUPPORTED_ANALYSIS
 from pydantic_yaml import to_yaml_file, parse_yaml_file_as
 from pathlib import Path
 
+from pydantic import BeforeValidator
+from typing_extensions import Annotated
+
+def ensure_list(value):
+    if not isinstance(value, list):
+        return [value]
+    return value
+
+BUILDER_SWEEP_TYPE = Annotated[list[SUPPORTED_SWEEPS], BeforeValidator(ensure_list)]
+
 
 
 class WorkflowConfig(BaseModel):
@@ -19,7 +29,7 @@ class WorkflowConfig(BaseModel):
 
     # builder phase
     builder: SUPPORTED_BUILDERS | None = None
-    builder_sweep: SUPPORTED_SWEEPS | None = None
+    builder_sweep: BUILDER_SWEEP_TYPE | None = None
 
     # simulation
     # setup_sweep: SUPPORTED_SWEEPS | None = None

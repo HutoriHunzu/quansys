@@ -2,6 +2,7 @@ from .builder import SUPPORTED_BUILDERS
 from .session_handler import start_hfss_session, SessionParameters
 from .config import WorkflowConfig
 from .data_handler import DataHandler
+from .sweep import chain_sweeps
 
 
 def execute_flow(config: WorkflowConfig):
@@ -22,11 +23,11 @@ def execute_flow(config: WorkflowConfig):
             _run_simulations(config.simulations, hfss, data_handler)
 
 
-def _create_build_and_generate_tag(builder, sweep, hfss, data_handler):
-    if sweep is None:
-        lst_build_parameters = [None]
+def _create_build_and_generate_tag(builder, sweeps, hfss, data_handler):
+    if sweeps is None:
+        lst_build_parameters = [{}]
     else:
-        lst_build_parameters = sweep.gen()
+        lst_build_parameters = chain_sweeps(sweeps)
 
     for build_parameters in lst_build_parameters:
 

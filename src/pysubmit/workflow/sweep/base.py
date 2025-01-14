@@ -52,12 +52,12 @@ class BaseSweep(BaseModel, ABC):
         self._keys = keys
         return list_of_iterators
 
-    def pack(self, lst_of_values) -> list | dict:
-        if self._keys is None:
-            return lst_of_values
+    def pack(self, lst_of_values) -> dict:
         return {k: v for k, v in zip(self._keys, lst_of_values)}
+        # if self._keys is None:
+        #     return lst_of_values
 
-    def gen(self) -> Iterable[list | dict]:
+    def gen(self) -> Iterable[dict]:
         lst_of_iterators = self.unpack()
         for result in self.parse(lst_of_iterators):
             yield self.pack(result)

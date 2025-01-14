@@ -1,6 +1,8 @@
 from pydantic import BaseModel, RootModel, BeforeValidator
 from typing import Iterable, Literal, Annotated
 
+import numpy as np
+
 """ 
 This file contains information about different data types that might be useful in various cases:
 1. using a value with unit to set variable in HFSS
@@ -14,34 +16,61 @@ def ensure_list(value):
     return value
 
 
+
+
+class RangeValues(BaseModel):
+    start: float
+    step: float
+    end: float
+    as_type: Literal['float', 'int'] = 'float'
+
+    def __iter__(self):
+        c = float if self.as_type == 'float' else int
+        return map(lambda x: c(x), np.arange(self.start, self.end, self.step))
+
+
+class LinSpaceValues(BaseModel):
+    start: float
+    number: int
+    end: float
+    as_type: Literal['float', 'int'] = 'float'
+
+    def __iter__(self):
+        c = float if self.as_type == 'float' else int
+        return map(lambda x: c(x), np.linspace(self.start, self.end, self.number))
+
+
+SUPPORTED_COMPOUND_VALUES = RangeValues | LinSpaceValues
+
+
 AllValueType = float | str | bool
-AllValuesType = Annotated[list[AllValueType], BeforeValidator(ensure_list)]
+AllValuesType = SUPPORTED_COMPOUND_VALUES | Annotated[list[AllValueType], BeforeValidator(ensure_list)]
 
 
 class GenericValue(RootModel):
     root: AllValueType
 
     def gen(self):
-        return [self.root]
+        return iter(self)
 
     def __iter__(self):
-        return iter(self.gen())
+        return iter([self.root])
 
     def to_str(self):
         return f'{self.root}'
 
 
 class GenericValues(RootModel):
-    root: list[AllValueType]
+    root: AllValuesType
 
-    def gen(self) -> list[AllValueType]:
-        return self.root
+    def gen(self) -> Iterable[AllValueType]:
+        return iter(self)
 
     def __iter__(self) -> Iterable[AllValueType]:
-        return iter(self.gen())
+        return iter(self.root)
 
-    def __getitem__(self, item):
-        return self.root[item]
+    # def __getitem__(self, item):
+    #     return self.root[item]
 
 
 class Value(BaseModel):
