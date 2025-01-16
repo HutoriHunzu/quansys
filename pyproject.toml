@@ -10,6 +10,7 @@ dependencies = [
     "pyaedt[all]",
     "pint",
     "h5py>=3.12.1",
+    "pandas>=2.2.3",
 ]
 requires-python = ">=3.11"
 readme = "README.md"

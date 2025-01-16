@@ -1,5 +1,5 @@
-from pydantic import BaseModel, BeforeValidator
-from typing_extensions import Annotated
+from pydantic import BaseModel, BeforeValidator, RootModel
+from typing_extensions import Annotated, Generic, TypeVar
 from abc import ABC, abstractmethod
 from enum import StrEnum, auto
 
@@ -12,11 +12,18 @@ def ensure_list(value):
 
 LIST_STR_TYPE = Annotated[list[str], BeforeValidator(ensure_list)]
 
+
+class BaseResult(RootModel[dict], ABC):
+
+    @abstractmethod
+    def flatten(self) -> dict[str | bool | float, str | bool | float]:
+        pass
+
+
 class SupportedAnalysisNames(StrEnum):
     DRIVEN_MODEL = auto()
     EIGENMODE = auto()
     QUANTUM_EPR = auto()
-
 
 
 class BaseAnalysis(BaseModel, ABC):
@@ -24,7 +31,7 @@ class BaseAnalysis(BaseModel, ABC):
     design_name: str
 
     @abstractmethod
-    def analyze(self, **kwargs) -> dict:
+    def analyze(self, **kwargs) -> BaseResult:
         pass
 
     # @abstractmethod
@@ -39,7 +46,9 @@ class BaseAnalysis(BaseModel, ABC):
                 'setup': parameters}
 
     def extract_parameters(self) -> dict:
-        return dict(self)
+        return self.model_dump()
+
+
 
 
 # class Solution(BaseModel):

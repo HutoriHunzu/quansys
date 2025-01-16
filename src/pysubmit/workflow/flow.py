@@ -22,6 +22,8 @@ def execute_flow(config: WorkflowConfig):
             ### SIMULATION PHASE ###
             _run_simulations(config.simulations, hfss, data_handler)
 
+    data_handler.aggregate_and_save()
+
 
 def _create_build_and_generate_tag(builder, sweeps, hfss, data_handler):
     if sweeps is None:
@@ -39,5 +41,7 @@ def _create_build_and_generate_tag(builder, sweeps, hfss, data_handler):
 
 def _run_simulations(simulations, hfss, data_handler):
     for sim in simulations:
-        result = sim.analyze_and_extract_results(hfss=hfss, data_handler=data_handler)
-        data_handler.add_solution(result, add_tag=True)
+        # result = sim.analyze_and_extract_results(hfss=hfss, data_handler=data_handler)
+        result = sim.analyze(hfss=hfss, data_handler=data_handler)
+        # converting result to dict
+        data_handler.add_solution(sim, result, add_tag=True)

@@ -6,6 +6,7 @@ import importlib
 from pathlib import Path
 from pydantic import BaseModel
 
+
 # Custom JSON Encoder
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj: Any) -> Any:
@@ -109,13 +110,9 @@ def json_read(path, cls=None):
 
 def json_write(path, obj, use_unique: bool = True):
     # first dumps
-    ser_data = json.dumps(obj, cls=CustomJSONEncoder, indent=4)
+    data = json.dumps(obj, cls=CustomJSONEncoder, indent=4)
 
-    if use_unique:
-        path = unique_name_by_counter(Path(path))
-
-    with open(path, 'w') as f:
-        f.write(ser_data)
+    write(path, data, use_unique)
 
 
 def unique_name_by_counter(path: Path):
@@ -128,4 +125,14 @@ def unique_name_by_counter(path: Path):
     return path
 
 
+def write(path, data: str, use_unique: bool = True):
+    if use_unique:
+        path = unique_name_by_counter(Path(path))
 
+    with open(path, 'w') as f:
+        f.write(data)
+
+
+def read(path):
+    with open(path, 'r') as f:
+        return f.read()

@@ -25,12 +25,6 @@ class EignmodeAnalysis(BaseAnalysis):
         if not isinstance(hfss, Hfss):
             raise ValueError('hfss given must be a Hfss instance')
 
-        # if self.config_project.min_passes:
-        #     self.setup.props['MinimumConvergedPasses'] = self.config_project.min_passes
-        #     self.setup.props['MinimumPasses'] = self.config_project.min_passes
-        #
-        # if self.config_project.max_passes:
-        #     self.setup.props['MaximumPasses'] = self.config_project.max_passes
         setup = set_design_and_get_setup(hfss, self.design_name, self.setup_name)
 
         # check for application of setup parameters
@@ -42,17 +36,29 @@ class EignmodeAnalysis(BaseAnalysis):
         # Save and exit
         hfss.save_project()
 
+        # call for all data extractions on solved project
+        # TODO: support for a list of extractions types
+        # TODO: return a dict of str to an extract result
+
         return self._get_results(hfss)
 
-    def _get_results(self, hfss: Hfss = None) -> dict:
+    def _get_formatter(self):
         formatter_type = {'type': self.formatter_type}
         formatter_args = {} if self.formatter_args is None else self.formatter_args
-        formatter_instance = FORMAT_ADAPTER.validate_python(dict(**formatter_type, **formatter_args))
+        return FORMAT_ADAPTER.validate_python(dict(**formatter_type, **formatter_args))
+
+    def load_result_by_dict(self, data: dict):
+        formatter = self._get_formatter()
+        return formatter.load(data)
+
+
+    def _get_results(self, hfss: Hfss = None) -> dict:
+        formatter = self._get_formatter()
 
         # getting setup
         setup = hfss.get_setup(self.setup_name)
 
-        return formatter_instance.format(setup)
+        return formatter.format(setup).model_dump()
 
     def extract_parameters(self) -> dict:
         return dict(self)

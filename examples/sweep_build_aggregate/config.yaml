@@ -1,0 +1,112 @@
+default_meander_radius: &meander_radius
+  - 100
+default_meander_spacing: &meander_spacing
+  - 300
+default_meander_num_turns: &num_turns
+  - 7
+default_meander_wire_width: &wire_width
+  - 80
+default_meander_height: &meander_height
+  - 1600
+
+
+builder:
+  args:
+    design_name: my_design
+    setup_name: Setup1
+  type: script_builder
+  path: ./chip.py
+
+builder_sweep:
+  - data:
+      purcell_wire_width: *wire_width
+      purcell_radius: *meander_radius
+      purcell_spacing: *meander_spacing
+      purcell_num_turns: *num_turns
+
+      readout_padding_length:
+        - 650
+
+#      purcell_padding_length:
+#        - 650
+
+      purcell_padding_length:
+        start: 600
+        end: 700
+        step: 10
+        as_type: int
+
+
+      readout_wire_width: *wire_width
+      readout_radius: *meander_radius
+      readout_spacing: *meander_spacing
+      readout_num_turns: *num_turns
+    #        - 8
+    #        - 9
+    type: product
+
+  - data:
+      purcell_height: *meander_height
+      readout_height: *meander_height
+    type: zip
+
+data_parameters:
+  project_name: testing_workflow
+  root_directory: scan_over_purcell_padding
+
+session_parameters:
+  close_on_exit: true
+  file_path: ./generated_build.aedt
+  new_desktop: true
+  non_graphical: false
+  version: '2024.2'
+
+simulations:
+  - cores: 4
+    design_name: my_design
+    setup_name: Setup1
+    formatter_args: null
+    formatter_type: freq_and_q_factor
+    gpus: 0
+    setup_parameters:
+      MaximumPasses: 8
+      MinimumConvergedPasses: 1
+      MinimumPasses: 1
+      MinimumFrequency: 5GHz
+      NumModes: 6
+      MaxDeltaFreq: 0.2
+      ConvergeOnRealFreq: True
+      PercentRefinement: 30
+      BasisOrder: -1
+      DoLambdaRefine: True
+      DoMaterialLambda: True
+      SetLambdaTarget: False
+      Target: 0.4
+      UseMaxTetIncrease: False
+    type: eigenmode
+
+#- design_name: my_design
+#  formatter_args: null
+#  formatter_type: freq_and_q_factor
+#  junctions_infos:
+#  - inductance_variable_name: Lj
+#    name: line_jj1
+#  modes_to_labels:
+#      labels:
+#      - transmon
+#      - cavity_low_mode
+#      - cavity_high_mode
+#      modes:
+#      - args:
+#            label: transmon
+#            mode_number: 1
+#        inference_type: manual
+#      - args:
+#            label: cavity_low_mode
+#            mode_number: 2
+#        inference_type: manual
+#      - args:
+#            label: cavity_high_mode
+#            mode_number: 3
+#        inference_type: manual
+#  type: quantum_epr
