@@ -1,7 +1,7 @@
 default_meander_radius: &meander_radius
   - 100
 default_meander_spacing: &meander_spacing
-  - 300
+  - 220
 default_meander_num_turns: &num_turns
   - 7
 default_meander_wire_width: &wire_width
@@ -14,6 +14,9 @@ builder:
   args:
     design_name: my_design
     setup_name: Setup1
+    junction_inductance:
+      value: 10
+      unit: nh
   type: script_builder
   path: ./chip.py
 
@@ -31,9 +34,10 @@ builder_sweep:
 #        - 650
 
       purcell_padding_length:
-        start: 600
-        end: 700
-        step: 10
+#        - 650
+        start: 550
+        end: 750
+        step: 20
         as_type: int
 
 
@@ -52,11 +56,11 @@ builder_sweep:
 
 data_parameters:
   project_name: testing_workflow
-  root_directory: scan_over_purcell_padding
+  root_directory: scan_over_purcell_padding_correct_mesh
 
 session_parameters:
   close_on_exit: true
-  file_path: ./generated_build.aedt
+  file_path: ./generated_build_scan_over_purcell_padding_correct_mesh.aedt
   new_desktop: true
   non_graphical: false
   version: '2024.2'
@@ -69,10 +73,10 @@ simulations:
     formatter_type: freq_and_q_factor
     gpus: 0
     setup_parameters:
-      MaximumPasses: 8
-      MinimumConvergedPasses: 1
-      MinimumPasses: 1
-      MinimumFrequency: 5GHz
+      MaximumPasses: 10
+      MinimumConvergedPasses: 2
+      MinimumPasses: 2
+      MinimumFrequency: 2GHz
       NumModes: 6
       MaxDeltaFreq: 0.2
       ConvergeOnRealFreq: True

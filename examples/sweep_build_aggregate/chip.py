@@ -100,9 +100,10 @@ class ChipHouseCylinderParameters(BaseModel):
 
     spacer_length: Value = Value(value=1)
     chip_house_length: Value = Value(value=26)
+    # chip_house_length: Value = Value(value=22)
     chip_house_radius: Value = Value(value=2)
 
-    chip_base_length: Value = Value(value=22)
+    chip_base_length: Value = Value(value=23.7)
     chip_base_thickness: Value = Value(value=381, unit='um')
     chip_base_width: Value = Value(value=2)
     chip_base_material: str = 'silicon'
@@ -123,14 +124,14 @@ class ChipHouseCylinderParameters(BaseModel):
     antenna_edge_gap: Value = Value(value=0.375)
 
     # mesh boxes
-    transmon_mesh_box_size_y: Value = Value(value=10, unit='um')
+    transmon_mesh_box_size_y: Value = Value(value=0.4, unit='mm')
     waveguide_mesh_box_size_y: Value = Value(value=0.6)
     junction_mesh_box_size_scale: Value = Value(value=5, unit='')
     junction_mesh_box_size_y: Value = Value(value=0.01)
 
     # junction related parameters
     junction_width: Value = Value(value=0.004)
-    junction_inductance: Value = Value(value=10, unit='nh')
+    junction_inductance: Value = Value(value=12, unit='nh')
 
     # meander_type: str = 'euler'
     # meander_args: MeanderArgs = MeanderArgs()
@@ -149,9 +150,8 @@ def load_relevant_parameters(parameters: dict, cls: type(BaseModel), with_prefix
 def build(hfss: Hfss,
           design_name: str = 'eigenmode_design',
           setup_name: str = 'Setup1',
-          # driven_modal_design_name: str = 'driven_modal',
-          # driven_modal_setup_name: str = 'Setup1',
           **kwargs):
+
     parameters = load_relevant_parameters(kwargs, ChipHouseCylinderParameters)
     readout_meander_args = load_relevant_parameters(kwargs, MeanderArgs, with_prefix='readout_')
     purcell_meander_args = load_relevant_parameters(kwargs, MeanderArgs, with_prefix='purcell_')
@@ -261,6 +261,12 @@ def build(hfss: Hfss,
                                           VarsNames.chip_base_length],
                                    name='chip_base', material=parameters.chip_base_material)
 
+    # adding mesh to chip base
+    hfss.mesh.assign_length_mesh(chip_base,
+                                 maximum_length='1um',
+                                 name='chip_base_mesh',
+                                 inside_selection=False)
+
     # adding transmon chip with antenna
     transmon_gds = draw_transmon_with_antenna(**dict(transmon_parameters))
     export_config = ExportConfig(
@@ -278,19 +284,30 @@ def build(hfss: Hfss,
 
     hfss['transmon_orientation_port_x'] = '0'
     hfss['transmon_orientation_port_y'] = f'{VarsNames.chip_base_thickness} / 2'
-    hfss[
-        'transmon_orientation_port_z'] = f'-{VarsNames.chip_house_length} - {VarsNames.spacer_length} + {VarsNames.chip_base_length}'
+    hfss['transmon_orientation_port_z'] = (f'-{VarsNames.chip_house_length} - {VarsNames.spacer_length} + {VarsNames.chip_base_length}'
+                                           f'-transmon_size_z - {VarsNames.antenna_edge_gap}')
 
+    transmon_objects = []
     for i, points in enumerate(lst_points):
-        transmon_hfss = modeler.create_polyline(points,
-                                                cover_surface=True,
-                                                close_surface=True,
-                                                name=f'transmon_{i}')
+        tr = modeler.create_polyline(points,
+                                     cover_surface=True,
+                                     close_surface=True,
+                                     name=f'transmon_{i}')
+
+        transmon_objects.append(tr)
 
         # hfss.assign_perfecte_to_sheets(transmon_hfss.name)
 
-    # creating junction
+    # uniting transmon and assigning it to perfect conductor
+    # transmon_united_obj = modeler.unite(transmon_objects)
+    # transmon_objects = list(filter(lambda x: x.name.startswith('transmon'), modeler.object_list))
+    hfss.assign_perfecte_to_sheets(transmon_objects, name='transmon_perfect_e')
+    hfss.mesh.assign_length_mesh(transmon_objects,
+                                 maximum_length='50um',
+                                 name='transmon_mesh',
+                                 inside_selection=False)
 
+    # creating junction
     # because the orientation is by Y the origin is actually [X, Y, Z] and the sizes are [Zsize, Xsize]
     junction = modeler.create_rectangle(origin=[f'transmon_junction_left_arm_x - {VarsNames.junction_width} / 2',
                                                 'transmon_junction_left_arm_y',
@@ -303,13 +320,10 @@ def build(hfss: Hfss,
                                         orientation='Y',
                                         )
 
-    # uniting transmon and assigning it to perfect conductor
-    # transmon_united_obj = modeler.unite(transmon_objects)
-    transmon_objects = list(filter(lambda x: x.name.startswith('transmon'), modeler.object_list))
-    hfss.assign_perfecte_to_sheets(transmon_objects, name='transmon_perfect_e')
-    hfss.mesh.assign_length_mesh(transmon_objects,
-                                 maximum_length='50um',
-                                 name='transmon_mesh',
+    hfss.mesh.assign_length_mesh(junction,
+                                 # maximum_length='1um',
+                                 maximum_length='0.05um',
+                                 name='junction_mesh',
                                  inside_selection=False)
 
     junction_mesh_box = modeler.create_box(
@@ -327,7 +341,8 @@ def build(hfss: Hfss,
         model=False,
     )
 
-    hfss.mesh.assign_length_mesh(junction_mesh_box, maximum_length='2um', name='junction_mesh_box')
+    # hfss.mesh.assign_length_mesh(junction_mesh_box, maximum_length='2um', name='junction_mesh_box')
+    hfss.mesh.assign_length_mesh(junction_mesh_box, maximum_length='0.5um', name='junction_mesh_box')
 
     # drawing line for junction
     junction_line_start_point = ['transmon_junction_left_arm_x', 'transmon_junction_left_arm_y',
@@ -352,9 +367,9 @@ def build(hfss: Hfss,
     # adding mesh_box around all transmon
     transmon_mesh_box = modeler.create_box(
         origin=[f'transmon_orientation_port_x - transmon_size_x / 2',
-                f'transmon_orientation_port_y - 1mm / 2',
+                f'transmon_orientation_port_y - {VarsNames.transmon_mesh_box_size_y} / 2',
                 f'transmon_orientation_port_z'],
-        sizes=['transmon_size_x', '1mm',
+        sizes=['transmon_size_x', f'{VarsNames.transmon_mesh_box_size_y}',
                'transmon_size_z'],
         name='transmon_mesh_box',
         model=False)
@@ -381,6 +396,14 @@ def build(hfss: Hfss,
                                       name='readout')
 
     hfss.assign_perfecte_to_sheets(readout.name, name='readout_perfect_e')
+
+
+    hfss.mesh.assign_length_mesh(readout,
+                                 maximum_length='50m',
+                                 name='readout_mesh',
+                                 inside_selection=False)
+
+
 
     hfss['readout_e1_x'] = '0'
     hfss['readout_e1_y'] = f'{VarsNames.chip_base_thickness} / 2'
@@ -422,6 +445,11 @@ def build(hfss: Hfss,
 
     hfss.assign_perfecte_to_sheets(purcell.name, name='purcell_perfect_e')
 
+    hfss.mesh.assign_length_mesh(purcell,
+                                 maximum_length='50m',
+                                 name='purcell_mesh',
+                                 inside_selection=False)
+
     hfss['purcell_e1_x'] = 'readout_e1_x'
     hfss['purcell_e1_y'] = f'readout_e1_y'
     hfss['purcell_e1_z'] = f'readout_e1_z - purcell_size_z - {VarsNames.purcell_readout_gap}'
@@ -453,6 +481,8 @@ def build(hfss: Hfss,
 
     # combining all vacuum objects
     unite_vacuum_and_set_mesh(hfss, '2mm')
+
+    hfss.mesh.assign_initial_mesh(method='AnsoftClassic')
 
     # vacuum_objects = [
     #     chip_house_back_cylinder_a,
