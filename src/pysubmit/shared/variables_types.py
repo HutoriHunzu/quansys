@@ -43,7 +43,7 @@ class LinSpaceValues(BaseModel):
 SUPPORTED_COMPOUND_VALUES = RangeValues | LinSpaceValues
 
 
-AllValueType = float | str | bool
+AllValueType = float | str | bool | None
 AllValuesType = SUPPORTED_COMPOUND_VALUES | Annotated[list[AllValueType], BeforeValidator(ensure_list)]
 
 

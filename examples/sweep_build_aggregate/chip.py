@@ -90,7 +90,8 @@ def unite_vacuum_and_set_mesh(hfss, mesh_size: str):
     vacuum_objects = list(filter(lambda x: x.material_name == 'vacuum', hfss.modeler.object_list))
 
     vacuum_united_obj = hfss.modeler.unite(vacuum_objects)
-    hfss.mesh.assign_length_mesh(vacuum_united_obj, maximum_length=mesh_size, name='vacuum_mesh')
+    hfss.mesh.assign_length_mesh(vacuum_united_obj, maximum_length=mesh_size, name='vacuum_mesh',
+                                 maximum_elements=None)
 
     return vacuum_united_obj
 
@@ -132,6 +133,15 @@ class ChipHouseCylinderParameters(BaseModel):
     # junction related parameters
     junction_width: Value = Value(value=0.004)
     junction_inductance: Value = Value(value=12, unit='nh')
+
+    resonator_mesh: str = '100um'
+    resonator_mesh_box: str = '400um'
+    transmon_mesh: str = '50um'
+    transmon_mesh_box: str = '200um'
+    junction_mesh: str = '0.5um'
+    junction_mesh_box: str = '2um'
+    chip_mesh: str = '500um'
+    max_elements: int | None = 1000
 
     # meander_type: str = 'euler'
     # meander_args: MeanderArgs = MeanderArgs()
@@ -262,11 +272,12 @@ def build(hfss: Hfss,
                                    name='chip_base', material=parameters.chip_base_material)
 
     # adding mesh to chip base
-    hfss.mesh.assign_length_mesh(chip_base,
-                                 maximum_length='1um',
-                                 name='chip_base_mesh',
-                                 inside_selection=False)
 
+    hfss.mesh.assign_length_mesh(chip_base,
+                                 maximum_length=parameters.chip_mesh,
+                                 name='chip_base_mesh',
+                                 maximum_elements=parameters.max_elements,
+                                 inside_selection=True)
     # adding transmon chip with antenna
     transmon_gds = draw_transmon_with_antenna(**dict(transmon_parameters))
     export_config = ExportConfig(
@@ -303,7 +314,8 @@ def build(hfss: Hfss,
     # transmon_objects = list(filter(lambda x: x.name.startswith('transmon'), modeler.object_list))
     hfss.assign_perfecte_to_sheets(transmon_objects, name='transmon_perfect_e')
     hfss.mesh.assign_length_mesh(transmon_objects,
-                                 maximum_length='50um',
+                                 maximum_elements=parameters.max_elements,
+                                 maximum_length=parameters.transmon_mesh,
                                  name='transmon_mesh',
                                  inside_selection=False)
 
@@ -321,8 +333,9 @@ def build(hfss: Hfss,
                                         )
 
     hfss.mesh.assign_length_mesh(junction,
+                                 maximum_elements=parameters.max_elements,
                                  # maximum_length='1um',
-                                 maximum_length='0.05um',
+                                 maximum_length=parameters.junction_mesh,
                                  name='junction_mesh',
                                  inside_selection=False)
 
@@ -342,7 +355,10 @@ def build(hfss: Hfss,
     )
 
     # hfss.mesh.assign_length_mesh(junction_mesh_box, maximum_length='2um', name='junction_mesh_box')
-    hfss.mesh.assign_length_mesh(junction_mesh_box, maximum_length='0.5um', name='junction_mesh_box')
+    hfss.mesh.assign_length_mesh(junction_mesh_box, maximum_length=parameters.junction_mesh_box,
+                                 name='junction_mesh_box',
+                                 maximum_elements=parameters.max_elements
+                                 )
 
     # drawing line for junction
     junction_line_start_point = ['transmon_junction_left_arm_x', 'transmon_junction_left_arm_y',
@@ -374,6 +390,11 @@ def build(hfss: Hfss,
         name='transmon_mesh_box',
         model=False)
 
+    hfss.mesh.assign_length_mesh(transmon_mesh_box, maximum_length=parameters.transmon_mesh_box, name='transmon_mesh_box',
+                                 maximum_elements=parameters.max_elements
+                                 )
+
+
     # adding meander
     meander = meander_euler(**dict(readout_meander_args))
     export_config = ExportConfig(
@@ -399,8 +420,9 @@ def build(hfss: Hfss,
 
 
     hfss.mesh.assign_length_mesh(readout,
-                                 maximum_length='50m',
                                  name='readout_mesh',
+                                 maximum_length=parameters.resonator_mesh,
+                                 maximum_elements=parameters.max_elements,
                                  inside_selection=False)
 
 
@@ -420,7 +442,10 @@ def build(hfss: Hfss,
                                           model=False
                                           )
 
-    hfss.mesh.assign_length_mesh(readout_mesh_box, maximum_length='100um', name='readout_mesh_box')
+    hfss.mesh.assign_length_mesh(readout_mesh_box,
+                                 name='readout_mesh_box',
+                                 maximum_length=parameters.resonator_mesh_box,
+                                 maximum_elements=parameters.max_elements)
 
     # purcell
     meander = meander_euler(**dict(purcell_meander_args))
@@ -446,7 +471,8 @@ def build(hfss: Hfss,
     hfss.assign_perfecte_to_sheets(purcell.name, name='purcell_perfect_e')
 
     hfss.mesh.assign_length_mesh(purcell,
-                                 maximum_length='50m',
+    maximum_elements=parameters.max_elements,
+                                 maximum_length=parameters.resonator_mesh,
                                  name='purcell_mesh',
                                  inside_selection=False)
 
@@ -465,7 +491,8 @@ def build(hfss: Hfss,
                                           model=False
                                           )
 
-    hfss.mesh.assign_length_mesh(purcell_mesh_box, maximum_length='100um', name='purcell_mesh_box')
+    hfss.mesh.assign_length_mesh(purcell_mesh_box, maximum_length=parameters.resonator_mesh_box, name='purcell_mesh_box',
+                                 maximum_elements=parameters.max_elements)
 
     # adding boundary
     top_face_z = pin_wg_3.bottom_face_z
@@ -480,9 +507,10 @@ def build(hfss: Hfss,
                                     resistance=50, inductance=None, capacitance=None)
 
     # combining all vacuum objects
-    unite_vacuum_and_set_mesh(hfss, '2mm')
+    unite_vacuum_and_set_mesh(hfss, '4mm')
 
-    hfss.mesh.assign_initial_mesh(method='AnsoftClassic')
+    # hfss.mesh.assign_initial_mesh(method='AnsoftClassic')
+    hfss.mesh.assign_initial_mesh_from_slider(method='AnsoftClassic')
 
     # vacuum_objects = [
     #     chip_house_back_cylinder_a,

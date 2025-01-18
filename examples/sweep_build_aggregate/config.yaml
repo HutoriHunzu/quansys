@@ -17,6 +17,7 @@ builder:
     junction_inductance:
       value: 10
       unit: nh
+    max_elements:
   type: script_builder
   path: ./chip.py
 
@@ -36,31 +37,53 @@ builder_sweep:
       purcell_padding_length:
 #        - 650
         start: 550
-        end: 750
+        end: 650
         step: 20
         as_type: int
-
 
       readout_wire_width: *wire_width
       readout_radius: *meander_radius
       readout_spacing: *meander_spacing
       readout_num_turns: *num_turns
-    #        - 8
-    #        - 9
+      purcell_height: *meander_height
+      readout_height: *meander_height
+
     type: product
 
   - data:
-      purcell_height: *meander_height
-      readout_height: *meander_height
+      transmon_mesh:
+        - 10um
+        - 20um
+        - 50um
+        - 50um
+        - 50um
+      transmon_mesh_box:
+        - 50um
+        - 100um
+        - 200um
+        - 200um
+        - 200um
+      junction_mesh:
+        - 0.5um
+        - 0.5um
+        - 0.5um
+        - 0.01um
+        - 0.1um
+      junction_mesh_box:
+        - 2um
+        - 2um
+        - 2um
+        - 0.1um
+        - 1um
     type: zip
 
 data_parameters:
   project_name: testing_workflow
-  root_directory: scan_over_purcell_padding_correct_mesh
+  root_directory: scan_for_mesh_settings_junction_and_transmon_size
 
 session_parameters:
   close_on_exit: true
-  file_path: ./generated_build_scan_over_purcell_padding_correct_mesh.aedt
+  file_path: ./scan_for_mesh_settings_junction_and_transmon_size.aedt
   new_desktop: true
   non_graphical: false
   version: '2024.2'
@@ -73,7 +96,7 @@ simulations:
     formatter_type: freq_and_q_factor
     gpus: 0
     setup_parameters:
-      MaximumPasses: 10
+      MaximumPasses: 5
       MinimumConvergedPasses: 2
       MinimumPasses: 2
       MinimumFrequency: 2GHz
