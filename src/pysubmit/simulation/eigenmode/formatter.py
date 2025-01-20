@@ -18,6 +18,12 @@ class FrequencyAndQualityFactorResult(BaseModel):
 class FrequencyAndQualityFactorResults(BaseResult):
     root: dict[int, FrequencyAndQualityFactorResult]
 
+    def __getitem__(self, item) -> FrequencyAndQualityFactorResult:
+        return self.root[item]
+
+    def items(self):
+        return self.root.items()
+
     def flatten(self) -> dict:
         def _helper():
             for mode_number, freq_and_quality_factor in self.root.items():

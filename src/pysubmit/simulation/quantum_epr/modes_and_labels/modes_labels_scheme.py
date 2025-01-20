@@ -1,7 +1,7 @@
 from pydantic import BaseModel, TypeAdapter
 from typing import Dict, List, Tuple
 from copy import deepcopy
-
+from ...eigenmode.formatter import FrequencyAndQualityFactorResults
 from .inferences import ManualInference, OrderInference
 
 SUPPORTED_INFERENCES = (ManualInference | OrderInference)
@@ -22,12 +22,12 @@ class ModesAndLabels(BaseModel):
     modes: List[Modes]
     labels: List[str]
 
-    def parse(self, mode_to_freq_and_q_factor: dict[int | str, dict[str, float]] = None) -> Dict[int, str]:
+    def parse(self, mode_to_freq_and_q_factor: FrequencyAndQualityFactorResults) -> Dict[int, str]:
         modes_to_labels = {}
 
-        mode_to_freq_and_q_factor = deepcopy(mode_to_freq_and_q_factor)
         # make sure that the keys are int
-        mode_to_freq_and_q_factor = {int(k): v for k, v in mode_to_freq_and_q_factor.items()}
+        mode_to_freq_and_q_factor = {int(k): {'freq': v.frequency, 'q_factor': v.quality_factor}
+                                     for k, v in mode_to_freq_and_q_factor.items()}
 
         # first execution of manual inferences
         manual_modes = filter(lambda x: x.inference_type == 'manual', self.modes)

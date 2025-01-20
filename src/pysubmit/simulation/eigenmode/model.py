@@ -21,7 +21,7 @@ class EignmodeAnalysis(BaseAnalysis):
     formatter_type: str = 'freq_and_q_factor'
     formatter_args: dict | None = None
 
-    def analyze(self, hfss: Hfss = None, **kwargs) -> dict:
+    def analyze(self, hfss: Hfss = None, **kwargs):
         if not isinstance(hfss, Hfss):
             raise ValueError('hfss given must be a Hfss instance')
 
@@ -47,21 +47,24 @@ class EignmodeAnalysis(BaseAnalysis):
         formatter_args = {} if self.formatter_args is None else self.formatter_args
         return FORMAT_ADAPTER.validate_python(dict(**formatter_type, **formatter_args))
 
+    @staticmethod
+    def convert_result_to_dict(result) -> dict:
+        return result.model_dump()
+
     def load_result_by_dict(self, data: dict):
         formatter = self._get_formatter()
         return formatter.load(data)
 
-
-    def _get_results(self, hfss: Hfss = None) -> dict:
+    def _get_results(self, hfss: Hfss = None):
         formatter = self._get_formatter()
 
         # getting setup
         setup = hfss.get_setup(self.setup_name)
 
-        return formatter.format(setup).model_dump()
+        return formatter.format(setup)
 
     def extract_parameters(self) -> dict:
-        return dict(self)
+        return self.model_dump()
 
 # def run(hfss: Hfss, setup, config_project: ConfigProject) -> Dict[int, Dict[str, float]]:
 #     # make sure setup is correct

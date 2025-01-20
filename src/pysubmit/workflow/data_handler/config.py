@@ -148,7 +148,7 @@ class DataHandler:
     @validate_call
     def get_solutions(self,
                       setup_discriminator: SupportedAnalysisNames | None = None,
-                      build_parameters_discriminator: dict = None,
+                      build_parameters_discriminator: dict | None = None,
                       number_of_solutions: POSITIVE_INTEGER | None = None) -> list[Solution]:
 
         """
@@ -188,7 +188,7 @@ class DataHandler:
 
     def get_solution(self,
                      setup_discriminator: SupportedAnalysisNames | None = None,
-                     build_parameters_discriminator: dict = None) -> Solution | None:
+                     build_parameters_discriminator: dict | None = None) -> Solution | None:
 
         solutions = self.get_solutions(setup_discriminator, build_parameters_discriminator, number_of_solutions=1)
         if not solutions or len(solutions) == 0:
