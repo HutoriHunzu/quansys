@@ -12,7 +12,7 @@ def serialize_ndarray(array: NDArray) -> Any:
     """
     is_not_complex = np.isclose(np.sum(np.imag(array)), 0)
     if is_not_complex:
-        return array.tolist()
+        return np.real(array).tolist()
     # Recursively serialize complex arrays of arbitrary dimensions
     def serialize_element(element):
         if isinstance(element, complex):

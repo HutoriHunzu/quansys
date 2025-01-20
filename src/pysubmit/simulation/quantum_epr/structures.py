@@ -183,7 +183,7 @@ class QuantumResult:
             key = f"{label_1}__{label_2}"
 
             # Directly use the real value from chi_matrix (symmetric, so i, j and j, i are identical)
-            value = np.real(chi_matrix[i, j])
+            value = chi_matrix[i][j]
 
             flat_dict[key] = value
 

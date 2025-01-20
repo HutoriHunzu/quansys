@@ -63,7 +63,7 @@ class QuantumEpr(BaseAnalysis):
 
         distributed_result = dst.main()
 
-        calc = EprCalculator(participation_dataset=self._distributed_result)
+        calc = EprCalculator(participation_dataset=distributed_result)
         epr_result = calc.epr_numerical_diagonalizing()
 
         return QuantumResult(
@@ -79,7 +79,7 @@ class QuantumEpr(BaseAnalysis):
 
     # @staticmethod
     def load_result_by_dict(self, data: dict) -> QuantumResult:
-        result = QuantumResult.from_dict(data)
+        return QuantumResult.from_dict(data)
 
     def format(self) -> dict:
         # format the result to flatten

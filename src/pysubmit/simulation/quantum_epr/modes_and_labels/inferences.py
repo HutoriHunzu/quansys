@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Literal, List, Dict, Tuple
 
-from ..distributed_analysis import inverse_dict
+# from ..distributed_analysis import inverse_dict
 
 
 class InferenceBase(BaseModel):
@@ -17,7 +17,7 @@ class ManualInference(InferenceBase):
     mode_number: int
     label: str
 
-    def infer(self, mode_to_freq_and_q_factor: Dict[int, Tuple[float, float]]) -> Dict[int, str]:
+    def infer(self, mode_to_freq_and_q_factor: dict[int, dict[str, float]]) -> Dict[int, str]:
         """Return a manually specified mode."""
         # check it is a valid number
         if mode_to_freq_and_q_factor.get(self.mode_number) is None:
@@ -31,18 +31,17 @@ class OrderInference(InferenceBase):
     num: int
     min_or_max: Literal['min', 'max']
     ordered_labels: List[str]
-    quantity: Literal['freq', 'q_factor']
+    quantity: Literal['frequency', 'quality_factor']
 
-    def infer(self, mode_to_freq_and_q_factor: Dict[int, Tuple[float, float]]) -> Dict[int, str]:
+    def infer(self, mode_to_freq_and_q_factor: dict[int, dict[str, float]]) -> Dict[int, str]:
         """Perform some calculation to determine the mode and map to labels."""
         # Extract the desired quantity from mode_to_freq_and_q_factor
-        mode_to_quantity = dict(map(lambda x: (x[0], x[1][self.quantity]), mode_to_freq_and_q_factor.items()))
-        quantity_to_mode = inverse_dict(mode_to_quantity)
-
-        # sorting
+        mode_and_quantity = [(k, v[self.quantity]) for k, v in mode_to_freq_and_q_factor.items()]
+        
+        # sort
         reverse = self.min_or_max == 'max'
-        modes = list(map(lambda x: quantity_to_mode[x],
-                         sorted(quantity_to_mode.keys(), reverse=reverse)[: self.num]))
+        sorted_mode_and_quantity = sorted(mode_and_quantity, reverse=reverse, key=lambda x: x[1])[: self.num]
+        modes = list(map(lambda x: x[0], sorted_mode_and_quantity))
 
         # modes by ordered labels
         return {m: self.ordered_labels[i] for i, m in enumerate(sorted(modes))}
@@ -51,10 +50,10 @@ class OrderInference(InferenceBase):
 # Example usage
 if __name__ == "__main__":
     mode_to_freq_and_q_factor = {
-        1: {'freq': 3.5, 'q_factor': 100},
-        2: {'freq': 5.1, 'q_factor': 120},
-        3: {'freq': 5.8, 'q_factor': 90},
-        4: {'freq': 6.0, 'q_factor': 150}
+        1: {'frequency': 3.5, 'quality_factor': 100},
+        2: {'frequency': 5.1, 'quality_factor': 120},
+        3: {'frequency': 5.8, 'quality_factor': 90},
+        4: {'frequency': 6.0, 'quality_factor': 150}
     }
 
     inference = OrderInference(
@@ -62,7 +61,7 @@ if __name__ == "__main__":
         num=2,
         min_or_max='max',
         ordered_labels=['A', 'B'],
-        quantity='freq'
+        quantity='quality_factor'
     )
 
     result = inference.infer(mode_to_freq_and_q_factor)

@@ -200,13 +200,18 @@ class DataHandler:
         # get all solutions
         solutions = self._generate_solutions()
 
+        # sort them by setup type
+        solutions = sorted(solutions, key=lambda x: x.setup.type)
+
         # group by discrimination of the setup type
         for k, v in groupby(solutions, lambda x: x.setup.type):
             # order the group by time
-            solutions = sorted(v, key=lambda x: x.metadata.date)
+            v = list(v)
+
+            sorted_solutions = sorted(v, key=lambda x: x.metadata.date)
 
             # load result and call for flatten
-            flat_solutions = map(lambda x: x.flatten(), solutions)
+            flat_solutions = map(lambda x: x.flatten(), sorted_solutions)
 
             yield k, flat_solutions
 

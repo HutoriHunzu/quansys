@@ -68,8 +68,8 @@ builder_sweep:
       purcell_padding_length:
 #        - 650
         start: 600
-        end: 640
-        step: 20
+        end: 700
+        step: 10
         as_type: int
 
       readout_wire_width: *wire_width
@@ -84,11 +84,11 @@ builder_sweep:
 
 data_parameters:
   project_name: testing_workflow
-  root_directory: check_epr
+  root_directory: scan_purcell_padding_with_epr
 
 session_parameters:
   close_on_exit: true
-  file_path: ./check_epr.aedt
+  file_path: ./scan_purcell_padding_with_epr.aedt
   new_desktop: true
   non_graphical: false
   version: '2024.2'
@@ -101,9 +101,9 @@ simulations:
     formatter_type: freq_and_q_factor
     gpus: 0
     setup_parameters:
-      MaximumPasses: 2
-      MinimumConvergedPasses: 2
-      MinimumPasses: 2
+      MaximumPasses: 6
+      MinimumConvergedPasses: 1
+      MinimumPasses: 1
       MinimumFrequency: 2GHz
       NumModes: 4
       MaxDeltaFreq: 0.2

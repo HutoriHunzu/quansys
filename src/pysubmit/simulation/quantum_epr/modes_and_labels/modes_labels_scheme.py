@@ -22,12 +22,11 @@ class ModesAndLabels(BaseModel):
     modes: List[Modes]
     labels: List[str]
 
-    def parse(self, mode_to_freq_and_q_factor: FrequencyAndQualityFactorResults) -> Dict[int, str]:
+    def parse(self, mode_to_freq_and_q_factor: dict[str | int, dict[str, float]]) -> Dict[int, str]:
         modes_to_labels = {}
 
         # make sure that the keys are int
-        mode_to_freq_and_q_factor = {int(k): {'freq': v.frequency, 'q_factor': v.quality_factor}
-                                     for k, v in mode_to_freq_and_q_factor.items()}
+        mode_to_freq_and_q_factor = {int(k): v for k, v in mode_to_freq_and_q_factor.items()}
 
         # first execution of manual inferences
         manual_modes = filter(lambda x: x.inference_type == 'manual', self.modes)
