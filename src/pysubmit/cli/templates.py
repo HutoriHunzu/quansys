@@ -24,7 +24,7 @@ bsub -J {project_name} \\
 
 def generate_simulation_script(results_dir):
     """
-    Generate the simulation_script.sh script.
+    Generate the simulation_script.sh script and set execute permissions.
     """
     simulation_script = results_dir / "simulation_script.sh"
     template = f"""#!/bin/bash
@@ -35,3 +35,6 @@ conda activate pyaedt_11
 python runfile.py
     """
     simulation_script.write_text(template)
+
+    # Set execute permissions for the script
+    simulation_script.chmod(0o755)
