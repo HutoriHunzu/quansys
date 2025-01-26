@@ -22,7 +22,7 @@ ROOT_DIRECTORY = Annotated[str, BeforeValidator(convert_none_to_current_dir)]
 class DataParameters(BaseModel):
     # file_path: str
     project_name: str
-    root_directory: str = '.'
+    root_directory: ROOT_DIRECTORY = '.'
 
 
 class Metadata(BaseModel):
