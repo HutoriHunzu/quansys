@@ -23,5 +23,6 @@ classifiers = [
 
 
 [project.scripts]
-submit = "pysubmit.cli.main:app"
+workflow = "pysubmit.cli.main:app"
+
 
