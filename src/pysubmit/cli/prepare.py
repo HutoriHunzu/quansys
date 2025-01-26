@@ -2,10 +2,13 @@ from pathlib import Path
 from .utils import generate_timestamp, copy_files
 from .templates import generate_job_submission_script, generate_simulation_script
 
-def prepare_job(config, files, mem):
+def prepare_job(config, files, mem, timeout):
     """
     Prepare the workflow: create directories, copy files, generate scripts.
     """
+    from .templates import generate_job_submission_script, generate_simulation_script
+    from .utils import generate_timestamp, copy_files
+
     # Create project directory with timestamp
     timestamp = generate_timestamp()
     project_dir = Path(config.data_parameters.project_name) / timestamp
@@ -28,7 +31,8 @@ def prepare_job(config, files, mem):
     copy_files(all_files_to_copy, project_dir)
 
     # Generate cluster scripts
-    generate_job_submission_script(project_dir, config, mem)
+    generate_job_submission_script(project_dir, config, mem * 1024, timeout)  # Convert GB to MB
     generate_simulation_script(project_dir)
 
     return project_dir.resolve()
+

@@ -16,15 +16,12 @@ app = typer.Typer()
 
 @app.command()
 def submit(
-    config_path: Path = typer.Argument(..., help="Path to the config.yaml file."),
-    name: str = typer.Option(None, "--name", "-n", help="Override the project name."),
-    files: list[Path] = typer.Option(
-        None, "--files", "-f", help="Additional files to copy."
-    ),
-    mem: int = typer.Option(120, "--mem", "-m", help="Total memory required in GB."),
-    prepare: bool = typer.Option(
-        False, "--prepare", "-p", help="Only prepare the job without submitting."
-    ),
+        config_path: Path = typer.Argument(..., help="Path to the config.yaml file."),
+        name: str = typer.Option(None, "--name", "-n", help="Override the project name."),
+        files: list[Path] = typer.Option(None, "--files", "-f", help="Additional files to copy."),
+        mem: int = typer.Option(120, "--mem", "-m", help="Total memory required in GB."),
+        timeout: str = typer.Option("03:00", "--timeout", "-t", help="Job duration in HH:MM format."),
+        prepare: bool = typer.Option(False, "--prepare", "-p", help="Only prepare the job without submitting."),
 ):
     """
     Prepare and optionally submit a simulation workflow to the cluster.
@@ -37,7 +34,7 @@ def submit(
         config.data_parameters.project_name = name
 
     # Prepare the job
-    results_dir = prepare_job(config, files, mem)
+    results_dir = prepare_job(config, files, mem, timeout)
 
     if prepare:
         typer.echo(f"Job prepared. Results directory: {results_dir}")

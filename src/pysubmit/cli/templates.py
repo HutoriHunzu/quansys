@@ -1,4 +1,4 @@
-def generate_job_submission_script(results_dir, config, mem):
+def generate_job_submission_script(results_dir, config, mem_mb, timeout):
     """
     Generate the job_submission.sh script.
     """
@@ -14,8 +14,8 @@ bsub -J {project_name} \\
     -oo {results_dir}/lsf_output_%J.log \\
     -eo {results_dir}/lsf_error_%J.err \\
     -n {cores} \\
-    -W 03:00 \\
-    -R "rusage[mem={mem // cores}] span[hosts=1]" \\
+    -W {timeout} \\
+    -R "rusage[mem={mem_mb // cores}] span[hosts=1]" \\
     -cwd {results_dir} \\
     {results_dir}/simulation_script.sh
     """
