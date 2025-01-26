@@ -26,7 +26,7 @@ builder_sweep:
       chip_base_length:
         value: 23.25
         unit: mm
-      spacer:
+      spacer_length:
         value: 0.001
         unit: mm
 
@@ -126,7 +126,7 @@ simulations:
       MinimumConvergedPasses: 1
       MinimumPasses: 1
       MinimumFrequency: 2GHz
-      NumModes: 18
+      NumModes: 20
       MaxDeltaFreq: 0.2
       ConvergeOnRealFreq: True
       PercentRefinement: 30

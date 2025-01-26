@@ -30,6 +30,7 @@ AfterValidator(ensure_file_exists)]
 class ScriptBuilder(BaseBuilder):
     type: Literal['script_builder'] = 'script_builder'
     path: PATH_TYPE
+    additional_files: list[PATH_TYPE] | None
     args: dict
 
     def build(self, hfss: Hfss,
