@@ -18,7 +18,7 @@ def submit(
         config_path: Path = typer.Argument(..., help="Path to the config.yaml file."),
         name: str = typer.Option(..., "--name", "-n", help="Project name for the workflow."),
         files: list[Path] = typer.Option(None, "--files", "-f", help="Additional files to copy."),
-        mem: int = typer.Option(120, "--mem", "-m", help="Total memory required in GB."),
+        mem: int = typer.Option(120000, "--mem", "-m", help="Total memory required in MB."),
         timeout: str = typer.Option("03:00", "--timeout", "-t", help="Job duration in HH:MM format."),
         prepare: bool = typer.Option(False, "--prepare", "-p", help="Only prepare the job without submitting."),
         overwrite: bool = typer.Option(False, "--overwrite", help="Overwrite the existing project folder."),
