@@ -23,6 +23,23 @@ builder:
 
 builder_sweep:
   - data:
+      chip_base_length:
+        value: 23.25
+        unit: mm
+      spacer:
+        value: 0.001
+        unit: mm
+
+      chip_base_mesh:
+        - 200um
+      readout_mesh:
+        - 50um
+      readout_mesh_box:
+        - 200um
+      purcell_mesh:
+        - 50um
+      purcell_mesh_box:
+        - 200um
       transmon_mesh:
 #        - 10um
 #        - 20um
@@ -38,7 +55,8 @@ builder_sweep:
       junction_mesh:
 #        - 0.5um
 #        - 0.5um
-        - 0.5um
+#        - 0.5um
+        - 0.2um
 #        - 0.1um
 #        - 0.05um
 #        - 0.01um
@@ -52,6 +70,8 @@ builder_sweep:
 #        - 0.25um
 #        - 0.1um
 #        - 1um
+      vacuum_mesh:
+        - 4mm
     type: zip
   - data:
       purcell_wire_width: *wire_width
@@ -60,17 +80,18 @@ builder_sweep:
       purcell_num_turns: *num_turns
 
       readout_padding_length:
-        - 650
+        - 750
 
 #      purcell_padding_length:
 #        - 650
 
       purcell_padding_length:
-#        - 650
-        start: 600
-        end: 700
-        step: 10
-        as_type: int
+        - 640
+        - 660
+#        start: 620
+#        end: 750
+#        step: 20
+#        as_type: int
 
       readout_wire_width: *wire_width
       readout_radius: *meander_radius
@@ -84,11 +105,11 @@ builder_sweep:
 
 data_parameters:
   project_name: testing_workflow
-  root_directory: scan_purcell_padding_with_epr
+  root_directory: check_resonator_frequency_with_cavity
 
 session_parameters:
   close_on_exit: true
-  file_path: ./scan_purcell_padding_with_epr.aedt
+  file_path: ./check_resonator_frequency_with_cavity.aedt
   new_desktop: true
   non_graphical: false
   version: '2024.2'
@@ -101,11 +122,11 @@ simulations:
     formatter_type: freq_and_q_factor
     gpus: 0
     setup_parameters:
-      MaximumPasses: 6
+      MaximumPasses: 4
       MinimumConvergedPasses: 1
       MinimumPasses: 1
       MinimumFrequency: 2GHz
-      NumModes: 4
+      NumModes: 18
       MaxDeltaFreq: 0.2
       ConvergeOnRealFreq: True
       PercentRefinement: 30
@@ -117,28 +138,28 @@ simulations:
       UseMaxTetIncrease: False
     type: eigenmode
 
-  - design_name: my_design
-    formatter_args: null
-    formatter_type: null
-    junctions_infos:
-    - inductance_variable_name: junction_inductance
-      name: junction_line
-    modes_to_labels:
-        labels:
-        - transmon
-        - purcell
-        - readout
-        modes:
-        - args:
-              label: transmon
-              mode_number: 1
-          inference_type: manual
-        - args:
-              label: purcell
-              mode_number: 2
-          inference_type: manual
-        - args:
-              label: readout
-              mode_number: 3
-          inference_type: manual
-    type: quantum_epr
+#  - design_name: my_design
+#    formatter_args: null
+#    formatter_type: null
+#    junctions_infos:
+#    - inductance_variable_name: junction_inductance
+#      name: junction_line
+#    modes_to_labels:
+#        labels:
+#        - transmon
+#        - purcell
+#        - readout
+#        modes:
+#        - args:
+#              label: transmon
+#              mode_number: 1
+#          inference_type: manual
+#        - args:
+#              label: purcell
+#              mode_number: 2
+#          inference_type: manual
+#        - args:
+#              label: readout
+#              mode_number: 3
+#          inference_type: manual
+#    type: quantum_epr

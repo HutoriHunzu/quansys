@@ -12,6 +12,8 @@ from typing_extensions import Annotated
 from enum import StrEnum, auto
 from typing import Literal
 
+from double_cavity_design import add_cavity
+
 
 class Value(BaseModel):
     value: float
@@ -134,6 +136,8 @@ class ChipHouseCylinderParameters(BaseModel):
     junction_width: Value = Value(value=0.004)
     junction_inductance: Value = Value(value=12, unit='nh')
 
+
+    vacuum_mesh: str = '2mm'
     resonator_mesh: str = '100um'
     resonator_mesh_box: str = '400um'
     transmon_mesh: str = '50um'
@@ -145,6 +149,7 @@ class ChipHouseCylinderParameters(BaseModel):
 
     # meander_type: str = 'euler'
     # meander_args: MeanderArgs = MeanderArgs()
+
 
 
 def load_relevant_parameters(parameters: dict, cls: type(BaseModel), with_prefix: str = None):
@@ -278,6 +283,11 @@ def build(hfss: Hfss,
                                  name='chip_base_mesh',
                                  maximum_elements=parameters.max_elements,
                                  inside_selection=True)
+
+    # adding cavity:
+    add_cavity(hfss)
+
+
     # adding transmon chip with antenna
     transmon_gds = draw_transmon_with_antenna(**dict(transmon_parameters))
     export_config = ExportConfig(
@@ -507,7 +517,7 @@ def build(hfss: Hfss,
                                     resistance=50, inductance=None, capacitance=None)
 
     # combining all vacuum objects
-    unite_vacuum_and_set_mesh(hfss, '4mm')
+    unite_vacuum_and_set_mesh(hfss, parameters.vacuum_mesh)
 
     # hfss.mesh.assign_initial_mesh(method='AnsoftClassic')
     hfss.mesh.assign_initial_mesh_from_slider(method='AnsoftClassic')

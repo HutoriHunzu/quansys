@@ -10,17 +10,17 @@ def execute_flow(config: WorkflowConfig):
     data_handler = DataHandler(config.data_parameters)
     data_handler.prepare()
 
-    # # Starting a new session of HFSS
-    # with start_hfss_session(config.session_parameters) as hfss:
-    #     ### BUILD PHASE ###
-    #     for tag in _create_build_and_generate_tag(config.builder,
-    #                                               config.builder_sweep,
-    #                                               hfss,
-    #                                               data_handler):
-    #         data_handler.load_tag(tag, 'build_parameters')
-    #
-    #         ### SIMULATION PHASE ###
-    #         _run_simulations(config.simulations, hfss, data_handler)
+    # Starting a new session of HFSS
+    with start_hfss_session(config.session_parameters) as hfss:
+        ### BUILD PHASE ###
+        for tag in _create_build_and_generate_tag(config.builder,
+                                                  config.builder_sweep,
+                                                  hfss,
+                                                  data_handler):
+            data_handler.load_tag(tag, 'build_parameters')
+
+            ### SIMULATION PHASE ###
+            _run_simulations(config.simulations, hfss, data_handler)
 
     data_handler.aggregate_and_save()
 
