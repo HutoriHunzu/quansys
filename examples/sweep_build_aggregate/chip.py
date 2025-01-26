@@ -102,7 +102,7 @@ class ChipHouseCylinderParameters(BaseModel):
     ## type: Literal['chip_house_cylinder'] = 'chip_house_cylinder'
 
     spacer_length: Value = Value(value=1)
-    chip_house_length: Value = Value(value=26)
+    chip_house_length: Value = Value(value=22)
     # chip_house_length: Value = Value(value=22)
     chip_house_radius: Value = Value(value=2)
 

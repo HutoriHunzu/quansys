@@ -1,52 +1,34 @@
-import argparse
 from pathlib import Path
-from ..simulation.config_handler import load
-from ..job_handler.prepare import prepare_dir
+from .utils import generate_timestamp, copy_files
+from .templates import generate_job_submission_script, generate_simulation_script
 
+def prepare_job(config, files, mem):
+    """
+    Prepare the workflow: create directories, copy files, generate scripts.
+    """
+    # Create results directory
+    timestamp = generate_timestamp()
+    project_name = config.data_parameters.project_name
+    results_dir = Path(f"{project_name}/{timestamp}/all_data")
+    results_dir.mkdir(parents=True, exist_ok=True)
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Process paths for HFSS-related files with optional output directory."
-    )
+    # Save updated config.yaml to results directory
+    config.save_to_yaml(results_dir / "config.yaml")
 
-    # Adding long and short notation arguments
-    parser.add_argument(
-        '-c', '--config',
-        type=str,
-        required=True,
-        help="Path to the config file"
-    )
-    parser.add_argument(
-        '-a', '--aedt',
-        type=str,
-        default=None,
-        help="Path to the AEDT file"
-    )
-    parser.add_argument(
-        '-o', '--output',
-        type=str,
-        required=True,
-        help="Directory to save output files (optional)"
-    )
+    # Collect files to copy
+    builder_files = []
+    if config.builder and config.builder.type == "script_builder":
+        # Collect builder path and additional files
+        builder_files.append(config.builder.path)
+        if config.builder.additional_files:
+            builder_files.extend(config.builder.additional_files)
 
-    return parser.parse_args()
+    # Combine builder files with CLI-specified files
+    all_files_to_copy = builder_files + (files or [])
+    copy_files(all_files_to_copy, results_dir)
 
+    # Generate cluster scripts
+    generate_job_submission_script(results_dir, config, mem)
+    generate_simulation_script(results_dir)
 
-def main():
-    args = parse_args()
-
-    config_path = Path(args.config)
-    config = load(config_path)
-
-    if args.aedt is None:
-        aedt_path = Path(config.config_project.path)
-    else:
-        aedt_path = Path(args.aedt)
-
-    output_dir = Path(args.output)
-
-    prepare_dir(aedt_path, config, output_dir)
-
-
-if __name__ == '__main__':
-    main()
+    return results_dir

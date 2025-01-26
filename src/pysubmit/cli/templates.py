@@ -1,0 +1,35 @@
+def generate_job_submission_script(results_dir, config, mem):
+    """
+    Generate the job_submission.sh script.
+    """
+    cores = config.simulations[0].cores
+    project_name = config.data_parameters.project_name
+    job_script = results_dir / "job_submission.sh"
+
+    template = f"""#!/bin/bash
+bsub -J {project_name} \\
+    -q short \\
+    -oo {results_dir}/lsf_output_%J.log \\
+    -eo {results_dir}/lsf_error_%J.err \\
+    -n {cores} \\
+    -W 03:00 \\
+    -R "rusage[mem={mem // cores}] span[hosts=1]" \\
+    -cwd {results_dir} \\
+    {results_dir}/simulation_script.sh
+    """
+    job_script.write_text(template)
+
+
+def generate_simulation_script(results_dir):
+    """
+    Generate the simulation_script.sh script.
+    """
+    simulation_script = results_dir / "simulation_script.sh"
+    template = f"""#!/bin/bash
+module load ANSYS/Electromagnetics242
+source /apps/easybd/programs/miniconda/24.9.2_environmentally/etc/profile.d/conda.sh
+module load miniconda/24.9.2_environmentally
+conda activate pyaedt_11
+python runfile.py
+    """
+    simulation_script.write_text(template)

@@ -11,6 +11,7 @@ dependencies = [
     "pint",
     "h5py>=3.12.1",
     "pandas>=2.2.3",
+    "typer[all]" # Added typer as a dependency
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -21,7 +22,5 @@ classifiers = [
 
 
 [project.scripts]
-submit-run = "pysubmit:submit_run"
-submit-prepare = "pysubmit:submit_prepare"
-submit-check = "pysubmit:submit_check"
+submit = "pysubmit.cli.main:app"
 
