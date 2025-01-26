@@ -27,14 +27,17 @@ def generate_simulation_script(results_dir):
     Generate the simulation_script.sh script and set execute permissions.
     """
     simulation_script = results_dir / "simulation_script.sh"
+    config_path = (results_dir / "config.yaml").resolve()
+
     template = f"""#!/bin/bash
 module load ANSYS/Electromagnetics242
 source /apps/easybd/programs/miniconda/24.9.2_environmentally/etc/profile.d/conda.sh
 module load miniconda/24.9.2_environmentally
 conda activate pyaedt_11
-python runfile.py
+submit run-flow {config_path}
     """
     simulation_script.write_text(template)
 
     # Set execute permissions for the script
     simulation_script.chmod(0o755)
+

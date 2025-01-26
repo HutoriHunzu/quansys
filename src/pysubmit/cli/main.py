@@ -1,15 +1,12 @@
 import warnings
+import typer
+from pathlib import Path
+from ..workflow import WorkflowConfig, execute_flow
+from .prepare import prepare_job
+from .submit import submit_job
 
 # Suppress FutureWarning from pyaedt
 warnings.filterwarnings("ignore", category=FutureWarning, module="pyaedt")
-
-from pathlib import Path
-
-import typer
-
-from ..workflow import WorkflowConfig
-from .prepare import prepare_job
-from .submit import submit_job
 
 app = typer.Typer()
 
@@ -42,6 +39,19 @@ def submit(
         # Submit the job
         submit_job(results_dir)
         typer.echo(f"Job submitted. Results directory: {results_dir}")
+
+
+@app.command()
+def run_flow(config_path: Path = typer.Argument(..., help="Path to the config.yaml file.")):
+    """
+    Load the config.yaml and execute the workflow.
+    """
+    # Load config.yaml
+    config = WorkflowConfig.load_from_yaml(config_path)
+
+    # Execute the flow
+    execute_flow(config)
+    typer.echo(f"Flow execution completed for config: {config_path}")
 
 
 if __name__ == "__main__":
