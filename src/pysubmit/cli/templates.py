@@ -4,6 +4,8 @@ def generate_job_submission_script(results_dir, config, mem):
     """
     cores = config.simulations[0].cores
     project_name = config.data_parameters.project_name
+    results_dir = results_dir.resolve()  # Ensure full path
+
     job_script = results_dir / "job_submission.sh"
 
     template = f"""#!/bin/bash
