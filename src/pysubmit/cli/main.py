@@ -1,19 +1,30 @@
-import typer
+import warnings
+
+# Suppress FutureWarning from pyaedt
+warnings.filterwarnings("ignore", category=FutureWarning, module="pyaedt")
+
 from pathlib import Path
+
+import typer
+
+from ..workflow import WorkflowConfig
 from .prepare import prepare_job
 from .submit import submit_job
-from ..workflow import WorkflowConfig
 
 app = typer.Typer()
 
 
 @app.command()
 def submit(
-        config_path: Path = typer.Argument(..., help="Path to the config.yaml file."),
-        name: str = typer.Option(None, "--name", "-n", help="Override the project name."),
-        files: list[Path] = typer.Option(None, "--files", "-f", help="Additional files to copy."),
-        mem: int = typer.Option(120, "--mem", "-m", help="Total memory required in GB."),
-        prepare: bool = typer.Option(False, "--prepare", "-p", help="Only prepare the job without submitting."),
+    config_path: Path = typer.Argument(..., help="Path to the config.yaml file."),
+    name: str = typer.Option(None, "--name", "-n", help="Override the project name."),
+    files: list[Path] = typer.Option(
+        None, "--files", "-f", help="Additional files to copy."
+    ),
+    mem: int = typer.Option(120, "--mem", "-m", help="Total memory required in GB."),
+    prepare: bool = typer.Option(
+        False, "--prepare", "-p", help="Only prepare the job without submitting."
+    ),
 ):
     """
     Prepare and optionally submit a simulation workflow to the cluster.
