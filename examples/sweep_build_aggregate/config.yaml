@@ -3,11 +3,13 @@ default_meander_radius: &meander_radius
 default_meander_spacing: &meander_spacing
   - 220
 default_meander_num_turns: &num_turns
-  - 7
+#  - 9
+  - 10
+  - 12
 default_meander_wire_width: &wire_width
   - 80
 default_meander_height: &meander_height
-  - 1650
+  - 1600
 
 
 builder:
@@ -56,7 +58,8 @@ builder_sweep:
 #        - 0.5um
 #        - 0.5um
 #        - 0.5um
-        - 0.2um
+#        - 0.2um
+        - 0.05um
 #        - 0.1um
 #        - 0.05um
 #        - 0.01um
@@ -65,13 +68,14 @@ builder_sweep:
 #        - 2um
 #        - 2um
 #        - 2um
-        - 0.75um
+#        - 0.75um
+        - 0.5um
 #        - 0.25um
 #        - 0.25um
 #        - 0.1um
 #        - 1um
       vacuum_mesh:
-        - 4mm
+        - 2mm
     type: zip
   - data:
       purcell_wire_width: *wire_width
@@ -86,8 +90,9 @@ builder_sweep:
 #        - 650
 
       purcell_padding_length:
-        - 640
-        - 660
+#        - 600
+#        - 625
+        - 650
 #        start: 620
 #        end: 750
 #        step: 20
