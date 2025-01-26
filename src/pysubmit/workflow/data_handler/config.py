@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validate_call
+from pydantic import BaseModel, Field, validate_call, BeforeValidator
 from .json_utils import unique_name_by_counter, read, write, json_write
 from pathlib import Path
 from typing import Iterable, Type
@@ -10,7 +10,13 @@ from datetime import datetime
 
 from pandas import DataFrame
 
+def convert_none_to_current_dir(value):
+    if value is None:
+        return '.'
+    return value
+
 POSITIVE_INTEGER = Annotated[int, Field(gt=0)]
+ROOT_DIRECTORY = Annotated[str, BeforeValidator(convert_none_to_current_dir)]
 
 
 class DataParameters(BaseModel):
