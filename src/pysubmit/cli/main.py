@@ -9,14 +9,10 @@ from ..workflow import WorkflowConfig, execute_flow
 warnings.filterwarnings("ignore", category=FutureWarning, module="pyaedt")
 
 # Create the main Typer app
-app = typer.Typer()
-
-# Subcommands as individual Typer apps
-workflow_app = typer.Typer()
-app.add_typer(workflow_app, name="workflow", help="Workflow management commands.")
+app = typer.Typer(help="Workflow management commands.")
 
 
-@workflow_app.command()
+@app.command()
 def submit(
         config_path: Path = typer.Argument(..., help="Path to the config.yaml file."),
         name: str = typer.Option(None, "--name", "-n", help="Override the project name."),
@@ -46,7 +42,7 @@ def submit(
         typer.echo(f"Job submitted. Results directory: {results_dir}")
 
 
-@workflow_app.command()
+@app.command()
 def run_flow(config_path: Path = typer.Argument(..., help="Path to the config.yaml file.")):
     """
     Load the config.yaml and execute the workflow.
