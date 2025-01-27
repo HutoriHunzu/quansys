@@ -28,8 +28,8 @@ class TransmonParameters(BaseModel):
     pad_height: float = 1000
     pads_distance: float = 150
     taper_width: float = 45
-    junction_width: float = 20
-    junction_gap: float = 3.4
+    junction_width: float = 1
+    junction_gap: float = 3
     junction_length: float = 10
     smooth_features: bool = True
     feature_radius: float = 10

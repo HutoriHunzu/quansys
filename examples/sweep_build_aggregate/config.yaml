@@ -3,9 +3,9 @@ default_meander_radius: &meander_radius
 default_meander_spacing: &meander_spacing
   - 220
 default_meander_num_turns: &num_turns
-#  - 9
-  - 10
-  - 12
+  - 8
+#  - 10
+#  - 12
 default_meander_wire_width: &wire_width
   - 80
 default_meander_height: &meander_height
@@ -85,7 +85,7 @@ builder_sweep:
       purcell_num_turns: *num_turns
 
       readout_padding_length:
-        - 750
+        - 1700
 
 #      purcell_padding_length:
 #        - 650
@@ -93,7 +93,7 @@ builder_sweep:
       purcell_padding_length:
 #        - 600
 #        - 625
-        - 650
+        - 1500
 #        start: 620
 #        end: 750
 #        step: 20
