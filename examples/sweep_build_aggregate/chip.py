@@ -136,6 +136,8 @@ class ChipHouseCylinderParameters(BaseModel):
     junction_width: Value = Value(value=0.004)
     junction_inductance: Value = Value(value=12, unit='nh')
 
+    use_cavity: bool = True
+
 
     vacuum_mesh: str = '2mm'
     resonator_mesh: str = '100um'
@@ -285,7 +287,16 @@ def build(hfss: Hfss,
                                  inside_selection=True)
 
     # adding cavity:
-    add_cavity(hfss)
+    if parameters.use_cavity:
+        add_cavity(hfss)
+    else:
+        # make an extra cylinder
+        chip_house_cylinder = modeler.create_cylinder(orientation='Z',
+                                                      origin=[0, 0, 0],
+                                                      radius=VarsNames.chip_house_radius,
+                                                      height='5mm',
+                                                      name='chip_house_waveguide_extra', material='vacuum')
+
 
 
     # adding transmon chip with antenna

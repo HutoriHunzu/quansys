@@ -25,6 +25,7 @@ builder:
 
 builder_sweep:
   - data:
+      use_cavity: true
       chip_base_length:
         value: 23.25
         unit: mm
