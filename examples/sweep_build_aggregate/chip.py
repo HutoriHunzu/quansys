@@ -129,22 +129,22 @@ class ChipHouseCylinderParameters(BaseModel):
     # mesh boxes
     transmon_mesh_box_size_y: Value = Value(value=0.4, unit='mm')
     waveguide_mesh_box_size_y: Value = Value(value=0.6)
-    junction_mesh_box_size_scale: Value = Value(value=5, unit='')
+    junction_mesh_box_size_scale: Value = Value(value=20, unit='')
     junction_mesh_box_size_y: Value = Value(value=0.01)
 
     # junction related parameters
-    junction_width: Value = Value(value=0.004)
-    junction_inductance: Value = Value(value=12, unit='nh')
+    junction_width: Value = Value(value=0.001)
+    junction_inductance: Value = Value(value=10, unit='nh')
 
     use_cavity: bool = True
 
 
     vacuum_mesh: str = '2mm'
-    resonator_mesh: str = '100um'
-    resonator_mesh_box: str = '400um'
-    transmon_mesh: str = '50um'
-    transmon_mesh_box: str = '200um'
-    junction_mesh: str = '0.5um'
+    resonator_mesh: str = '20um'
+    resonator_mesh_box: str = '100um'
+    transmon_mesh: str = '20um'
+    transmon_mesh_box: str = '50um'
+    junction_mesh: str = '2um'
     junction_mesh_box: str = '2um'
     chip_mesh: str = '500um'
     max_elements: int | None = 1000

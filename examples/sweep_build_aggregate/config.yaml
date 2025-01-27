@@ -1,15 +1,13 @@
 default_meander_radius: &meander_radius
   - 100
 default_meander_spacing: &meander_spacing
-  - 220
+  - 300
 default_meander_num_turns: &num_turns
   - 8
-#  - 10
-#  - 12
 default_meander_wire_width: &wire_width
-  - 80
+  - 100
 default_meander_height: &meander_height
-  - 1600
+  - 1200
 
 
 builder:
@@ -25,7 +23,7 @@ builder:
 
 builder_sweep:
   - data:
-      use_cavity: true
+      use_cavity: false
       chip_base_length:
         value: 23.25
         unit: mm
@@ -33,50 +31,50 @@ builder_sweep:
         value: 0.001
         unit: mm
 
-      chip_base_mesh:
-        - 200um
-      readout_mesh:
-        - 50um
-      readout_mesh_box:
-        - 200um
-      purcell_mesh:
-        - 50um
-      purcell_mesh_box:
-        - 200um
-      transmon_mesh:
-#        - 10um
-#        - 20um
-#        - 50um
-        - 50um
-#        - 50um
-      transmon_mesh_box:
-#        - 50um
-#        - 100um
-        - 200um
+#      chip_base_mesh:
 #        - 200um
+#      readout_mesh:
+#        - 50um
+#      readout_mesh_box:
 #        - 200um
-      junction_mesh:
-#        - 0.5um
-#        - 0.5um
-#        - 0.5um
-#        - 0.2um
-        - 0.05um
-#        - 0.1um
+#      purcell_mesh:
+#        - 50um
+#      purcell_mesh_box:
+#        - 200um
+#      transmon_mesh:
+##        - 10um
+##        - 20um
+##        - 50um
+#        - 50um
+##        - 50um
+#      transmon_mesh_box:
+##        - 50um
+##        - 100um
+#        - 200um
+##        - 200um
+##        - 200um
+#      junction_mesh:
+##        - 0.5um
+##        - 0.5um
+##        - 0.5um
+##        - 0.2um
 #        - 0.05um
-#        - 0.01um
-#        - 0.1um
-      junction_mesh_box:
-#        - 2um
-#        - 2um
-#        - 2um
-#        - 0.75um
-        - 0.5um
-#        - 0.25um
-#        - 0.25um
-#        - 0.1um
-#        - 1um
-      vacuum_mesh:
-        - 2mm
+##        - 0.1um
+##        - 0.05um
+##        - 0.01um
+##        - 0.1um
+#      junction_mesh_box:
+##        - 2um
+##        - 2um
+##        - 2um
+##        - 0.75um
+#        - 0.5um
+##        - 0.25um
+##        - 0.25um
+##        - 0.1um
+##        - 1um
+#      vacuum_mesh:
+#        - 2mm
     type: zip
   - data:
       purcell_wire_width: *wire_width
@@ -85,7 +83,7 @@ builder_sweep:
       purcell_num_turns: *num_turns
 
       readout_padding_length:
-        - 1700
+        - 1400
 
 #      purcell_padding_length:
 #        - 650
@@ -93,7 +91,7 @@ builder_sweep:
       purcell_padding_length:
 #        - 600
 #        - 625
-        - 1500
+        - 1200
 #        start: 620
 #        end: 750
 #        step: 20
