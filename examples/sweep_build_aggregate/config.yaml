@@ -3,11 +3,11 @@ default_meander_radius: &meander_radius
 default_meander_spacing: &meander_spacing
   - 300
 default_meander_num_turns: &num_turns
-  - 8
+  - 9
 default_meander_wire_width: &wire_width
   - 100
 default_meander_height: &meander_height
-  - 1200
+  - 1250
 
 
 builder:
@@ -22,7 +22,7 @@ builder:
   path: ./chip.py
 
 builder_sweep:
-  - data:
+  - constants:
       use_cavity: false
       chip_base_length:
         value: 23.25
@@ -30,6 +30,7 @@ builder_sweep:
       spacer_length:
         value: 0.001
         unit: mm
+    type: zip
 
 #      chip_base_mesh:
 #        - 200um
@@ -75,8 +76,7 @@ builder_sweep:
 ##        - 1um
 #      vacuum_mesh:
 #        - 2mm
-    type: zip
-  - data:
+  - parameters:
       purcell_wire_width: *wire_width
       purcell_radius: *meander_radius
       purcell_spacing: *meander_spacing
@@ -92,6 +92,7 @@ builder_sweep:
 #        - 600
 #        - 625
         - 1200
+        - 1300
 #        start: 620
 #        end: 750
 #        step: 20
@@ -109,11 +110,11 @@ builder_sweep:
 
 data_parameters:
   project_name: testing_workflow
-  root_directory: check_resonator_frequency_with_cavity
+  root_directory: drer4
 
 session_parameters:
   close_on_exit: true
-  file_path: ./check_resonator_frequency_with_cavity.aedt
+  file_path: ./build.aedt
   new_desktop: true
   non_graphical: false
   version: '2024.2'
@@ -130,7 +131,7 @@ simulations:
       MinimumConvergedPasses: 1
       MinimumPasses: 1
       MinimumFrequency: 2GHz
-      NumModes: 20
+      NumModes: 4
       MaxDeltaFreq: 0.2
       ConvergeOnRealFreq: True
       PercentRefinement: 30
