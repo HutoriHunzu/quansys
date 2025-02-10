@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Iterable, Literal
 from abc import ABC, abstractmethod
-from .utils import split_dict_by_type, merge_flat_dicts, flatten, unflatten
+from .utils import split_dict_by_type, merge_by_update, flatten, unflatten
 
 # from ...shared.variables_types import (Value, Values, GenericValues,
 #                                        GenericValue, NamedValue, NamedValues)
@@ -11,7 +11,7 @@ from .utils import split_dict_by_type, merge_flat_dicts, flatten, unflatten
 
 
 class SweepBase(ABC, BaseModel):
-    sweep_variables: dict = {}
+    parameters: dict = {}
     constants: dict = {}
 
     def parse(self):
@@ -20,14 +20,14 @@ class SweepBase(ABC, BaseModel):
         # the iterable part will be returned to be used in the generate
         # for different types of sweeping mechanisms
 
-        flat_parameters = flatten(self.sweep_variables)
+        flat_parameters = flatten(self.parameters)
         # divide it to constants and sweepable
         sweepable_parameters, constants_from_sweepable = split_dict_by_type(flat_parameters, Iterable)
 
         # in case of empty sweepable_parameters we still want to iterate a single time
 
         flat_constants = flatten(self.constants)
-        flat_constants = merge_flat_dicts(flat_constants, constants_from_sweepable)
+        flat_constants = merge_by_update(flat_constants, constants_from_sweepable)
 
         # get all iterable with their corresponding keys
         sweepable_parameters_keys = sweepable_parameters.keys()
@@ -49,6 +49,6 @@ class SweepBase(ABC, BaseModel):
 
         for combination in self.sweep(values):
             current = dict(zip(keys, combination))
-            current = merge_dicts(current, constants)
+            current = merge_by_update(current, constants)
             yield unflatten(current)
 

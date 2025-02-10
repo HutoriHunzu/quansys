@@ -5,7 +5,7 @@ from collections import defaultdict
 from collections.abc import Iterable
 from abc import ABC, abstractmethod
 from itertools import product
-
+from functools import reduce
 
 def _tree():
     """Creates a recursive defaultdict."""
@@ -57,15 +57,17 @@ def unflatten(flat_dict):
     return _dictify(nested)
 
 
-def merge_dicts(*args: dict) -> dict:
-    return merge_flat_dicts(*map(flatten, args))
-
-
-def merge_flat_dicts(*args: dict) -> dict:
+def merge_by_update(*args: dict) -> dict:
     result = {}
-    for flat_dict in map(flatten, args):
+    for flat_dict in args:
         result.update(flat_dict)
-    return unflatten(result)
+    return result
+
+
+def merge_dicts(*args: dict) -> dict:
+    return unflatten(merge_by_update(*map(flatten, args)))
+
+
 
 
 def split_dict_by_type(d: dict, t: Type) -> tuple[dict, dict]:

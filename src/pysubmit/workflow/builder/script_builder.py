@@ -5,6 +5,7 @@ import sys
 import importlib
 from typing_extensions import Annotated
 from pydantic import BeforeValidator, AfterValidator
+from ..sweep.utils import merge_dicts
 
 from ansys.aedt.core.hfss import Hfss
 
@@ -40,7 +41,7 @@ class ScriptBuilder(BaseBuilder):
         module = self._load_user_module()
 
         parameters = parameters or {}
-        combined_args = dict(**self.args, **parameters)
+        combined_args = merge_dicts(self.args, parameters)
 
         return module.build(hfss, **combined_args)
 

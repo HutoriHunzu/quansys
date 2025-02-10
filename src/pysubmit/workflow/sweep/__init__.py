@@ -3,7 +3,7 @@ from .product_sweep import ProductSweep
 from pydantic import TypeAdapter, Field
 from typing_extensions import Annotated
 from itertools import product
-from utils import merge_dicts
+from .utils import merge_dicts
 
 SUPPORTED_SWEEPS = Annotated[ZipSweep | ProductSweep, Field(discriminator='type')]
 SweepAdapter = TypeAdapter(SUPPORTED_SWEEPS)
