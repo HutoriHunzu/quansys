@@ -1,25 +1,31 @@
 from ansys.aedt.core import Hfss
-from ansys.aedt.core.application.analysis import Setup
+from ansys.aedt.core.application.analysis import SetupHFSS
 from typing import Literal
 from pydantic import TypeAdapter, Field, BeforeValidator
 from typing_extensions import Annotated
 from ..base import (BaseAnalysis, SupportedAnalysisNames, set_design_and_get_setup,
-                    update_setup_parameters, LIST_STR_TYPE)
+                    update_setup_parameters, validate_solution_type)
 
-from .formatter import FrequencyAndQualityFactorFormatter
+from ..shared.solution_handler import get_solved_solutions
+from .results import get_eigenmode_results
 
-SUPPORTED_FORMATTERS = FrequencyAndQualityFactorFormatter
-FORMAT_ADAPTER = TypeAdapter(SUPPORTED_FORMATTERS)
+
+# from .formatter import FrequencyAndQualityFactorFormatter
+
+# SUPPORTED_FORMATTERS = FrequencyAndQualityFactorFormatter
+# FORMAT_ADAPTER = TypeAdapter(SUPPORTED_FORMATTERS)
 
 
 class EignmodeAnalysis(BaseAnalysis):
     type: Literal[SupportedAnalysisNames.EIGENMODE] = SupportedAnalysisNames.EIGENMODE
     setup_name: str
+    design_name: str
     cores: int = 4
     gpus: int = 0
-    setup_parameters: dict = Field(default_factory=dict)
-    formatter_type: str = 'freq_and_q_factor'
-    formatter_args: dict | None = None
+    setup_parameters: dict = {}
+
+    # formatter_type: str = 'freq_and_q_factor'
+    # formatter_args: dict | None = None
 
     def analyze(self, hfss: Hfss = None, **kwargs):
         if not isinstance(hfss, Hfss):
@@ -30,64 +36,49 @@ class EignmodeAnalysis(BaseAnalysis):
         # check for application of setup parameters
         update_setup_parameters(setup, self.setup_parameters)
 
+        # validate solution type
+        validate_solution_type(setup, setup_type='HfssEigen')
+
         # Analyze
         setup.analyze(cores=self.cores, gpus=self.gpus)
 
         # Save and exit
         hfss.save_project()
 
-        # call for all data extractions on solved project
-        # TODO: support for a list of extractions types
-        # TODO: return a dict of str to an extract result
+        return get_eigenmode_results(setup)
 
-        return self._get_results(hfss)
+    def check_requirement(self):
+        pass
 
-    def _get_formatter(self):
-        formatter_type = {'type': self.formatter_type}
-        formatter_args = {} if self.formatter_args is None else self.formatter_args
-        return FORMAT_ADAPTER.validate_python(dict(**formatter_type, **formatter_args))
+        # hfss['chip_house_length'] = '22.2mm'
 
-    @staticmethod
-    def convert_result_to_dict(result) -> dict:
-        return result.model_dump()
+        # setup.analyze(cores=self.cores, gpus=self.gpus)
 
-    def load_result_by_dict(self, data: dict):
-        formatter = self._get_formatter()
-        return formatter.load(data)
+        # Save and exit
+        # hfss.save_project()
 
-    def _get_results(self, hfss: Hfss = None):
-        formatter = self._get_formatter()
+        # get_solved_solutions(hfss)
 
-        # getting setup
-        setup = hfss.get_setup(self.setup_name)
-
-        return formatter.format(setup)
-
-    def extract_parameters(self) -> dict:
-        return self.model_dump()
-
-# def run(hfss: Hfss, setup, config_project: ConfigProject) -> Dict[int, Dict[str, float]]:
-#     # make sure setup is correct
-#     # setup = hfss.get_setup(config_project.setup_name)
-#
-#     # get all modes to freqs and
-#     return _get_all_modes_to_freq_and_quality_factor(hfss)
-#
-#     # return hfss
-#
-#
-# def _get_all_modes_to_freq_and_quality_factor(hfss) -> Dict[int, Dict[str, float]]:
-#     post_api = hfss.post
-#
-#     modes_names = post_api.available_report_quantities(quantities_category='Eigen Modes')
-#
-#     number_of_modes = len(modes_names)
-#
-#     return dict(map(lambda x: (x, _get_mode_to_freq_and_quality_factor(post_api, x)),
-#                     range(1, number_of_modes + 1)))
-#
-#
-# def _get_mode_to_freq_and_quality_factor(post_api, mode_number: int):
-#     freq_sol = post_api.get_solution_data(expressions=f'Mode({mode_number})')
-#     q_sol = post_api.get_solution_data(expressions=f'Q({mode_number})')
-#     return {'freq': freq_sol.data_real()[0], 'q_factor': q_sol.data_real()[0]}
+    # # def _get_formatter(self):
+    # #     formatter_type = {'type': self.formatter_type}
+    # #     formatter_args = {} if self.formatter_args is None else self.formatter_args
+    # #     return FORMAT_ADAPTER.validate_python(dict(**formatter_type, **formatter_args))
+    #
+    # @staticmethod
+    # def convert_result_to_dict(result) -> dict:
+    #     return result.model_dump()
+    #
+    # def load_result_by_dict(self, data: dict):
+    #     formatter = self._get_formatter()
+    #     return formatter.load(data)
+    #
+    # def _get_results(self, hfss: Hfss = None):
+    #     formatter = self._get_formatter()
+    #
+    #     # getting setup
+    #     setup = hfss.get_setup(self.setup_name)
+    #
+    #     return formatter.format(setup)
+    #
+    # def extract_parameters(self) -> dict:
+    #     return self.model_dump()

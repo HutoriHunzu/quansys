@@ -6,6 +6,8 @@ from ...shared import variables_types
 import numpy as np
 from .serializer import dataclass_to_dict, dict_to_dataclass
 from itertools import combinations
+from ..base import BaseResult
+from ..eigenmode.results import EigenmodeResults
 
 
 class ConfigJunction(BaseModel):
@@ -17,6 +19,9 @@ class ConfigJunction(BaseModel):
 class EprDiagResult:
     chi: NDArray
     frequencies: NDArray
+    chi_unit: str = 'mhz'
+    frequencies_unit: str = 'ghz'
+
 
 
 @dataclass
@@ -152,43 +157,5 @@ class ParticipationDataset:
         )
 
 
-@dataclass
-class QuantumResult:
-    epr: EprDiagResult
-    distributed: ParticipationDataset
 
-    def to_dict(self) -> dict:
-        return dataclass_to_dict(self)
 
-    @classmethod
-    def from_dict(cls, data: dict) -> 'QuantumResult':
-        return dict_to_dataclass(cls, data)
-
-    def flatten(self) -> dict:
-
-        flat_dict = {}
-
-        # Accessing chi matrix and labels order from the instance
-        chi_matrix = self.epr.chi
-        labels_order = self.distributed.labels_order
-        frequencies = self.distributed.frequencies
-
-        # Check if the chi matrix is all real
-        if not np.isrealobj(chi_matrix):
-            raise ValueError("The chi matrix contains complex values. Only real values are supported.")
-
-        # Flatten chi matrix into unique label pairs using combinations
-        for (i, label_1), (j, label_2) in combinations(enumerate(labels_order), 2):
-            # For each unique pair of labels
-            key = f"{label_1}__{label_2}"
-
-            # Directly use the real value from chi_matrix (symmetric, so i, j and j, i are identical)
-            value = chi_matrix[i][j]
-
-            flat_dict[key] = value
-
-        # Add frequencies for each label
-        for i, label in enumerate(labels_order):
-            flat_dict[f"{label}_frequency"] = frequencies[i]
-
-        return flat_dict

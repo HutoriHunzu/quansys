@@ -6,8 +6,11 @@ from pydantic import BeforeValidator
 from .distributed_analysis import DistributedAnalysis
 from .epr_calculator import EprCalculator
 from .modes_and_labels import ModesAndLabels
-from pysubmit.simulation.base import BaseAnalysis, SupportedAnalysisNames, validate_and_set_deisgn, LIST_STR_TYPE
-from .structures import ConfigJunction, QuantumResult
+from pysubmit.simulation.base import (BaseAnalysis, SupportedAnalysisNames, validate_and_set_design)
+from ..eigenmode.results import get_eigenmode_results
+
+from .results import QuantumResult
+from .structures import ConfigJunction
 
 
 def ensure_list(value):
@@ -22,39 +25,41 @@ JUNCTION_INFO_TYPE = Annotated[list[ConfigJunction], BeforeValidator(ensure_list
 
 
 class QuantumEpr(BaseAnalysis):
+    design_name: str
+    setup_name: str
     type: Literal[SupportedAnalysisNames.QUANTUM_EPR] = SupportedAnalysisNames.QUANTUM_EPR
     modes_to_labels: MODES_TO_LABELS_TYPE
     junctions_infos: JUNCTION_INFO_TYPE
-    formatter_type: str | None = 'dispersive'
-    formatter_args: dict | None = None
 
-    # keeps the result until calling for format
-    # result: dict = Field(init=False, default_factory=list)
-
-    # _distributed_result: ParticipationDataset = None
-
-    def analyze(self, hfss, data_handler=None, **kwargs):
-
-        # hfss = kwargs.get('hfss')
-        # data_handler = kwargs.get('data_handler')
+    def analyze(self, hfss, **kwargs):
 
         if not isinstance(hfss, Hfss):
             raise ValueError('hfss given must be a Hfss instance')
 
-        validate_and_set_deisgn(hfss, self.design_name)
+        validate_and_set_design(hfss, self.design_name)
+
+        # getting setup and getting
+        setup = hfss.get_setup(self.setup_name)
+
+        # getting eigenmode solution in simple form, meaning it is
+        # of type dict[int, dict[str, float]
+        # where the keys are the mode number and the values are frequency dict and quality factor dict
+        eigenmode_result = get_eigenmode_results(setup)
 
         # convert modes to labels to dict of int to str
         # in case of ModesAndLabels object call for parse
         modes_to_labels = self.modes_to_labels
+
         if isinstance(modes_to_labels, ModesAndLabels):
-            # getting the latest solution of eigenmode to be used for the modes and labels
-            solution = data_handler.get_solution(setup_discriminator=SupportedAnalysisNames.EIGENMODE)
+            modes_to_labels = modes_to_labels.parse(eigenmode_result.generate_simple_form())
 
-            result = solution.result
+        epr, distributed = self._analyze(hfss, modes_to_labels)
 
-            modes_to_labels = modes_to_labels.parse(mode_to_freq_and_q_factor=result)
-
-        return self._analyze(hfss, modes_to_labels)
+        return QuantumResult(
+            epr=epr,
+            distributed=distributed,
+            eigenmode_result=eigenmode_result.generate_a_labeled_version(modes_to_labels)
+        )
 
     def _analyze(self, hfss: Hfss, modes_to_labels: dict[int, str]):
         dst = DistributedAnalysis(hfss,
@@ -66,21 +71,6 @@ class QuantumEpr(BaseAnalysis):
         calc = EprCalculator(participation_dataset=distributed_result)
         epr_result = calc.epr_numerical_diagonalizing()
 
-        return QuantumResult(
-            epr=epr_result,
-            distributed=distributed_result
-        )
+        return epr_result, distributed_result
 
-        # return epr_result, distributed_result
 
-    @staticmethod
-    def convert_result_to_dict(result: QuantumResult) -> dict:
-        return result.to_dict()
-
-    # @staticmethod
-    def load_result_by_dict(self, data: dict) -> QuantumResult:
-        return QuantumResult.from_dict(data)
-
-    def format(self) -> dict:
-        # format the result to flatten
-        pass

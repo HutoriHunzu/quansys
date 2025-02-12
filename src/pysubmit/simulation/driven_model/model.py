@@ -3,7 +3,7 @@ from pydantic import BaseModel, TypeAdapter, Field
 
 from ..base import (BaseAnalysis, SupportedAnalysisNames,
                     set_design_and_get_setup, update_setup_parameters,
-                    LIST_STR_TYPE)
+                    )
 from .formatter import SParameterFormatter
 from typing import Literal
 

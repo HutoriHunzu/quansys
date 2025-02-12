@@ -11,8 +11,9 @@ dependencies = [
     "pint",
     "h5py>=3.12.1",
     "pandas>=2.2.3",
-    "pydantic_yaml",
-    "typer[all]" # Added typer as a dependency
+    "pydantic_yaml", # Added typer as a dependency
+    "typer[all]",
+    "pytest>=8.3.4",
 ]
 requires-python = ">=3.11"
 readme = "README.md"

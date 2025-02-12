@@ -1,7 +1,9 @@
-from pydantic import BaseModel, Field
-from typing import Iterable, Literal
+from pydantic import BaseModel, Field, TypeAdapter, BeforeValidator
+from typing_extensions import Any, Annotated, Iterable
 from abc import ABC, abstractmethod
-from .utils import split_dict_by_type, merge_by_update, flatten, unflatten
+from .utils import split_dict_by_adapter, merge_by_update, flatten, unflatten
+from pysubmit.shared.variables_types import SUPPORTED_COMPOUND_VALUES
+
 
 # from ...shared.variables_types import (Value, Values, GenericValues,
 #                                        GenericValue, NamedValue, NamedValues)
@@ -9,10 +11,23 @@ from .utils import split_dict_by_type, merge_by_update, flatten, unflatten
 # SweepInputDictValuesType = Value | Values | GenericValue | GenericValues
 # SweepOutputDictValuesType = Value | GenericValue
 
+# def convert_tuple_to_list(v: Any):
+#     if isinstance(v, tuple):
+#         return list(v)
+#     return v
+
+
+SweepInputListType = list | tuple
+SweepInputTypes = SUPPORTED_COMPOUND_VALUES | SweepInputListType
+CompoundAdapter = TypeAdapter(SUPPORTED_COMPOUND_VALUES)
+SweepInputTypesAdapter = TypeAdapter(SweepInputTypes)
+IterableAdapter = TypeAdapter(SweepInputListType)
+
 
 class SweepBase(ABC, BaseModel):
     parameters: dict = {}
     constants: dict = {}
+    use_compound_types: bool = True
 
     def parse(self):
         # go over the parameters and split them to iterable and not iterable
@@ -20,9 +35,12 @@ class SweepBase(ABC, BaseModel):
         # the iterable part will be returned to be used in the generate
         # for different types of sweeping mechanisms
 
-        flat_parameters = flatten(self.parameters)
+        adapter = None if self.use_compound_types else CompoundAdapter
+        flat_parameters = flatten(self.parameters, adapter=adapter)
         # divide it to constants and sweepable
-        sweepable_parameters, constants_from_sweepable = split_dict_by_type(flat_parameters, Iterable)
+
+        adapter = SweepInputTypesAdapter if self.use_compound_types else IterableAdapter
+        sweepable_parameters, constants_from_sweepable = split_dict_by_adapter(flat_parameters, adapter)
 
         # in case of empty sweepable_parameters we still want to iterate a single time
 

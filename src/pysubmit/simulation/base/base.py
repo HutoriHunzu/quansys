@@ -1,23 +1,16 @@
-from pydantic import BaseModel, BeforeValidator, RootModel
-from typing_extensions import Annotated, Generic, TypeVar
+from pydantic import BaseModel, BeforeValidator, RootModel, TypeAdapter
+from typing import Literal, Self
 from abc import ABC, abstractmethod
 from enum import StrEnum, auto
+import json
 
 
-def ensure_list(value):
-    if not isinstance(value, list):
-        return [value]
-    return value
+FlatDictType = dict[str, str | bool | float]
+FlatDictAdapter = TypeAdapter(FlatDictType)
 
 
-LIST_STR_TYPE = Annotated[list[str], BeforeValidator(ensure_list)]
-
-
-class BaseResult(RootModel[dict], ABC):
-
-    @abstractmethod
-    def flatten(self) -> dict[str | bool | float, str | bool | float]:
-        pass
+class SupportedSetupTypes:
+    EIGENMODE = 'HfssEigen'
 
 
 class SupportedAnalysisNames(StrEnum):
@@ -26,32 +19,53 @@ class SupportedAnalysisNames(StrEnum):
     QUANTUM_EPR = auto()
 
 
+
+class JsonSerializable(ABC):
+
+    @abstractmethod
+    def serialize(self) -> dict:
+        """ should be compatible with json encoding"""
+        pass
+
+    @classmethod
+    @abstractmethod
+    def deserialize(cls, data: dict) -> Self:
+        pass
+
+
+class FlatDictClass(ABC):
+
+    @abstractmethod
+    def flatten(self) -> FlatDictType:
+        pass
+
+
+class BaseResult(BaseModel, FlatDictClass, ABC):
+
+    type: SupportedAnalysisNames
+
+    def validate_flatten(self):
+        FlatDictAdapter.validate_python(self.flatten())
+
+    # def _validate_serialize(self):
+    #     json.dumps(self.serialize())
+    #
+    # def validate(self):
+    #     # self._validate_serialize()
+    #     self._validate_flatten()
+
+
+
 class BaseAnalysis(BaseModel, ABC):
     type: SupportedAnalysisNames
-    design_name: str
 
     @abstractmethod
     def analyze(self, **kwargs) -> BaseResult:
         pass
 
+    # def serialize(self) -> dict:
+    #     return self.model_dump()
+
     # @abstractmethod
-    # def format(self, **kwargs) -> dict:
+    # def check_requirement(self):
     #     pass
-
-    def analyze_and_extract_results(self, **kwargs) -> dict:
-        results = self.analyze(**kwargs)  # should be a dict
-        parameters = self.extract_parameters()
-
-        return {'results': results,
-                'setup': parameters}
-
-    def extract_parameters(self) -> dict:
-        return self.model_dump()
-
-
-
-
-# class Solution(BaseModel):
-#     setup: BaseAnalysis
-#
-#     pass

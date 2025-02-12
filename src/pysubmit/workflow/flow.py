@@ -13,16 +13,19 @@ def execute_flow(config: WorkflowConfig):
     # Starting a new session of HFSS
     with start_hfss_session(config.session_parameters) as hfss:
         ### BUILD PHASE ###
-        for tag in _create_build_and_generate_tag(config.builder,
+        for build_parameters in _create_build_and_generate_tag(config.builder,
                                                   config.builder_sweep,
                                                   hfss,
                                                   data_handler):
-            data_handler.load_tag(tag, 'build_parameters')
+
+            data_handler.create_iteration()
+
+            data_handler.add_data_to_iteration('build_parameters', build_parameters)
 
             ### SIMULATION PHASE ###
             _run_simulations(config.simulations, hfss, data_handler)
 
-    data_handler.aggregate_and_save()
+    # data_handler.aggregate_and_save()
 
 
 def _create_build_and_generate_tag(builder, sweeps, hfss, data_handler):
@@ -40,9 +43,12 @@ def _create_build_and_generate_tag(builder, sweeps, hfss, data_handler):
 
 
 def _run_simulations(simulations, hfss, data_handler):
+
     for sim in simulations:
 
         result = sim.analyze(hfss=hfss, data_handler=data_handler)
-        result_as_dict = sim.convert_result_to_dict(result)
+        # result_as_dict = sim.convert_result_to_dict(result)
         # converting result to dict
-        data_handler.add_solution(sim, result_as_dict, add_tag=True)
+        data_handler.add_data_to_iteration(f'{sim.type}_parameters', sim.model_dump())
+        data_handler.add_data_to_iteration(f'{result.type}_results', result.model_dump())
+        # data_handler.add_solution(sim, result, add_tag=True)

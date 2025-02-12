@@ -1,8 +1,7 @@
-from pydantic import BaseModel, RootModel, BeforeValidator, Field
-from typing_extensions import Iterable, Literal, Annotated
+from pydantic import BaseModel, RootModel, BeforeValidator
+from typing import Iterable, Literal, Annotated
 
 import numpy as np
-from .conversion import convert
 
 """ 
 This file contains information about different data types that might be useful in various cases:
@@ -17,31 +16,32 @@ def ensure_list(value):
     return value
 
 
+
+
 class RangeValues(BaseModel):
-    name: Literal['range'] = 'range'
     start: float
     step: float
     end: float
-    return_type: Literal['float', 'int'] = 'float'
+    as_type: Literal['float', 'int'] = 'float'
 
     def __iter__(self):
-        c = float if self.return_type == 'float' else int
+        c = float if self.as_type == 'float' else int
         return map(lambda x: c(x), np.arange(self.start, self.end, self.step))
 
 
 class LinSpaceValues(BaseModel):
-    name: Literal['linspace'] = 'linspace'
     start: float
     number: int
     end: float
-    return_type: Literal['float', 'int'] = 'float'
+    as_type: Literal['float', 'int'] = 'float'
 
     def __iter__(self):
-        c = float if self.return_type == 'float' else int
+        c = float if self.as_type == 'float' else int
         return map(lambda x: c(x), np.linspace(self.start, self.end, self.number))
 
 
-SUPPORTED_COMPOUND_VALUES = Annotated[RangeValues | LinSpaceValues, Field(discriminator='name')]
+SUPPORTED_COMPOUND_VALUES = RangeValues | LinSpaceValues
+
 
 AllValueType = float | str | bool | None
 AllValuesType = SUPPORTED_COMPOUND_VALUES | Annotated[list[AllValueType], BeforeValidator(ensure_list)]
@@ -74,14 +74,14 @@ class GenericValues(RootModel):
 
 
 class Value(BaseModel):
-    value: float
+    value: AllValueType
     unit: str = ''
+
+    def gen(self) -> Iterable[dict]:
+        return [dict(self)]
 
     def to_str(self):
         return f'{self.value}{self.unit}'
-
-    def change_unit(self, unit: str | None):
-        self.value, self.unit = convert(self.value, self.unit, target_unit=unit)
 
 
 class Values(BaseModel):

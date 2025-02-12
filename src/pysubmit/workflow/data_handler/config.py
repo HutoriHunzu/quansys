@@ -3,17 +3,19 @@ from .json_utils import unique_name_by_counter, read, write, json_write
 from pathlib import Path
 from typing import Iterable, Type
 
-from ...simulation import ANALYSIS_ADAPTER, SUPPORTED_ANALYSIS, SupportedAnalysisNames
+from ...simulation import ANALYSIS_ADAPTER, SUPPORTED_ANALYSIS, SupportedAnalysisNames, BaseResult
 from typing_extensions import Annotated
 from itertools import islice, groupby
 from datetime import datetime
 
 from pandas import DataFrame
 
+
 def convert_none_to_current_dir(value):
     if value is None:
         return '.'
     return value
+
 
 POSITIVE_INTEGER = Annotated[int, Field(gt=0)]
 ROOT_DIRECTORY = Annotated[str, BeforeValidator(convert_none_to_current_dir)]
@@ -79,6 +81,8 @@ class DataHandler:
         self.solutions_directory = self.results_directory / 'solutions'
         self.aggregate_directory = self.results_directory / 'aggregate'
 
+        self.last_iteration_path: Path = None
+
         self.tag = {}
         self.metadata = {}
 
@@ -86,6 +90,19 @@ class DataHandler:
         # remove current folder and solutions
 
         pass
+
+    def create_iteration(self) -> Path:
+
+        path = self.results_directory / 'iteration'
+        path = unique_name_by_counter(path)
+        path.mkdir()
+        self.last_iteration_path = path
+        return path
+
+    def add_data_to_iteration(self, title_name: str, data: dict):
+
+        json_write(self.last_iteration_path / f'{title_name}.json',
+                   data)
 
     def prepare(self):
         # creating a subfolder in root for solutions and iterations
@@ -107,7 +124,7 @@ class DataHandler:
         pass
 
     def add_solution(self, setup: SUPPORTED_ANALYSIS,
-                     result: dict, add_tag: bool = False):
+                     result: BaseResult, add_tag: bool = False):
 
         tag = self.tag if add_tag else {}
 
@@ -226,4 +243,3 @@ class DataHandler:
         for setup_type, data in self.aggregate():
             df = DataFrame(data)
             df.to_csv(self.aggregate_directory / f'{setup_type}.csv', index=False)
-

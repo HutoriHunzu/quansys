@@ -6,6 +6,7 @@ from collections.abc import Iterable
 from abc import ABC, abstractmethod
 from itertools import product
 from functools import reduce
+from pydantic import TypeAdapter, ValidationError
 
 def _tree():
     """Creates a recursive defaultdict."""
@@ -19,12 +20,23 @@ def _dictify(d):
     return d
 
 
-def flatten(d: dict, parent_key=()) -> dict[tuple, Any]:
+def apply_adapter(value: Any, adapter: TypeAdapter = None):
+    if not adapter:
+        return value
+    try:
+        value = adapter.validate_python(value)
+    except ValidationError:
+        pass
+    return value
+
+
+def flatten(d: dict, parent_key=(), adapter: TypeAdapter = None) -> dict[tuple, Any]:
     items = {}
     for k, v in d.items():
         new_key = parent_key + (k,)  # Always treat keys as tuples
+        v = apply_adapter(v, adapter)
         if isinstance(v, dict):
-            items.update(flatten(v, new_key))
+            items.update(flatten(v, new_key, adapter=adapter))
         else:
             items[new_key] = v
     return items
@@ -70,11 +82,25 @@ def merge_dicts(*args: dict) -> dict:
 
 
 
-def split_dict_by_type(d: dict, t: Type) -> tuple[dict, dict]:
-    correct_type_dict = dict(filter(lambda x: isinstance(x[1], t), d.items()))
-    other_type_dict = dict(filter(lambda x: not isinstance(x[1], t), d.items()))
+def split_dict_by_adapter(d: dict, adapter: TypeAdapter) -> tuple[dict, dict]:
 
-    return correct_type_dict, other_type_dict
+    matching: dict = {}
+    non_matching: dict = {}
+    for key, value in d.items():
+        try:
+            adapter.validate_python(value)
+        except ValidationError:
+            non_matching[key] = value
+        else:
+            matching[key] = value
+
+    return matching, non_matching
+
+
+    # correct_type_dict = dict(filter(lambda x: isinstance(x[1], t), d.items()))
+    # other_type_dict = dict(filter(lambda x: not isinstance(x[1], t), d.items()))
+
+    # return correct_type_dict, other_type_dict
 
 
 

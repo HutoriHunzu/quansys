@@ -1,8 +1,7 @@
 from pydantic import BaseModel, TypeAdapter
 from typing import Dict, List, Tuple
-from copy import deepcopy
-from ...eigenmode.formatter import FrequencyAndQualityFactorResults
 from .inferences import ManualInference, OrderInference
+from pysubmit.simulation.eigenmode.results import EigenmodeResults
 
 SUPPORTED_INFERENCES = (ManualInference | OrderInference)
 INFERENCE_ADAPTER = TypeAdapter(SUPPORTED_INFERENCES)
@@ -22,25 +21,23 @@ class ModesAndLabels(BaseModel):
     modes: List[Modes]
     labels: List[str]
 
-    def parse(self, mode_to_freq_and_q_factor: dict[str | int, dict[str, float]]) -> Dict[int, str]:
-        modes_to_labels = {}
-
-        # make sure that the keys are int
-        mode_to_freq_and_q_factor = {int(k): v for k, v in mode_to_freq_and_q_factor.items()}
+    def parse(self, eigenmode_results: dict[int, dict[str, float]]) -> Dict[int, str]:
 
         # first execution of manual inferences
         manual_modes = filter(lambda x: x.inference_type == 'manual', self.modes)
         other_modes = filter(lambda x: x.inference_type != 'manual', self.modes)
 
+        modes_to_labels = {}
+
         #
         modes_execution_order = [manual_modes, other_modes]
         for group in modes_execution_order:
             for mode in group:
-                d = mode.parse(mode_to_freq_and_q_factor)
+                d = mode.parse(eigenmode_results)
 
                 new_modes = set(d.keys())
-                available_modes = set(mode_to_freq_and_q_factor.keys()) - new_modes
-                mode_to_freq_and_q_factor = {m: mode_to_freq_and_q_factor[m] for m in available_modes}
+                available_modes = set(eigenmode_results.keys()) - new_modes
+                eigenmode_results = {m: eigenmode_results[m] for m in available_modes}
 
                 modes_to_labels.update(d)
 
