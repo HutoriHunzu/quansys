@@ -1,13 +1,14 @@
 from copy import deepcopy
 
 from pydantic import BaseModel, model_validator
-from ..base import BaseResult
+from ..base import BaseSimulationOutput
 from ansys.aedt.core.application.analysis import Setup
 from functools import partial
 from typing import Literal
 
 from pysubmit.shared import Value
-from ..base import FlatDictType, validate_solution_type, validate_existing_solution, SupportedAnalysisNames
+from ..base import (FlatDictType, validate_solution_type, validate_existing_solution, SimulationOutputTypesNames,
+                    SimulationTypesNames)
 
 
 class SingleModeResult(BaseModel):
@@ -29,8 +30,8 @@ class SingleModeResult(BaseModel):
         }
 
 
-class EigenmodeResults(BaseResult):
-    type: Literal[SupportedAnalysisNames.EIGENMODE] = SupportedAnalysisNames.EIGENMODE
+class EigenmodeResults(BaseSimulationOutput):
+    type: Literal[SimulationOutputTypesNames.EIGENMODE_RESULT] = SimulationOutputTypesNames.EIGENMODE_RESULT
     results: dict[int, SingleModeResult]
     frequencies_unit: str = 'GHz'
 

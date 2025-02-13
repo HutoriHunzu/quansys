@@ -6,7 +6,7 @@ from pydantic import BeforeValidator
 from .distributed_analysis import DistributedAnalysis
 from .epr_calculator import EprCalculator
 from .modes_and_labels import ModesAndLabels
-from pysubmit.simulation.base import (BaseAnalysis, SupportedAnalysisNames, validate_and_set_design)
+from pysubmit.simulation.base import (BaseAnalysis, SimulationTypesNames, validate_and_set_design)
 from ..eigenmode.results import get_eigenmode_results
 
 from .results import QuantumResult
@@ -25,9 +25,9 @@ JUNCTION_INFO_TYPE = Annotated[list[ConfigJunction], BeforeValidator(ensure_list
 
 
 class QuantumEpr(BaseAnalysis):
+    type: Literal[SimulationTypesNames.QUANTUM_EPR] = SimulationTypesNames.QUANTUM_EPR
     design_name: str
     setup_name: str
-    type: Literal[SupportedAnalysisNames.QUANTUM_EPR] = SupportedAnalysisNames.QUANTUM_EPR
     modes_to_labels: MODES_TO_LABELS_TYPE
     junctions_infos: JUNCTION_INFO_TYPE
 

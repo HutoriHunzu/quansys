@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from enum import StrEnum, auto
 import json
 
-
 FlatDictType = dict[str, str | bool | float]
 FlatDictAdapter = TypeAdapter(FlatDictType)
 
@@ -13,39 +12,48 @@ class SupportedSetupTypes:
     EIGENMODE = 'HfssEigen'
 
 
-class SupportedAnalysisNames(StrEnum):
-    DRIVEN_MODEL = auto()
+class SimulationTypesNames(StrEnum):
+    DRIVEN_MODE = auto()
     EIGENMODE = auto()
     QUANTUM_EPR = auto()
 
+class SimulationOutputTypesNames(StrEnum):
+    EIGENMODE_RESULT = auto()
+    EIGENMODE_REPORT = auto()
+    QUANTUM_EPR_RESULT = auto()
+    QUANTUM_EPR_REPORT = auto()
+    # EIGENMODE_RESULT = auto()
+    # EIGENMODE_RESULT = auto()
+    # REPORT = auto()
 
 
-class JsonSerializable(ABC):
+# class SupportedResultsNames(StrEnum):
+#     DRIVEN_MODEL_RESULT = auto()
+#     EIGENMODE_RESULT = auto()
+#     QUANTUM_EPR_RESULT = auto()
+#
+#
+# class SupportedReportNames(StrEnum):
+#     DRIVEN_MODEL_REPORT = auto()
+#     EIGENMODE_REPORT = auto()
+#     QUANTUM_EPR_REPORT = auto()
+#
+
+class BaseSimulationOutput(BaseModel, ABC):
+    id: str = ''
+    type: SimulationOutputTypesNames
 
     @abstractmethod
-    def serialize(self) -> dict:
-        """ should be compatible with json encoding"""
+    def flatten(self) -> dict:
         pass
 
-    @classmethod
-    @abstractmethod
-    def deserialize(cls, data: dict) -> Self:
-        pass
-
-
-class FlatDictClass(ABC):
-
-    @abstractmethod
-    def flatten(self) -> FlatDictType:
-        pass
-
-
-class BaseResult(BaseModel, FlatDictClass, ABC):
-
-    type: SupportedAnalysisNames
-
-    def validate_flatten(self):
-        FlatDictAdapter.validate_python(self.flatten())
+# class BaseReport(BaseModel, ABC):
+#     id: str = ''
+#     type: SimulationTypesNames
+#
+#     @abstractmethod
+#     def flatten(self) -> dict:
+#         pass
 
     # def _validate_serialize(self):
     #     json.dumps(self.serialize())
@@ -55,12 +63,16 @@ class BaseResult(BaseModel, FlatDictClass, ABC):
     #     self._validate_flatten()
 
 
-
 class BaseAnalysis(BaseModel, ABC):
-    type: SupportedAnalysisNames
+    id: str = ''
+    type: SimulationTypesNames
 
     @abstractmethod
-    def analyze(self, **kwargs) -> BaseResult:
+    def analyze(self, **kwargs) -> BaseSimulationOutput:
+        pass
+
+    @abstractmethod
+    def report(self) -> BaseSimulationOutput:
         pass
 
     # def serialize(self) -> dict:

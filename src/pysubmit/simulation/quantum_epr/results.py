@@ -4,7 +4,7 @@ from .structures import EprDiagResult, ParticipationDataset
 import numpy as np
 from .serializer import dataclass_to_dict, dict_to_dataclass
 from itertools import combinations
-from ..base import BaseResult, SupportedAnalysisNames
+from ..base import BaseSimulationOutput, SimulationTypesNames, SimulationOutputTypesNames
 from ..eigenmode.results import EigenmodeResults
 
 from typing_extensions import Annotated
@@ -43,8 +43,8 @@ EprDiagResultType = Annotated[
 ]
 
 
-class QuantumResult(BaseResult):
-    type: Literal[SupportedAnalysisNames.QUANTUM_EPR] = SupportedAnalysisNames.QUANTUM_EPR
+class QuantumResult(BaseSimulationOutput):
+    type: Literal[SimulationOutputTypesNames.QUANTUM_EPR_RESULT] = SimulationOutputTypesNames.QUANTUM_EPR_RESULT
     epr: EprDiagResultType
     distributed: ParticipationDatasetType
     eigenmode_result: EigenmodeResults
