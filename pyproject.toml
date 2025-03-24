@@ -14,7 +14,7 @@ dependencies = [
     "pydantic_yaml", # Added typer as a dependency
     "typer[all]",
     "pytest>=8.3.4",
-    "pysubmit @ git+https://github.com/RosenblumLab/drawing.git",
+    "drawing @ git+https://github.com/RosenblumLab/drawing.git",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
