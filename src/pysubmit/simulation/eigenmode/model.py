@@ -50,6 +50,9 @@ class EignmodeAnalysis(BaseAnalysis):
     def check_requirement(self):
         pass
 
+    def report(self):
+        pass
+
         # hfss['chip_house_length'] = '22.2mm'
 
         # setup.analyze(cores=self.cores, gpus=self.gpus)

@@ -3,7 +3,7 @@ from .json_utils import unique_name_by_counter, read, write, json_write
 from pathlib import Path
 from typing import Iterable, Type
 
-from ...simulation import ANALYSIS_ADAPTER, SUPPORTED_ANALYSIS, SupportedAnalysisNames, BaseResult
+from ...simulation import ANALYSIS_ADAPTER, SUPPORTED_ANALYSIS, SimulationTypesNames, BaseSimulationOutput
 from typing_extensions import Annotated
 from itertools import islice, groupby
 from datetime import datetime
@@ -56,11 +56,11 @@ class Solution(BaseModel):
     #         return True
     #     return self.build_parameters == value
 
-    def get_discrimination_value(self) -> tuple[SupportedAnalysisNames, dict]:
+    def get_discrimination_value(self) -> tuple[SimulationTypesNames, dict]:
         return self.setup.type, self.build_parameters
 
     def discriminate(self,
-                     setup_name: SupportedAnalysisNames | None = None,
+                     setup_name: SimulationTypesNames | None = None,
                      build_parameters: dict | None = None):
         user_args = setup_name, build_parameters
         instance_args = self.get_discrimination_value()
@@ -124,12 +124,12 @@ class DataHandler:
         pass
 
     def add_solution(self, setup: SUPPORTED_ANALYSIS,
-                     result: BaseResult, add_tag: bool = False):
+                     result: BaseSimulationOutput, add_tag: bool = False):
 
         tag = self.tag if add_tag else {}
 
         solution = Solution(
-            result=result,
+            result=result.flatten(),
             setup=setup,
             build_parameters=tag,
             metadata=Metadata(date=datetime.now())
@@ -170,7 +170,7 @@ class DataHandler:
 
     @validate_call
     def get_solutions(self,
-                      setup_discriminator: SupportedAnalysisNames | None = None,
+                      setup_discriminator: SimulationTypesNames | None = None,
                       build_parameters_discriminator: dict | None = None,
                       number_of_solutions: POSITIVE_INTEGER | None = None) -> list[Solution]:
 
@@ -210,7 +210,7 @@ class DataHandler:
         pass
 
     def get_solution(self,
-                     setup_discriminator: SupportedAnalysisNames | None = None,
+                     setup_discriminator: SimulationTypesNames | None = None,
                      build_parameters_discriminator: dict | None = None) -> Solution | None:
 
         solutions = self.get_solutions(setup_discriminator, build_parameters_discriminator, number_of_solutions=1)
@@ -218,7 +218,7 @@ class DataHandler:
             return
         return solutions[0]
 
-    def aggregate(self) -> tuple[SupportedAnalysisNames, dict]:
+    def aggregate(self) -> tuple[SimulationTypesNames, dict]:
 
         # get all solutions
         solutions = self._generate_solutions()

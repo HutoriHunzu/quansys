@@ -6,7 +6,6 @@ from ...shared import variables_types
 import numpy as np
 from .serializer import dataclass_to_dict, dict_to_dataclass
 from itertools import combinations
-from ..base import BaseResult
 from ..eigenmode.results import EigenmodeResults
 
 

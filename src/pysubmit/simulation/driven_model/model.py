@@ -1,7 +1,7 @@
 from ansys.aedt.core import Hfss
 from pydantic import BaseModel, TypeAdapter, Field
 
-from ..base import (BaseAnalysis, SupportedAnalysisNames,
+from ..base import (BaseAnalysis, SimulationTypesNames,
                     set_design_and_get_setup, update_setup_parameters,
                     )
 from .formatter import SParameterFormatter
@@ -12,7 +12,7 @@ FORMAT_ADAPTER = TypeAdapter(SUPPORTED_FORMATTERS)
 
 
 class DriveModelAnalysis(BaseAnalysis):
-    type: Literal[SupportedAnalysisNames.DRIVEN_MODEL] = SupportedAnalysisNames.DRIVEN_MODEL
+    type: Literal[SimulationTypesNames.DRIVEN_MODEL] = SimulationTypesNames.DRIVEN_MODEL
     setup_name: str
     gpus: int = 0
     cores: int = 4

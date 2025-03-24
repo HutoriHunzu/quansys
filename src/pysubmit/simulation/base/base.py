@@ -13,7 +13,7 @@ class SupportedSetupTypes:
 
 
 class SimulationTypesNames(StrEnum):
-    DRIVEN_MODE = auto()
+    DRIVEN_MODEL = auto()
     EIGENMODE = auto()
     QUANTUM_EPR = auto()
 
