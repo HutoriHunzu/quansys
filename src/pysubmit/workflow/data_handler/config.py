@@ -101,8 +101,10 @@ class DataHandler:
 
     def add_data_to_iteration(self, title_name: str, data: dict):
 
-        json_write(self.last_iteration_path / f'{title_name}.json',
-                   data)
+        path = self.last_iteration_path / f'{title_name}.json'
+        path = unique_name_by_counter(path)
+
+        json_write(path, data)
 
     def prepare(self):
         # creating a subfolder in root for solutions and iterations
