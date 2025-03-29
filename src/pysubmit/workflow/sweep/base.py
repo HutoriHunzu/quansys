@@ -35,7 +35,7 @@ class SweepBase(ABC, BaseModel):
         # the iterable part will be returned to be used in the generate
         # for different types of sweeping mechanisms
 
-        adapter = None if self.use_compound_types else CompoundAdapter
+        adapter = CompoundAdapter if self.use_compound_types else None
         flat_parameters = flatten(self.parameters, adapter=adapter)
         # divide it to constants and sweepable
 

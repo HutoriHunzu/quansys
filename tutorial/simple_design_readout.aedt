@@ -290,23 +290,6 @@ $begin 'AnsoftProject'
 			NextUniqueID=0
 			MoveBackwards=false
 		$end 'OutputVariable'
-		$begin 'CableSetup'
-			$begin 'CableManager'
-				CableNextUniqueID=1000
-				MoveBackwards=false
-				Version(1, 0)
-				$begin 'TDSources'
-				$end 'TDSources'
-				$begin 'Definitions'
-				$end 'Definitions'
-				$begin 'Harneses'
-				$end 'Harneses'
-				$begin 'HarnResults'
-				$end 'HarnResults'
-				$begin 'Materials'
-				$end 'Materials'
-			$end 'CableManager'
-		$end 'CableSetup'
 		$begin 'ModelSetup'
 			$begin 'DesignDatasets'
 				NextUniqueID=0
@@ -692,23 +675,6 @@ $begin 'AnsoftProject'
 			NextUniqueID=0
 			MoveBackwards=false
 		$end 'OutputVariable'
-		$begin 'CableSetup'
-			$begin 'CableManager'
-				CableNextUniqueID=1000
-				MoveBackwards=false
-				Version(1, 0)
-				$begin 'TDSources'
-				$end 'TDSources'
-				$begin 'Definitions'
-				$end 'Definitions'
-				$begin 'Harneses'
-				$end 'Harneses'
-				$begin 'HarnResults'
-				$end 'HarnResults'
-				$begin 'Materials'
-				$end 'Materials'
-			$end 'CableManager'
-		$end 'CableSetup'
 		$begin 'ModelSetup'
 			$begin 'DesignDatasets'
 				NextUniqueID=0
@@ -718,25 +684,16 @@ $begin 'AnsoftProject'
 				$end 'DatasetDefinitions'
 			$end 'DesignDatasets'
 			$begin 'Properties'
-				VariableProp('spacer_length', 'UD', '', '0.001mm', oa(i=false, int=false, Min='0.0005mm', Max='0.0015mm', MinStep='1e-05mm', MaxStep='0.0001mm', MinFocus='0.0005mm', MaxFocus='0.0015mm', UseManufacturableValues='false', Level='[0.0005: 0.0015] mm'), sa(i=false, int=false, Min='0.0005mm', Max='0.0015mm', IDisp='0.0001mm'), ta(i=false, int=false, Step='0.0001mm', Min='0.0005mm', Max='0.0015mm'))
-				VariableProp('chip_house_length', 'UD', '', '22mm', oa(i=false, int=false, Min='11mm', Max='33mm', MinStep='0.22mm', MaxStep='2.2mm', MinFocus='11mm', MaxFocus='33mm', UseManufacturableValues='false', Level='[11: 33] mm'), sa(i=false, int=false, Min='11mm', Max='33mm', IDisp='2.2mm'), ta(i=false, int=false, Step='2.2mm', Min='11mm', Max='33mm'))
 				VariableProp('chip_house_radius', 'UD', '', '2mm', oa(i=false, int=false, Min='1mm', Max='3mm', MinStep='0.02mm', MaxStep='0.2mm', MinFocus='1mm', MaxFocus='3mm', UseManufacturableValues='false', Level='[1: 3] mm'), sa(i=false, int=false, Min='1mm', Max='3mm', IDisp='0.2mm'), ta(i=false, int=false, Step='0.2mm', Min='1mm', Max='3mm'))
 				VariableProp('chip_base_length', 'UD', '', '12mm', oa(i=false, int=false, Min='11.775mm', Max='35.325mm', MinStep='0.2355mm', MaxStep='2.355mm', MinFocus='11.775mm', MaxFocus='35.325mm', UseManufacturableValues='false', Level='[11.775: 35.325] mm'), sa(i=false, int=false, Min='11.775mm', Max='35.325mm', IDisp='2.355mm'), ta(i=false, int=false, Step='2.355mm', Min='11.775mm', Max='35.325mm'))
 				VariableProp('chip_base_thickness', 'UD', '', '381um', oa(i=false, int=false, Min='190.5um', Max='571.5um', MinStep='3.81um', MaxStep='38.1um', MinFocus='190.5um', MaxFocus='571.5um', UseManufacturableValues='false', Level='[190.5: 571.5] um'), sa(i=false, int=false, Min='190.5um', Max='571.5um', IDisp='38.1um'), ta(i=false, int=false, Step='38.1um', Min='190.5um', Max='571.5um'))
 				VariableProp('chip_base_width', 'UD', '', '2mm', oa(i=false, int=false, Min='1mm', Max='3mm', MinStep='0.02mm', MaxStep='0.2mm', MinFocus='1mm', MaxFocus='3mm', UseManufacturableValues='false', Level='[1: 3] mm'), sa(i=false, int=false, Min='1mm', Max='3mm', IDisp='0.2mm'), ta(i=false, int=false, Step='0.2mm', Min='1mm', Max='3mm'))
-				VariableProp('purcell_readout_gap', 'UD', '', '2mm', oa(i=false, int=false, Min='1mm', Max='3mm', MinStep='0.02mm', MaxStep='0.2mm', MinFocus='1mm', MaxFocus='3mm', UseManufacturableValues='false', Level='[1: 3] mm'), sa(i=false, int=false, Min='1mm', Max='3mm', IDisp='0.2mm'), ta(i=false, int=false, Step='0.2mm', Min='1mm', Max='3mm'))
-				VariableProp('antenna_edge_gap', 'UD', '', '0.375mm', oa(i=false, int=false, Min='0.1875mm', Max='0.5625mm', MinStep='0.00375mm', MaxStep='0.0375mm', MinFocus='0.1875mm', MaxFocus='0.5625mm', UseManufacturableValues='false', Level='[0.1875: 0.5625] mm'), sa(i=false, int=false, Min='0.1875mm', Max='0.5625mm', IDisp='0.0375mm'), ta(i=false, int=false, Step='0.0375mm', Min='0.1875mm', Max='0.5625mm'))
-				VariableProp('transmon_orientation_port_x', 'UD', '', '0', oa(i=false, int=false, Min='-1', Max='1', MinStep='0.02', MaxStep='0.2', MinFocus='-1', MaxFocus='1', UseManufacturableValues='false', Level='[-1: 1]'), sa(i=false, int=false, Min='-1', Max='1', IDisp='0.2'), ta(i=false, int=false, Step='0.2', Min='-1', Max='1'))
-				VariableProp('transmon_orientation_port_y', 'UD', '', 'chip_base_thickness / 2')
-				VariableProp('transmon_orientation_port_z', 'UD', '', '-chip_house_length - spacer_length + chip_base_length-transmon_size_z - antenna_edge_gap')
-				VariableProp('transmon_size_z', 'UD', '', '2599.998um', oa(i=false, int=false, Min='1299.999um', Max='3899.997um', MinStep='25.99998um', MaxStep='259.9998um', MinFocus='1299.999um', MaxFocus='3899.997um', UseManufacturableValues='false', Level='[1299.999: 3899.997] um'), sa(i=false, int=false, Min='1299.999um', Max='3899.997um', IDisp='259.9998um'), ta(i=false, int=false, Step='259.9998um', Min='1299.999um', Max='3899.997um'))
 				VariableProp('readout_e1_x', 'UD', '', '0', oa(i=false, int=false, Min='-1', Max='1', MinStep='0.02', MaxStep='0.2', MinFocus='-1', MaxFocus='1', UseManufacturableValues='false', Level='[-1: 1] um'), sa(i=false, int=false, Min='-1', Max='1', IDisp='0.2'), ta(i=false, int=false, Step='0.2', Min='-1', Max='1'))
 				VariableProp('readout_e1_y', 'UD', '', 'chip_base_thickness / 2', oa(i=false, int=false, Min='-1um', Max='1um', MinStep='0.02um', MaxStep='0.2um', MinFocus='-1um', MaxFocus='1um', UseManufacturableValues='false', Level='[-1: 1] um'), sa(i=false, int=false, Min='-1um', Max='1um', IDisp='0.2um'), ta(i=false, int=false, Step='0.2um', Min='-1um', Max='1um'))
 				VariableProp('readout_e1_z', 'UD', '', '-chip_base_length/2 + readout_size_z/2', oa(i=false, int=false, Min='-1um', Max='1um', MinStep='0.02um', MaxStep='0.2um', MinFocus='-1um', MaxFocus='1um', UseManufacturableValues='false', Level='[-1: 1] um'), sa(i=false, int=false, Min='-1um', Max='1um', IDisp='0.2um'), ta(i=false, int=false, Step='0.2um', Min='-1um', Max='1um'))
 				VariableProp('readout_size_z', 'UD', '', '5840um', oa(i=false, int=false, Min='2920um', Max='8760um', MinStep='58.4um', MaxStep='584um', MinFocus='2920um', MaxFocus='8760um', UseManufacturableValues='false', Level='[2920: 8760] um'), sa(i=false, int=false, Min='2920um', Max='8760um', IDisp='584um'), ta(i=false, int=false, Step='584um', Min='2920um', Max='8760um'))
-				VariableProp('purcell_size_z', 'UD', '', '5520um', oa(i=false, int=false, Min='2760um', Max='8280um', MinStep='55.2um', MaxStep='552um', MinFocus='2760um', MaxFocus='8280um', UseManufacturableValues='false', Level='[2760: 8280] um'), sa(i=false, int=false, Min='2760um', Max='8280um', IDisp='552um'), ta(i=false, int=false, Step='552um', Min='2760um', Max='8280um'))
 			$end 'Properties'
-			VariableOrders[17: 'spacer_length', 'chip_house_length', 'chip_house_radius', 'chip_base_length', 'chip_base_thickness', 'chip_base_width', 'purcell_readout_gap', 'antenna_edge_gap', 'transmon_orientation_port_x', 'transmon_orientation_port_y', 'transmon_orientation_port_z', 'transmon_size_z', 'readout_e1_x', 'readout_e1_y', 'readout_e1_z', 'readout_size_z', 'purcell_size_z']
+			VariableOrders[8: 'chip_house_radius', 'chip_base_length', 'chip_base_thickness', 'chip_base_width', 'readout_e1_x', 'readout_e1_y', 'readout_e1_z', 'readout_size_z']
 			$begin 'Editor3D Doc Preferences'
 				BackgroundColorVersion=1
 				'Plane Background'=0
@@ -6150,91 +6107,6 @@ $begin 'AnsoftProject'
 								Increment=0.0872664625997165
 								CreateIndexedSubsweepFlag=false
 							$end 'PostprocessSweep'
-							$begin 'Sweep'
-								Variable='spacer_length'
-								Column='0.001mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='chip_house_length'
-								Column='22mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='chip_house_radius'
-								Column='2mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='chip_base_length'
-								Column='12mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='chip_base_thickness'
-								Column='381um'
-								Units='um'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='chip_base_width'
-								Column='2mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='purcell_readout_gap'
-								Column='2mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='antenna_edge_gap'
-								Column='0.375mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='transmon_orientation_port_x'
-								Column='0'
-								Units=''
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='transmon_orientation_port_y'
-								Column='190.5um'
-								Units='um'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='transmon_orientation_port_z'
-								Column='-12.975998mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='transmon_size_z'
-								Column='2599.998um'
-								Units='um'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='readout_e1_x'
-								Column='0'
-								Units=''
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='readout_e1_y'
-								Column='190.5um'
-								Units='um'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='readout_e1_z'
-								Column='-3.08mm'
-								Units='mm'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='readout_size_z'
-								Column='5840um'
-								Units='um'
-							$end 'Sweep'
-							$begin 'Sweep'
-								Variable='purcell_size_z'
-								Column='5520um'
-								Units='um'
-							$end 'Sweep'
 						$end 'Sweeps'
 						IsPortOnly=false
 					$end 'SimDataExtractor'

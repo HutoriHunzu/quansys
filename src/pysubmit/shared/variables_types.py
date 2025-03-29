@@ -18,7 +18,7 @@ def ensure_list(value):
 
 
 class RangeValues(BaseModel):
-    name: Literal['range'] = 'range'
+    type: Literal['range'] = 'range'
     start: float
     step: float
     end: float
@@ -30,7 +30,7 @@ class RangeValues(BaseModel):
 
 
 class LinSpaceValues(BaseModel):
-    name: Literal['linspace'] = 'linspace'
+    type: Literal['linspace'] = 'linspace'
     start: float
     number: int
     end: float
@@ -41,7 +41,7 @@ class LinSpaceValues(BaseModel):
         return map(lambda x: c(x), np.linspace(self.start, self.end, self.number))
 
 
-SUPPORTED_COMPOUND_VALUES = Annotated[RangeValues | LinSpaceValues, Field(discriminator='name')]
+SUPPORTED_COMPOUND_VALUES = Annotated[RangeValues | LinSpaceValues, Field(discriminator='type')]
 
 AllValueType = float | str | bool | None
 AllValuesType = SUPPORTED_COMPOUND_VALUES | Annotated[list[AllValueType], BeforeValidator(ensure_list)]
