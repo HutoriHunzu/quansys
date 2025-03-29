@@ -9,13 +9,13 @@ from pysubmit.simulation.eigenmode.results import EigenmodeResults
 class InferenceBase(BaseModel):
     """Base class for all inference techniques."""
 
-    def infer(self, **runtime_args) -> Dict[int, str]:
+    def infer(self, **runtime_args) -> dict[int, str]:
         """Abstract method to be implemented by subclasses."""
         raise NotImplementedError("Subclasses must implement the infer method.")
 
 
 class ManualInference(InferenceBase):
-    type: Literal['manual']
+    type: Literal['manual'] = 'manual'
     mode_number: int
     label: str
 
@@ -29,10 +29,10 @@ class ManualInference(InferenceBase):
 
 
 class OrderInference(InferenceBase):
-    type: Literal['order']
+    type: Literal['order'] = 'order'
     num: int
     min_or_max: Literal['min', 'max']
-    ordered_labels_by_frequency: List[str]
+    ordered_labels_by_frequency: list[str]
     quantity: Literal['frequency', 'quality_factor']
 
     @model_validator(mode='after')

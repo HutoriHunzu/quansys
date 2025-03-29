@@ -3,4 +3,4 @@
 # from .cli.job_status import get_all_jobs_info as submit_check
 
 from .workflow import execute_flow, SessionParameters, DataParameters, WorkflowConfig
-from .simulation import DriveModelAnalysis, EignmodeAnalysis, QuantumEpr
+from .simulation import DriveModelAnalysis, EigenmodeAnalysis, QuantumEpr

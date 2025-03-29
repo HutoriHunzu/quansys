@@ -7,7 +7,7 @@ from ..base import (BaseAnalysis, SimulationTypesNames, set_design_and_get_setup
                     update_setup_parameters, validate_solution_type)
 
 from ..shared.solution_handler import get_solved_solutions
-from .results import get_eigenmode_results
+from .results import get_eigenmode_results, EigenmodeResults
 
 
 # from .formatter import FrequencyAndQualityFactorFormatter
@@ -16,7 +16,7 @@ from .results import get_eigenmode_results
 # FORMAT_ADAPTER = TypeAdapter(SUPPORTED_FORMATTERS)
 
 
-class EignmodeAnalysis(BaseAnalysis):
+class EigenmodeAnalysis(BaseAnalysis):
     type: Literal[SimulationTypesNames.EIGENMODE] = SimulationTypesNames.EIGENMODE
     setup_name: str
     design_name: str
@@ -27,7 +27,7 @@ class EignmodeAnalysis(BaseAnalysis):
     # formatter_type: str = 'freq_and_q_factor'
     # formatter_args: dict | None = None
 
-    def analyze(self, hfss: Hfss = None, **kwargs):
+    def analyze(self, hfss: Hfss, **kwargs) -> EigenmodeResults:
         if not isinstance(hfss, Hfss):
             raise ValueError('hfss given must be a Hfss instance')
 

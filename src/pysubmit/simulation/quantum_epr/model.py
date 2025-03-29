@@ -74,3 +74,7 @@ class QuantumEpr(BaseAnalysis):
         return epr_result, distributed_result
 
 
+    def report(self):
+        pass
+
+

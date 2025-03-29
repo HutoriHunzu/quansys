@@ -1,1 +1,1 @@
-from .model import EignmodeAnalysis
+from .model import EigenmodeAnalysis

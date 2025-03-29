@@ -18,22 +18,24 @@ class Modes(BaseModel):
 
 
 class ModesAndLabels(BaseModel):
-    modes: List[Modes]
-    labels: List[str]
+    inferences: list[SUPPORTED_INFERENCES]
+    # labels: List[str]
 
-    def parse(self, eigenmode_results: dict[int, dict[str, float]]) -> Dict[int, str]:
+    def parse(self, eigenmode_results: dict[int, dict[str, float]]) -> dict[int, str]:
 
         # first execution of manual inferences
-        manual_modes = filter(lambda x: x.inference_type == 'manual', self.modes)
-        other_modes = filter(lambda x: x.inference_type != 'manual', self.modes)
+        manual_inferences = filter(lambda x: isinstance(x, ManualInference), self.inferences)
+        other_inferences = filter(lambda x: not isinstance(x, ManualInference), self.inferences)
 
         modes_to_labels = {}
 
         #
-        modes_execution_order = [manual_modes, other_modes]
-        for group in modes_execution_order:
-            for mode in group:
-                d = mode.parse(eigenmode_results)
+        inference_execution_order = [manual_inferences, other_inferences]
+
+        for group in inference_execution_order:
+            for inference in group:
+
+                d = inference.infer(eigenmode_results)
 
                 new_modes = set(d.keys())
                 available_modes = set(eigenmode_results.keys()) - new_modes
@@ -41,6 +43,6 @@ class ModesAndLabels(BaseModel):
 
                 modes_to_labels.update(d)
 
-        assert (len(list(modes_to_labels.keys())) == len(self.labels))
+        # assert (len(list(modes_to_labels.keys())) == len(self.labels))
 
         return modes_to_labels
