@@ -124,6 +124,15 @@ def unique_name_by_counter(path: Path):
 
     return path
 
+def unique_name_by_counter_with_counter(path: Path):
+    base_name = path.stem
+    counter = 0
+    while path.exists():
+        path = path.with_stem(f'{base_name}_{counter}')
+        counter += 1
+
+    return path, counter
+
 
 def write(path, data: str, use_unique: bool = True):
     if use_unique:

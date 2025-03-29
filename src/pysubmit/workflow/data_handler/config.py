@@ -99,6 +99,7 @@ class DataHandler:
         self.last_iteration_path = path
         return path
 
+
     def add_data_to_iteration(self, title_name: str, data: dict):
 
         path = self.last_iteration_path / f'{title_name}.json'
