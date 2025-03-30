@@ -54,13 +54,13 @@ class DataHandler(BaseModel):
             Configuration mapping each aggregation "group" to the identifiers that should be merged.
     """
 
-    root_directory: PathType
+    root_directory: PathType = Field(default=Path('.'))
+    grouping_config: dict[str, list[str]] = {}
     results_directory: PathType = Field(default=Path("results"))
     iterations_directory: PathType = Field(default=Path("iterations"))
     aggregations_directory: PathType = Field(default=Path("aggregations"))
     last_iteration_path: PathType | None = None
     counter: int = -1
-    grouping_config: dict[str, list[str]] = {}
 
     def create_folders(self, overwrite: bool = False) -> None:
         """
