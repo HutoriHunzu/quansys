@@ -46,7 +46,7 @@ class DataHandler(BaseModel):
     last_iteration_path: PathType | None = None
 
     # Overwriting
-    overwrite: bool = True
+    overwrite: bool = False
     use_unique: bool = True
 
     # Computed properties for derived paths
@@ -80,7 +80,7 @@ class DataHandler(BaseModel):
         """
         if self.results_directory.exists():
             if self.overwrite:
-                shutil.rmtree(self.results_directory)
+                shutil.rmtree(self.results_directory, ignore_errors=True)
             elif self.use_unique:
                 result_dir = unique_name_by_counter(self.results_directory)
                 self.results_dirname = result_dir.stem
