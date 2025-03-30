@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from .builder import SUPPORTED_BUILDERS
 from .sweep import SUPPORTED_SWEEPS
 from .session_handler import SessionParameters
-from .data_handler import DataParameters
+from .data_handler import DataHandler
 from ..simulation import SUPPORTED_ANALYSIS
 
 from pydantic_yaml import to_yaml_file, parse_yaml_file_as
@@ -25,7 +25,7 @@ class WorkflowConfig(BaseModel):
     session_parameters: SessionParameters
 
     simulations: list[SUPPORTED_ANALYSIS]
-    data_parameters: DataParameters
+    data_handler: DataHandler
 
     # builder phase
     builder: SUPPORTED_BUILDERS | None = None

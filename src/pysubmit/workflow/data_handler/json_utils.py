@@ -101,7 +101,7 @@ def custom_json_decoder(dct: dict) -> Any:
 
 
 def json_read(path, cls=None):
-    with open(path) as f:
+    with open(path, 'r') as f:
         data = json.load(f, object_hook=custom_json_decoder)
     if cls:
         data = cls(**data)
