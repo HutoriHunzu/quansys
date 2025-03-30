@@ -24,15 +24,12 @@ BUILDER_SWEEP_TYPE = Annotated[list[SUPPORTED_SWEEPS], BeforeValidator(ensure_li
 class WorkflowConfig(BaseModel):
     session_parameters: SessionParameters
 
-    simulations: list[SUPPORTED_ANALYSIS]
+    simulations: dict[str, SUPPORTED_ANALYSIS]
     data_handler: DataHandler
 
     # builder phase
     builder: SUPPORTED_BUILDERS | None = None
     builder_sweep: BUILDER_SWEEP_TYPE | None = None
-
-    # simulation
-    # setup_sweep: SUPPORTED_SWEEPS | None = None
 
     def save_to_yaml(self, path: str | Path):
         to_yaml_file(path, self, map_indent=4)

@@ -40,7 +40,6 @@ class SimulationOutputTypesNames(StrEnum):
 #
 
 class BaseSimulationOutput(BaseModel, ABC):
-    id: str = ''
     type: SimulationOutputTypesNames
 
     @abstractmethod
@@ -64,7 +63,6 @@ class BaseSimulationOutput(BaseModel, ABC):
 
 
 class BaseAnalysis(BaseModel, ABC):
-    id: str = ''
     type: SimulationTypesNames
 
     @abstractmethod

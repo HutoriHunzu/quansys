@@ -105,8 +105,9 @@ def get_eigenmode_results(setup: Setup, frequencies_unit: str = 'GHz') -> Eigenm
     # to single mode result
     dict_of_single_mode_results = dict(map(lambda x: (x.mode_number, x), lst_of_single_mode_results))
 
-    results = EigenmodeResults(results=dict_of_single_mode_results,
-                               frequencies_unit=frequencies_unit)
+    results = EigenmodeResults(
+        results=dict_of_single_mode_results,
+        frequencies_unit=frequencies_unit)
 
     # make same units
     results.change_frequencies_unit(frequencies_unit)

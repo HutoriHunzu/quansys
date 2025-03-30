@@ -85,7 +85,7 @@ class DataHandler(BaseModel):
         self.aggregations_directory = self.results_directory / self.aggregations_directory
         self.aggregations_directory.mkdir(parents=True, exist_ok=True)
 
-    def create_new_iteration(self) -> Path:
+    def create_iteration(self) -> Path:
         """
         Create a new iteration folder (e.g., 'iteration_0', 'iteration_1') within
         `iterations_directory`, along with an empty `Metadata` file.

@@ -45,7 +45,7 @@ class EigenmodeAnalysis(BaseAnalysis):
         # Save and exit
         hfss.save_project()
 
-        return get_eigenmode_results(setup)
+        return get_eigenmode_results(setup=setup)
 
     def check_requirement(self):
         pass
