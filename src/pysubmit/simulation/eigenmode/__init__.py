@@ -1,1 +1,1 @@
-from .model import EigenmodeAnalysis
+from .model import EigenmodeAnalysis, EigenmodeResults

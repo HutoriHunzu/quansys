@@ -41,7 +41,7 @@ def execute_workflow(config: WorkflowConfig) -> None:
             # Run all simulations in this iteration
             _execute_simulations(config.simulations, hfss, data_handler)
 
-    # Uncomment if you want to aggregate results automatically at the end:
+    # Aggregation according to grouping configuration
     data_handler.aggregate_and_save()
 
 

@@ -34,7 +34,7 @@ builder:
       junction_inductance:
         value: 10
         unit: nh
-      max_elements: 100
+      max_elements: 10
       use_cavity: false
       chip_base_length:
         value: 23.55
@@ -70,6 +70,15 @@ builder:
 
   type: script_builder
   path: ./chip.py
+
+
+data_handler:
+  overwrite: false
+  use_unique: false
+  grouping_config:
+    classical:
+      - build_parameters
+      - classical
 
 builder_sweep:
   - parameters:

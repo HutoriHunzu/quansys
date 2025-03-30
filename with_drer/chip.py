@@ -103,7 +103,7 @@ class MeanderArgs(BaseModel):
     num_turns: int = 9
 
 
-def unite_vacuum_and_set_mesh(hfss, mesh_size: str):
+def unite_vacuum_and_set_mesh(hfss, mesh_size: str, max_elements):
     vacuum_objects = list(
         filter(lambda x: x.material_name == "vacuum", hfss.modeler.object_list)
     )
@@ -113,7 +113,7 @@ def unite_vacuum_and_set_mesh(hfss, mesh_size: str):
         vacuum_united_obj,
         maximum_length=mesh_size,
         name="vacuum_mesh",
-        maximum_elements=None,
+        maximum_elements=max_elements,
     )
 
     return vacuum_united_obj
@@ -672,7 +672,7 @@ def build(
     )
 
     # combining all vacuum objects
-    unite_vacuum_and_set_mesh(hfss, chip_base_args.vacuum_mesh)
+    unite_vacuum_and_set_mesh(hfss, chip_base_args.vacuum_mesh, max_elements=chip_base_args.max_elements)
 
     # hfss.mesh.assign_initial_mesh(method='AnsoftClassic')
     hfss.mesh.assign_initial_mesh_from_slider(method="AnsoftClassic")

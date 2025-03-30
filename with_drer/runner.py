@@ -6,10 +6,10 @@
 # ///
 
 
-from pysubmit import WorkflowConfig, execute_flow
+from pysubmit import WorkflowConfig, execute_workflow
 
 path = './config.yaml'
 
 config = WorkflowConfig.load_from_yaml(path)
 
-execute_flow(config)
+execute_workflow(config)

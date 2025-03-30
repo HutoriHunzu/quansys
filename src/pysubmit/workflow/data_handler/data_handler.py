@@ -11,7 +11,7 @@ import pandas as pd
 from .json_utils import json_write
 from .metadata import Metadata
 from .aggregator import Aggregator
-from ...simulation import ANALYSIS_ADAPTER
+from ...simulation import SIMULATION_RESULTS_ADAPTER
 
 
 def ensure_path(s: str | Path) -> Path:
@@ -183,7 +183,7 @@ class DataHandler(BaseModel):
                 Defaults to 'analysis'.
         """
         if adapter == 'analysis':
-            adapter = ANALYSIS_ADAPTER
+            adapter = SIMULATION_RESULTS_ADAPTER
 
         aggregator = Aggregator(
             grouping_config=self.grouping_config,
