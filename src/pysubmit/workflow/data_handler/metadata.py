@@ -74,7 +74,7 @@ class Metadata(BaseModel):
         """
         return json_read(path, cls=cls)
 
-    def register_output(self, identifier: str) -> Path:
+    def register(self, identifier: str) -> Path:
         """
         Registers a new simulation output by its identifier.
 

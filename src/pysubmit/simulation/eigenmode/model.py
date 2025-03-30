@@ -1,19 +1,9 @@
 from ansys.aedt.core import Hfss
-from ansys.aedt.core.application.analysis import SetupHFSS
 from typing import Literal
-from pydantic import TypeAdapter, Field, BeforeValidator
-from typing_extensions import Annotated
 from ..base import (BaseAnalysis, SimulationTypesNames, set_design_and_get_setup,
                     update_setup_parameters, validate_solution_type)
 
-from ..shared.solution_handler import get_solved_solutions
 from .results import get_eigenmode_results, EigenmodeResults
-
-
-# from .formatter import FrequencyAndQualityFactorFormatter
-
-# SUPPORTED_FORMATTERS = FrequencyAndQualityFactorFormatter
-# FORMAT_ADAPTER = TypeAdapter(SUPPORTED_FORMATTERS)
 
 
 class EigenmodeAnalysis(BaseAnalysis):
@@ -23,9 +13,6 @@ class EigenmodeAnalysis(BaseAnalysis):
     cores: int = 4
     gpus: int = 0
     setup_parameters: dict = {}
-
-    # formatter_type: str = 'freq_and_q_factor'
-    # formatter_args: dict | None = None
 
     def analyze(self, hfss: Hfss, **kwargs) -> EigenmodeResults:
         if not isinstance(hfss, Hfss):

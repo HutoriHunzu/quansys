@@ -106,5 +106,4 @@ def _execute_simulations(
         report = simulation.report()
         if report is not None:
             report_id = f"{sim_id}_report"
-            data_handler.register_identifier(report_id)
             data_handler.add_data_to_iteration(report_id, report.model_dump())

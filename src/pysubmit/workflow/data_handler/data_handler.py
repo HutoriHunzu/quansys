@@ -1,7 +1,9 @@
-from pydantic import BaseModel, Field, BeforeValidator, TypeAdapter
+from pydantic import BaseModel, BeforeValidator, computed_field, TypeAdapter
 from pathlib import Path
 from datetime import datetime
 from typing import Any
+
+from pysubmit.workflow.data_handler.json_utils import unique_name_by_counter
 from typing_extensions import Annotated, Literal
 import shutil
 import pandas as pd
@@ -29,40 +31,44 @@ PathType = Annotated[Path, BeforeValidator(ensure_path)]
 class DataHandler(BaseModel):
     """
     Manages simulation outputs via a folder hierarchy and delegates aggregation to an `Aggregator`.
-
-    Responsibilities:
-      - Create the folder structure: `root_directory` / (results, iterations, aggregations).
-      - Manage iteration creation and the associated `Metadata` file.
-      - Register simulation outputs, save them to JSON, mark them as done.
-      - Summarize stored iteration metadata (not shown here, but can be done via `Aggregator`).
-      - Perform aggregation (via an `Aggregator`) and export CSV files.
-
-    Attributes:
-        root_directory (Path):
-            Base directory for all data.
-        results_directory (Path):
-            Subdirectory for results (default: 'results').
-        iterations_directory (Path):
-            Subdirectory for iteration data (default: 'iterations').
-        aggregations_directory (Path):
-            Subdirectory for aggregated results (default: 'aggregations').
-        last_iteration_path (Path | None):
-            The path to the most recently created iteration folder (or None if none created yet).
-        counter (int):
-            Internal counter for iteration numbering.
-        grouping_config (dict[str, list[str]]):
-            Configuration mapping each aggregation "group" to the identifiers that should be merged.
     """
+    # Primary configuration inputs
+    root_directory: PathType = Path('.')
+    results_dirname: str = "results"
+    iterations_dirname: str = "iterations"
+    aggregations_dirname: str = "aggregations"
 
-    root_directory: PathType = Field(default=Path('.'))
+    # Configuration for aggregation
     grouping_config: dict[str, list[str]] = {}
-    results_directory: PathType = Field(default=Path("results"))
-    iterations_directory: PathType = Field(default=Path("iterations"))
-    aggregations_directory: PathType = Field(default=Path("aggregations"))
-    last_iteration_path: PathType | None = None
-    counter: int = -1
 
-    def create_folders(self, overwrite: bool = False) -> None:
+    # State tracking
+    counter: int = -1
+    last_iteration_path: PathType | None = None
+
+    # Overwriting
+    overwrite: bool = True
+    use_unique: bool = True
+
+    # Computed properties for derived paths
+    @computed_field
+    @property
+    def results_directory(self) -> PathType:
+        """Full path to the results' directory."""
+        return self.root_directory / self.results_dirname
+
+    @computed_field
+    @property
+    def iterations_directory(self) -> PathType:
+        """Full path to the iterations' directory."""
+        return self.results_directory / self.iterations_dirname
+
+    @computed_field
+    @property
+    def aggregations_directory(self) -> PathType:
+        """Full path to the aggregations' directory."""
+        return self.results_directory / self.aggregations_dirname
+
+    def create_folders(self) -> None:
         """
         Create the necessary folder hierarchy for storing results.
 
@@ -72,17 +78,17 @@ class DataHandler(BaseModel):
         Args:
             overwrite (bool): Whether to delete existing folders first. Defaults to False.
         """
-        if overwrite and self.root_directory.exists():
-            shutil.rmtree(self.root_directory)
+        if self.results_directory.exists():
+            if self.overwrite:
+                shutil.rmtree(self.results_directory)
+            elif self.use_unique:
+                result_dir = unique_name_by_counter(self.results_directory)
+                self.results_dirname = result_dir.stem
+
+        # Create directory structure
         self.root_directory.mkdir(parents=True, exist_ok=True)
-
-        self.results_directory = self.root_directory / self.results_directory
         self.results_directory.mkdir(parents=True, exist_ok=True)
-
-        self.iterations_directory = self.results_directory / self.iterations_directory
         self.iterations_directory.mkdir(parents=True, exist_ok=True)
-
-        self.aggregations_directory = self.results_directory / self.aggregations_directory
         self.aggregations_directory.mkdir(parents=True, exist_ok=True)
 
     def create_iteration(self) -> Path:
@@ -127,11 +133,12 @@ class DataHandler(BaseModel):
         metadata_file = self.last_iteration_path / "metadata.json"
         metadata = Metadata.load(metadata_file)
 
-        file_path = metadata.register_output(identifier)
+        file_path = metadata.register(identifier)
         metadata.save()
         return file_path
 
-    def add_data_to_iteration(self, identifier: str, data: dict[str, Any]) -> None:
+    def add_data_to_iteration(self, identifier: str, data: dict[str, Any],
+                              register_if_new: bool = True) -> None:
         """
         Save simulation output data (JSON-serializable) under the current iteration,
         and mark the corresponding identifier as DONE in metadata.
@@ -143,6 +150,7 @@ class DataHandler(BaseModel):
         Args:
             identifier (str): The simulation output identifier to add data for.
             data (dict[str, Any]): JSON-serializable data representing the simulation output.
+            register_if_new: (bool) registers the data with the identifier given that it's not existing already
         """
         if self.last_iteration_path is None:
             raise ValueError("No iteration folder exists. Please call `create_new_iteration` first.")
@@ -151,7 +159,11 @@ class DataHandler(BaseModel):
         metadata = Metadata.load(metadata_file)
 
         if identifier not in metadata.id_to_description:
-            raise KeyError(f"Identifier '{identifier}' not found. Call `register_identifier` first.")
+            if register_if_new:
+                metadata.register(identifier)
+                metadata.save()
+            else:
+                raise KeyError(f"Identifier '{identifier}' not found. Call `register_identifier` first.")
 
         file_path = self.last_iteration_path / metadata.id_to_description[identifier].path
         json_write(file_path, data)

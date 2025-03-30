@@ -47,7 +47,7 @@ class WorkflowConfig(BaseModel):
     """
     session_parameters: SessionParameters
     simulations: dict[str, SUPPORTED_ANALYSIS]
-    data_handler: DataHandler
+    data_handler: DataHandler = DataHandler()
 
     # builder phase
     builder: SUPPORTED_BUILDERS | None = None
