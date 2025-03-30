@@ -1,0 +1,172 @@
+default_meander_radius: &meander_radius
+  - 100
+default_meander_spacing: &meander_spacing
+  - 300
+default_meander_num_turns: &num_turns
+  #  - 7
+  - 9
+default_meander_wire_width: &wire_width
+  - 100
+default_meander_height: &meander_height
+  #  - 1110
+  #  - 1120
+  #  - 1130
+  #  - 1140
+  #  - 1150
+  #  - 1175
+  - 1125
+  #  - 1125
+  #  - 1125
+  #  - 1175
+  #  - 1175
+  #  - 1175
+  #  - 1200
+  #  - 1200
+
+
+
+
+builder:
+  args:
+    design_name: my_design
+    setup_name: Setup1
+    chip_base_args:
+      junction_inductance:
+        value: 10
+        unit: nh
+      max_elements: 100
+      use_cavity: false
+      chip_base_length:
+        value: 23.55
+        unit: mm
+      transmon_readout_gap:
+        value: 0.15
+        unit: mm
+
+    transmon_args:
+      pad:
+        width: 400
+        height: 1000
+        radius: 100
+        distance: 150
+
+      taper:
+        wide_width: 45
+
+      junction:
+        type: regular
+        width: 1
+        gap: 3
+        length: 10
+
+      integration_config:
+        feature_radius: 10.0
+        use_antenna: true
+
+      antenna:
+        length: 1400
+        width: 100
+        radius: 250
+
+  type: script_builder
+  path: ./chip.py
+
+builder_sweep:
+  - parameters:
+      purcell_meander_args:
+        padding_length:
+          - 1260
+          - 1280
+          - 1300
+          - 1320
+
+    type: zip
+  - parameters:
+      chip_base_args:
+        cavity_half_cell_rc:
+          - 30.7
+        spacer_length:
+          value:
+            - 0.001
+          unit: mm
+
+      purcell_meander_args:
+        height: *meander_height
+        wire_width: *wire_width
+        radius: *meander_radius
+        spacing: *meander_spacing
+        num_turns: *num_turns
+
+      readout_meander_args:
+        padding_length: 1425
+        wire_width: *wire_width
+        radius: *meander_radius
+        spacing: *meander_spacing
+        num_turns: *num_turns
+        height: *meander_height
+
+    type: product
+
+
+
+session_parameters:
+  close_on_exit: true
+  file_path: ./build.aedt
+  new_desktop: true
+  non_graphical: false
+  version: '2024.2'
+
+simulations:
+  classical:
+    cores: 32
+    design_name: my_design
+    setup_name: Setup1
+    formatter_args: null
+    formatter_type: freq_and_q_factor
+    gpus: 0
+    setup_parameters:
+      MaximumPasses: 3
+      MinimumConvergedPasses: 1
+      MinimumPasses: 1
+      MinimumFrequency: 2GHz
+      NumModes: 3
+      MaxDeltaFreq: 0.2
+      ConvergeOnRealFreq: True
+      PercentRefinement: 30
+      BasisOrder: -1
+      DoLambdaRefine: True
+      DoMaterialLambda: True
+      SetLambdaTarget: False
+      Target: 0.4
+      UseMaxTetIncrease: False
+    type: eigenmode
+
+#  - design_name: my_design
+#    formatter_args: null
+#    formatter_type: null
+#    junctions_infos:
+#    - inductance_variable_name: junction_inductance
+#      name: junction_line
+#    modes_to_labels:
+#        labels:
+#        - transmon
+#        - cavity_low_mode
+#        - cavity_high_mode
+##        - readout
+##        - purcell
+#        modes:
+#        - args:
+#              label: transmon
+#              mode_number: 1
+#          inference_type: manual
+#        - args:
+##              label: readout
+#              label: cavity_low_mode
+#              mode_number: 2
+#          inference_type: manual
+#        - args:
+##             label: purcell
+#             label: cavity_high_mode
+#             mode_number: 3
+#          inference_type: manual
+#    type: quantum_epr
