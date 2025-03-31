@@ -33,3 +33,7 @@ workflow = "pysubmit.cli.main:app"
 allow-direct-references = true
 
 
+[tool.pytest.ini_options]
+markers = [
+    "tutorial: marks tests as part of the tutorial suite (deselect with '-m \"not tutorial\"')",
+]
