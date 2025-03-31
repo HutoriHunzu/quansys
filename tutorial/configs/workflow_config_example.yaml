@@ -14,19 +14,19 @@ builder_sweep:
   type: zip
   use_compound_types: true
 data_handler:
-    aggregations_directory: results_6\aggregations
+    aggregations_directory: results_0\aggregations
     aggregations_dirname: aggregations
     counter: 3
     grouping_config:
         my_aggregation:
         - build_parameters
         - classical
-    iterations_directory: results_6\iterations
+    iterations_directory: results_0\iterations
     iterations_dirname: iterations
-    last_iteration_path: results_6\iterations\iteration_3
+    last_iteration_path: results_0\iterations\iteration_3
     overwrite: false
-    results_directory: results_6
-    results_dirname: results_6
+    results_directory: results_0
+    results_dirname: results_0
     root_directory: .
     use_unique: true
 session_parameters:
