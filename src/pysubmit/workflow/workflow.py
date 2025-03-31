@@ -32,7 +32,7 @@ def execute_workflow(config: WorkflowConfig) -> None:
     with start_hfss_session(config.session_parameters) as hfss:
         # Run build phase
         for build_parameters in _generate_build_parameters(
-            config.builder, config.builder_sweep, hfss
+                config.builder, config.builder_sweep, hfss
         ):
             # Create an iteration folder for each set of build parameters
             data_handler.create_iteration()
@@ -69,15 +69,20 @@ def _generate_build_parameters(builder, sweeps, hfss):
     for build_params in build_params_list:
         if builder is not None:
             # Apply the builder with these parameters
-            builder.build(hfss, parameters=build_params)
+            generate_params_from_builder = builder.build(hfss, parameters=build_params)
+
+            # if the builder returns something that is not None save
+            # it instead of the sweeper parameters
+            if generate_params_from_builder is not None:
+                build_params = generate_params_from_builder
 
         yield build_params
 
 
 def _execute_simulations(
-    simulations: dict[str, SUPPORTED_ANALYSIS],
-    hfss,
-    data_handler: DataHandler
+        simulations: dict[str, SUPPORTED_ANALYSIS],
+        hfss,
+        data_handler: DataHandler
 ) -> None:
     """
     Run a dictionary of simulations, store their results, and optionally store each report.
