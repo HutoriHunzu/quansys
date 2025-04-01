@@ -105,9 +105,9 @@ def run_flow(config_path: Path = typer.Argument(..., help="Path to the config.ya
 
     # Check the current status
     current_status = read_status(project_dir)
-    if current_status != "pending":
-        typer.echo(f"Cannot start execution. Current status is '{current_status}', not 'pending'.")
-        raise typer.Exit()
+    # if current_status != "pending":
+    #     typer.echo(f"Cannot start execution. Current status is '{current_status}', not 'pending'.")
+    #     raise typer.Exit()
 
     # Update status to "running" before starting
     update_status(project_dir, "running")
