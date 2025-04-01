@@ -107,4 +107,4 @@ class EprCalculator:
                                                                 self.participation_dataset.inductances,
                                                                 phi_zpf, cos_trunc=8, fock_trunc=15)
 
-        return EprDiagResult(chi=chi_nd, frequencies=f1_nd)
+        return EprDiagResult(chi=chi_nd, frequencies=f1_nd * 1e-9)
