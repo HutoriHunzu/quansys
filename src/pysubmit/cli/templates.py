@@ -8,7 +8,7 @@ def generate_job_submission_script(results_dir, config: WorkflowConfig, mem_mb, 
     """
     # try to look for cores in all simulations and take the maximum
     core_lst = map(lambda x: x.cores if hasattr(x, 'cores') else 1, config.simulations.values())
-    cores = min(default_cores, max(core_lst))
+    cores = max(default_cores, max(core_lst))
 
     # cores = config.simulations.cores
     project_name = config.data_handler.root_directory.stem
