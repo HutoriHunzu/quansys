@@ -42,10 +42,10 @@ def submit(
 
     # Load and validate config.yaml
     config = WorkflowConfig.load_from_yaml(config_path)
-    config.data_handler.root_directory = project_dir
+    # config.data_handler.root_directory = project_dir
 
     # Prepare the job
-    results_dir = prepare_job(config, files, mem, timeout)
+    results_dir = prepare_job(config, project_dir, files, mem, timeout)
 
     # Set status to "pending"
     update_status(project_dir, "pending")

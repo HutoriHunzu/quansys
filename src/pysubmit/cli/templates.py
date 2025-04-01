@@ -11,9 +11,7 @@ def generate_job_submission_script(results_dir, config: WorkflowConfig, mem_mb, 
     cores = max(default_cores, max(core_lst))
 
     # cores = config.simulations.cores
-    project_name = config.data_handler.root_directory.stem
-    if project_name == '':
-        project_name = 'no_named_project'
+    project_name = results_dir.stem
     results_dir = results_dir.resolve()  # Ensure full path
 
     job_script = results_dir / "job_submission.sh"

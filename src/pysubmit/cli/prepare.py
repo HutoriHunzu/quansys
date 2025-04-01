@@ -3,12 +3,11 @@ from pysubmit.workflow import WorkflowConfig
 from .utils import copy_files
 from .templates import generate_job_submission_script, generate_simulation_script
 
-def prepare_job(config: WorkflowConfig, files, mem, timeout):
+def prepare_job(config: WorkflowConfig, project_dir, files, mem, timeout):
     """
     Prepare the workflow: create directories, copy files, generate scripts.
     """
     # Create the project directory
-    project_dir = Path(config.data_handler.root_directory)
     project_dir.mkdir(parents=True, exist_ok=True)
 
     # Save updated config.yaml to the project directory
