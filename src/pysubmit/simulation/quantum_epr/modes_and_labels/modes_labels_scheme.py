@@ -43,6 +43,4 @@ class ModesAndLabels(BaseModel):
 
                 modes_to_labels.update(d)
 
-        # assert (len(list(modes_to_labels.keys())) == len(self.labels))
-
         return modes_to_labels
