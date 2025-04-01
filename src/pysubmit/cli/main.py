@@ -42,7 +42,6 @@ def submit(
 
     # Load and validate config.yaml
     config = WorkflowConfig.load_from_yaml(config_path)
-    config.data_parameters.project_name = name
 
     # Prepare the job
     results_dir = prepare_job(config, files, mem, timeout)
