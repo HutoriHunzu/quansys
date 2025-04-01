@@ -3,7 +3,7 @@ import typer
 from pathlib import Path
 from .prepare import prepare_job
 from .submit import submit_job
-from ..workflow import WorkflowConfig, execute_flow
+from ..workflow import WorkflowConfig, execute_workflow
 from .utils import update_status, read_status
 
 # Suppress FutureWarning from pyaedt
@@ -114,7 +114,7 @@ def run_flow(config_path: Path = typer.Argument(..., help="Path to the config.ya
 
     try:
         # Execute the flow
-        execute_flow(config)
+        execute_workflow(config)
         typer.echo(f"Flow execution completed for config: {config_path}")
         # Update status to "done" upon success
         update_status(project_dir, "done")
