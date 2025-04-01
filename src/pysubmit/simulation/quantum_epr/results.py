@@ -103,7 +103,7 @@ class QuantumResult(BaseSimulationOutput):
 
         # flatten the diagonal
         for i, label in enumerate(labels):
-            key = f"{label} Anharm. ({self.epr.chi_unit}"
+            key = f"{label} Anharm. ({self.epr.chi_unit})"
             value = float(chi_matrix[i][i])
 
             yield key, value
@@ -111,11 +111,14 @@ class QuantumResult(BaseSimulationOutput):
     def _flatten_frequencies_and_q_factors(self):
 
         labels = self.distributed.labels_order
-        frequencies = self.distributed.frequencies
+        frequencies = self.epr.frequencies
 
         for label, frequency, single_mode_result in zip(labels, frequencies, self.eigenmode_result.results.values()):
 
-            key = f'{label} Freq. ND ({self.epr.frequencies_unit})'
+            unit = self.epr.frequencies_unit
+            single_mode_result.change_frequency_unit(unit)
+
+            key = f'{label} Freq. ND ({unit})'
             value = float(frequency)
 
             yield key, value
