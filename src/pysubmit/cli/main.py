@@ -42,6 +42,7 @@ def submit(
 
     # Load and validate config.yaml
     config = WorkflowConfig.load_from_yaml(config_path)
+    config.data_handler.root_directory = project_dir
 
     # Prepare the job
     results_dir = prepare_job(config, files, mem, timeout)
