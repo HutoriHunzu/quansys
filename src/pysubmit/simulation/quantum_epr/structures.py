@@ -18,8 +18,8 @@ class ConfigJunction(BaseModel):
 class EprDiagResult:
     chi: NDArray
     frequencies: NDArray
-    chi_unit: str = 'mhz'
-    frequencies_unit: str = 'ghz'
+    chi_unit: str = 'MHz'
+    frequencies_unit: str = 'GHz'
 
 
 

@@ -5,6 +5,28 @@ ureg = pint.UnitRegistry(case_sensitive=False)
 ureg.formatter.default_format = "~"
 
 
+# Define the canonical units and their multipliers relative to Hz.
+case_sensitive_units = ('Hz', 'kHz', 'MHz', 'GHz')
+multipliers = {
+    'Hz': 1,
+    'kHz': 1e3,
+    'MHz': 1e6,
+    'GHz': 1e9
+}
+
+# Add lower-case aliases for each canonical unit.
+for canonical in case_sensitive_units:
+    lower_unit = canonical.lower()
+    # Only define an alias if lower-case version differs from canonical.
+    if lower_unit != canonical:
+        # Example: For GHz, create the alias: "ghz = 1e9 * Hz = GHz"
+        definition = f"{lower_unit} = {multipliers[canonical]} * Hz"
+        try:
+            ureg.define(definition)
+        except Exception as e:
+            print(f"Failed to define alias for {canonical}: {e}")
+
+
 def is_dimensionless(unit: str | None) -> bool:
     """
     Check whether the provided unit is considered dimensionless.
@@ -143,7 +165,7 @@ if __name__ == "__main__":
     print(f"42 (dimensionless) -> any_unit: {value_dimless} '{unit_dimless}'")
 
     # Example 5: Convert 3.5 inches to centimeters.
-    cm_value, cm_unit = convert(3.5, "Hz", "GHz")
+    cm_value, cm_unit = convert(3.5, "khz", "GHz")
     print(f"3.5 inch -> centimeter: {cm_value} {cm_unit}")
 
 
