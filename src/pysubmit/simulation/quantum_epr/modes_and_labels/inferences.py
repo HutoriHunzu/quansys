@@ -1,9 +1,5 @@
 from pydantic import BaseModel, model_validator
-from typing import Literal, List, Dict, Tuple
-from pysubmit.simulation.eigenmode.results import EigenmodeResults
-
-
-# from ..distributed_analysis import inverse_dict
+from typing import Literal
 
 
 class InferenceBase(BaseModel):

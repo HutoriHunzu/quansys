@@ -1,25 +1,13 @@
-from pydantic import BaseModel, TypeAdapter
-from typing import Dict, List, Tuple
+from pydantic import BaseModel, TypeAdapter, Field
+from typing import Annotated
 from .inferences import ManualInference, OrderInference
-from pysubmit.simulation.eigenmode.results import EigenmodeResults
 
-SUPPORTED_INFERENCES = (ManualInference | OrderInference)
+SUPPORTED_INFERENCES = Annotated[ManualInference | OrderInference, Field(discriminator='type')]
 INFERENCE_ADAPTER = TypeAdapter(SUPPORTED_INFERENCES)
-
-
-class Modes(BaseModel):
-    inference_type: str
-    args: dict
-
-    def parse(self, mode_to_freq_and_q_factor: Dict[int, Dict[str, float]]) -> Dict[int, str]:
-        inference_args = dict({'type': self.inference_type}, **self.args)
-        inference_instance = INFERENCE_ADAPTER.validate_python(inference_args)
-        return inference_instance.infer(mode_to_freq_and_q_factor)
 
 
 class ModesAndLabels(BaseModel):
     inferences: list[SUPPORTED_INFERENCES]
-    # labels: List[str]
 
     def parse(self, eigenmode_results: dict[int, dict[str, float]]) -> dict[int, str]:
 
