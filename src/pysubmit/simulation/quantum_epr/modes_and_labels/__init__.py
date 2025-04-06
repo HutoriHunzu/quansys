@@ -1,1 +1,1 @@
-from .modes_labels_scheme import ModesAndLabels, Modes, SUPPORTED_INFERENCES, ManualInference, OrderInference
+from .modes_labels_scheme import ModesAndLabels, SUPPORTED_INFERENCES, ManualInference, OrderInference
