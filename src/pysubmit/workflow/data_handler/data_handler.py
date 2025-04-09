@@ -1,17 +1,19 @@
 from pydantic import BaseModel, BeforeValidator, computed_field, TypeAdapter
 from pathlib import Path
 from datetime import datetime
-from typing import Any
-
-from pysubmit.workflow.data_handler.json_utils import unique_name_by_counter
+from typing import Any, TypeVar, Callable
 from typing_extensions import Annotated, Literal
 import shutil
 import pandas as pd
 
+from pysubmit.workflow.data_handler.json_utils import unique_name_by_counter
 from .json_utils import json_write
 from .metadata import Metadata
 from .aggregator import Aggregator
-from ...simulation import SIMULATION_RESULTS_ADAPTER
+
+# Define a generic type variable and a type alias for the saving function.
+T = TypeVar("T")
+SaveFunction = Callable[[T, Path], None]
 
 
 def ensure_path(s: str | Path) -> Path:
@@ -74,9 +76,6 @@ class DataHandler(BaseModel):
 
         If `overwrite` is True and `root_directory` already exists, it is deleted
         before creating a fresh structure.
-
-        Args:
-            overwrite (bool): Whether to delete existing folders first. Defaults to False.
         """
         if self.results_directory.exists():
             if self.overwrite:
@@ -128,7 +127,7 @@ class DataHandler(BaseModel):
             Path: The path where the output data should be saved.
         """
         if self.last_iteration_path is None:
-            raise ValueError("No iteration folder exists. Please call `create_new_iteration` first.")
+            raise ValueError("No iteration folder exists. Please call `create_iteration` first.")
 
         metadata_file = self.last_iteration_path / "metadata.json"
         metadata = Metadata.load(metadata_file)
@@ -137,23 +136,29 @@ class DataHandler(BaseModel):
         metadata.save()
         return file_path
 
-    def add_data_to_iteration(self, identifier: str, data: dict[str, Any],
-                              register_if_new: bool = True) -> None:
+    def add_generic_data(
+            self,
+            identifier: str,
+            data: T,
+            saving_handler: SaveFunction,
+            register_if_new: bool = True
+    ) -> None:
         """
-        Save simulation output data (JSON-serializable) under the current iteration,
-        and mark the corresponding identifier as DONE in metadata.
+        Save simulation output data of generic type T using a user-supplied saving function,
+        and mark the corresponding identifier as done in metadata.
+
+        Parameters:
+            identifier (str): The unique identifier for a simulation output.
+            data (T): The simulation output data to be saved.
+            saving_handler (Callable[[T, Path], None]): A function that takes the data and target file path, and performs the saving.
+            register_if_new (bool): Register the data with the identifier if it is not already registered.
 
         Raises:
-            ValueError: If no iteration folder is active.
-            KeyError: If `identifier` has not been registered via `register_identifier`.
-
-        Args:
-            identifier (str): The simulation output identifier to add data for.
-            data (dict[str, Any]): JSON-serializable data representing the simulation output.
-            register_if_new: (bool) registers the data with the identifier given that it's not existing already
+            ValueError: If no iteration folder has been created.
+            KeyError: If `identifier` is not registered and `register_if_new` is False.
         """
         if self.last_iteration_path is None:
-            raise ValueError("No iteration folder exists. Please call `create_new_iteration` first.")
+            raise ValueError("No iteration folder exists. Please call `create_iteration` first.")
 
         metadata_file = self.last_iteration_path / "metadata.json"
         metadata = Metadata.load(metadata_file)
@@ -166,12 +171,34 @@ class DataHandler(BaseModel):
                 raise KeyError(f"Identifier '{identifier}' not found. Call `register_identifier` first.")
 
         file_path = self.last_iteration_path / metadata.id_to_description[identifier].path
-        json_write(file_path, data)
+
+        # Delegate saving to the user-supplied saving function.
+        saving_handler(data, file_path)
 
         metadata.mark_done(identifier)
         metadata.save()
 
-    def aggregate_and_save(self, adapter: TypeAdapter | Literal['analysis'] = 'analysis') -> None:
+    def add_data_to_iteration(
+            self,
+            identifier: str,
+            data: dict[str, Any],
+            register_if_new: bool = True
+    ) -> None:
+        """
+        Save simulation output JSON data under the current iteration and mark the corresponding
+        identifier as done in metadata.
+
+        This method now delegates the saving operation to the generic `add_generic_data` method,
+        using `json_write` as the saving function.
+
+        Parameters:
+            identifier (str): The simulation output identifier.
+            data (dict[str, Any]): JSON-serializable data.
+            register_if_new (bool): If True, automatically register the identifier if missing.
+        """
+        self.add_generic_data(identifier, data, json_write, register_if_new)
+
+    def aggregate_and_save(self, adapter: TypeAdapter = None) -> None:
         """
         Use an `Aggregator` to merge the stored outputs according to `grouping_config`,
         and write each group's results into a CSV file in `aggregations_directory`.
@@ -182,9 +209,6 @@ class DataHandler(BaseModel):
                 or the string 'analysis' to use the default `ANALYSIS_ADAPTER`.
                 Defaults to 'analysis'.
         """
-        if adapter == 'analysis':
-            adapter = SIMULATION_RESULTS_ADAPTER
-
         aggregator = Aggregator(
             grouping_config=self.grouping_config,
             scanning_dir=self.iterations_directory,

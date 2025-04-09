@@ -5,18 +5,6 @@ from .utils import split_dict_by_adapter, merge_by_update, flatten, unflatten
 from pysubmit.shared.variables_types import SUPPORTED_COMPOUND_VALUES
 
 
-# from ...shared.variables_types import (Value, Values, GenericValues,
-#                                        GenericValue, NamedValue, NamedValues)
-
-# SweepInputDictValuesType = Value | Values | GenericValue | GenericValues
-# SweepOutputDictValuesType = Value | GenericValue
-
-# def convert_tuple_to_list(v: Any):
-#     if isinstance(v, tuple):
-#         return list(v)
-#     return v
-
-
 SweepInputListType = list | tuple
 SweepInputTypes = SUPPORTED_COMPOUND_VALUES | SweepInputListType
 CompoundAdapter = TypeAdapter(SUPPORTED_COMPOUND_VALUES)

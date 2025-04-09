@@ -3,7 +3,8 @@ from .session_handler import start_hfss_session, SessionParameters
 from .config import WorkflowConfig
 from .data_handler import DataHandler
 from .sweep import chain_sweeps
-from ..simulation import SUPPORTED_ANALYSIS
+from ..simulation import SUPPORTED_ANALYSIS, SIMULATION_RESULTS_ADAPTER
+
 
 
 def execute_workflow(config: WorkflowConfig) -> None:
@@ -42,7 +43,7 @@ def execute_workflow(config: WorkflowConfig) -> None:
             _execute_simulations(config.simulations, hfss, data_handler)
 
     # Aggregation according to grouping configuration
-    data_handler.aggregate_and_save()
+    data_handler.aggregate_and_save(adapter=SIMULATION_RESULTS_ADAPTER)
 
 
 def _generate_build_parameters(builder, sweeps, hfss):
