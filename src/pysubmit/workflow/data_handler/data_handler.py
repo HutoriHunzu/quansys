@@ -173,7 +173,7 @@ class DataHandler(BaseModel):
         file_path = self.last_iteration_path / metadata.id_to_description[identifier].path
 
         # Delegate saving to the user-supplied saving function.
-        saving_handler(data, file_path)
+        saving_handler(file_path, data)
 
         metadata.mark_done(identifier)
         metadata.save()
