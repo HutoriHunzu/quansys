@@ -14,7 +14,7 @@ dependencies = [
     "pydantic_yaml", # Added typer as a dependency
     "typer",
     "pytest>=8.3.4",
-    "drawing @ git+https://github.com/HutoriHunzu/drawing.git",
+    "drawing @ git+https://github.com/RosenblumLab/drawing.git",
     "nbmake"
 
 ]
