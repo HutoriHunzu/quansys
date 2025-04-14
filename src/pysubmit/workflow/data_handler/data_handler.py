@@ -13,7 +13,7 @@ from .aggregator import Aggregator
 
 # Define a generic type variable and a type alias for the saving function.
 T = TypeVar("T")
-SaveFunction = Callable[[T, Path], None]
+SaveFunction = Callable[[Path, T], None]
 
 
 def ensure_path(s: str | Path) -> Path:
