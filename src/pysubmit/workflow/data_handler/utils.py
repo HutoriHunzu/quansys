@@ -2,6 +2,7 @@
 from typing import Any
 from pydantic import TypeAdapter
 from pysubmit.workflow.sweep.utils import apply_adapter, flatten
+from pathlib import Path
 
 
 def flat_data_from_json(data: dict, adapter: TypeAdapter = None) -> dict[str, Any]:
@@ -30,3 +31,14 @@ def flat_data_from_json(data: dict, adapter: TypeAdapter = None) -> dict[str, An
 
     # Otherwise, assume the object has its own flatten() method.
     return data.flatten()
+
+
+
+def unique_name_by_counter(path: Path):
+    base_name = path.stem
+    counter = 0
+    while path.exists():
+        path = path.with_stem(f'{base_name}_{counter}')
+        counter += 1
+
+    return path

@@ -1,9 +1,8 @@
 from pydantic import BaseModel, Field, TypeAdapter, BeforeValidator
-from typing_extensions import Any, Annotated, Iterable
+from typing_extensions import Any, Annotated, Iterable, Iterator
 from abc import ABC, abstractmethod
 from .utils import split_dict_by_adapter, merge_by_update, flatten, unflatten
 from pysubmit.shared.variables_types import SUPPORTED_COMPOUND_VALUES
-
 
 SweepInputListType = list | tuple
 SweepInputTypes = SUPPORTED_COMPOUND_VALUES | SweepInputListType
@@ -12,7 +11,20 @@ SweepInputTypesAdapter = TypeAdapter(SweepInputTypes)
 IterableAdapter = TypeAdapter(SweepInputListType)
 
 
-class SweepBase(ABC, BaseModel):
+class SweepAbstract(ABC):
+
+    @abstractmethod
+    def generate(self) -> Iterable[dict]:
+        pass
+
+    def update(self, **kwargs):
+        pass
+
+    def __iter__(self) -> Iterator[dict]:
+        return iter(self.generate())
+
+
+class SweepBase(SweepAbstract, BaseModel):
     parameters: dict = {}
     constants: dict = {}
     use_compound_types: bool = True
@@ -45,6 +57,7 @@ class SweepBase(ABC, BaseModel):
     def sweep(self, values: Iterable[Iterable]) -> Iterable[Iterable]:
         pass
 
+
     def generate(self) -> Iterable[dict]:
         keys, values, constants = self.parse()
 
@@ -55,6 +68,6 @@ class SweepBase(ABC, BaseModel):
 
         for combination in self.sweep(values):
             current = dict(zip(keys, combination))
-            current = merge_by_update(current, constants)
+            current = merge_by_update(constants, current)
             yield unflatten(current)
 

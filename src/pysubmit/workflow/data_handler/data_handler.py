@@ -142,7 +142,7 @@ class DataHandler(BaseModel):
             data: T,
             saving_handler: SaveFunction,
             register_if_new: bool = True
-    ) -> None:
+    ) -> Path:
         """
         Save simulation output data of generic type T using a user-supplied saving function,
         and mark the corresponding identifier as done in metadata.
@@ -178,12 +178,14 @@ class DataHandler(BaseModel):
         metadata.mark_done(identifier)
         metadata.save()
 
+        return file_path
+
     def add_data_to_iteration(
             self,
             identifier: str,
             data: dict[str, Any],
             register_if_new: bool = True
-    ) -> None:
+    ) -> Path:
         """
         Save simulation output JSON data under the current iteration and mark the corresponding
         identifier as done in metadata.
@@ -196,7 +198,7 @@ class DataHandler(BaseModel):
             data (dict[str, Any]): JSON-serializable data.
             register_if_new (bool): If True, automatically register the identifier if missing.
         """
-        self.add_generic_data(identifier, data, json_write, register_if_new)
+        return self.add_generic_data(identifier, data, json_write, register_if_new)
 
     def aggregate_and_save(self, adapter: TypeAdapter = None) -> None:
         """
