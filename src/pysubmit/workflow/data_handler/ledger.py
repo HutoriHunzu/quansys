@@ -17,9 +17,9 @@ Concurrency model
 """
 
 from __future__ import annotations
+
 from datetime import datetime
 from pathlib import Path
-
 import json
 from multiprocessing import Lock
 from pydantic import BaseModel, Field

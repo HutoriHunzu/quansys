@@ -2,31 +2,45 @@ from pathlib import Path
 
 from pydantic import BaseModel, BeforeValidator
 from pydantic_yaml import to_yaml_file, parse_yaml_file_as
-from typing_extensions import Annotated
+from typing_extensions import Annotated, TypeAlias
 
 from .builder import SUPPORTED_BUILDERS
 from .sweep import SUPPORTED_SWEEPS
-from .session_handler import SessionParameters
+from .session_handler import PyaedtFileParameters
 from .data_handler import DataHandler
 from ..simulation import SUPPORTED_ANALYSIS
+from pykit.aggregator import Aggregator
 
 
-def _ensure_list(value):
-    """
-    Ensure the input is a list. If `value` is not a list, wrap it in a list.
-
-    Used by the Pydantic validator so that a user can specify a single sweep item
-    or a list of sweeps interchangeably.
-    """
-    if not isinstance(value, list):
-        return [value]
-    return value
+def ensure_path(s: str | Path) -> Path:
+    """Ensure the input is converted to a Path object."""
+    return Path(s) if isinstance(s, str) else s
 
 
-BuilderSweepList = Annotated[list[SUPPORTED_SWEEPS], BeforeValidator(_ensure_list)]
-"""
-A type annotation representing a list of sweeps. Automatically wraps a single sweep into a list.
-"""
+PathType: TypeAlias = Annotated[Path, BeforeValidator(ensure_path)]
+
+
+
+
+from pykit.sweeper import NormalizedSweep, EmptySweep
+
+
+# def _ensure_list(value):
+#     """
+#     Ensure the input is a list. If `value` is not a list, wrap it in a list.
+#
+#     Used by the Pydantic validator so that a user can specify a single sweep item
+#     or a list of sweeps interchangeably.
+#     """
+#     if not isinstance(value, list):
+#         return [value]
+#     return value
+#
+#
+# BuilderSweepList = Annotated[list[DictSweep], BeforeValidator(_ensure_list)]
+# """
+# A type annotation representing a list of sweeps. Automatically wraps a single sweep into a list.
+# """
 
 
 class WorkflowConfig(BaseModel):
@@ -45,13 +59,15 @@ class WorkflowConfig(BaseModel):
         builder_sweep (BuilderSweepList | None):
             A list of sweep definitions for the builder phase, or None for no sweeps.
     """
-    session_parameters: SessionParameters
+    root_folder: PathType = 'results'
+    pyaedt_file_parameters: PyaedtFileParameters
     simulations: dict[str, SUPPORTED_ANALYSIS]
     data_handler: DataHandler = DataHandler()
 
     # builder phase
     builder: SUPPORTED_BUILDERS | None = None
-    builder_sweep: BuilderSweepList | None = None
+    builder_sweep: NormalizedSweep = EmptySweep()
+    aggregation_dict: dict[str, Aggregator] = {}
 
     def save_to_yaml(self, path: str | Path) -> None:
         """

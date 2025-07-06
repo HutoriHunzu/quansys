@@ -14,7 +14,7 @@ def ensure_path(value: Path | str) -> Path:
 PATH_TYPE = Annotated[Path, BeforeValidator(ensure_path)]
 
 
-class SessionParameters(BaseModel):
+class PyaedtFileParameters(BaseModel):
     # path_to_save: str
     file_path: PATH_TYPE
     design_name: str = 'temp'
