@@ -13,8 +13,8 @@ import pytest
 from pysubmit.workflow import DesignVariableBuilder, ModuleBuilder, FunctionBuilder
 
 
-VARIABLE_TO_CHANGE = 'stam_variable'
-VARIABLE_PLUS_ONE = 'stam_variable_plus_one_mm'
+VARIABLE_TO_CHANGE = 'chip_base_width'
+VARIABLE_PLUS_ONE = f'{VARIABLE_TO_CHANGE}_plus_one_mm'
 
 
 def test_design_variable_builder(simple_design):

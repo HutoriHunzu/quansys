@@ -14,7 +14,7 @@ def extract_chi_map(quantum_result):
     labels = quantum_result.distributed.labels_order
     chi = quantum_result.epr.chi
     return {
-        (labels[i], labels[j]): float(chi[i][j])
+        (labels[i], labels[j]): float(chi[i][j].real)
         for i in range(len(labels)) for j in range(len(labels))
     }
 

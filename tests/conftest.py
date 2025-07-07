@@ -59,7 +59,7 @@ def build_without_hfss():
     sys.modules.pop(module_name, None)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def simple_design(tmp_path_factory):
     tmp_path = tmp_path_factory.mktemp("aedt_project_simple")
 
@@ -81,16 +81,28 @@ def simple_design(tmp_path_factory):
         pytest.skip(f"Skipping test: {e}")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope='module')
+def eigenmode_results(simple_design):
+    simulation = EigenmodeAnalysis(
+        design_name='my_design',
+        setup_name='Setup1',
+        setup_parameters={
+            'NumModes': 5,
+            "MaximumPasses": 2,
+            "MinimumPasses": 1,
+        }
+    )
+
+    return simulation.analyze(simple_design)
+
+@pytest.fixture(scope="module")
 def transmon_readout_purcell_design(tmp_path_factory):
     tmp_path = tmp_path_factory.mktemp("aedt_project_complex")
 
-    local_copy = Path(TRANSMON_READOUT_PURCELL_DESIGN_AEDT)
-
     assert TRANSMON_READOUT_PURCELL_DESIGN_AEDT.exists(), "Missing test asset: transmon_readout_purcell.aedt"
 
-    # local_copy = tmp_path / TRANSMON_READOUT_PURCELL_DESIGN_AEDT.name
-    # local_copy.write_bytes(TRANSMON_READOUT_PURCELL_DESIGN_AEDT.read_bytes())
+    local_copy = tmp_path / TRANSMON_READOUT_PURCELL_DESIGN_AEDT.name
+    local_copy.write_bytes(TRANSMON_READOUT_PURCELL_DESIGN_AEDT.read_bytes())
 
     params = PyaedtFileParameters(
         design_name='my_design',
@@ -105,22 +117,7 @@ def transmon_readout_purcell_design(tmp_path_factory):
         pytest.skip(f"Skipping test: {e}")
 
 
-@pytest.fixture(scope='session')
-def eigenmode_results(simple_design):
-    simulation = EigenmodeAnalysis(
-        design_name='my_design',
-        setup_name='Setup1',
-        setup_parameters={
-            'NumModes': 5,
-            "MaximumPasses": 1,
-            "MinimumPasses": 1,
-        }
-    )
-
-    return simulation.analyze(simple_design)
-
-
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def transmon_readout_purcell_eigenmode_results(transmon_readout_purcell_design):
     simulation = EigenmodeAnalysis(
         design_name='my_design',
