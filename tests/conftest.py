@@ -9,17 +9,21 @@ import pytest
 # ---------------------------------------------------------------------
 from pysubmit.workflow import (
     open_pyaedt_file,
-    PyaedtFileParameters,
+    PyaedtFileParameters
 )
+from pysubmit.simulation import EigenmodeAnalysis, QuantumEpr
+from pysubmit.workflow.session_handler.session import LicenseUnavailableError
 
 # ---------------------------------------------------------------------
 # Paths / constants
 # ---------------------------------------------------------------------
 SIMPLE_DESIGN_AEDT = (
-    Path(__file__).parent / "resources" / "simple_design.aedt"
-)  # spelling kept from the prompt :)
+        Path(__file__).parent / "resources" / "simple_design.aedt"
+)
 
-
+TRANSMON_READOUT_PURCELL_DESIGN_AEDT = (
+        Path(__file__).parent / "resources" / "transmon_purcell_readout.aedt"
+)
 
 
 @pytest.fixture
@@ -55,26 +59,77 @@ def build_without_hfss():
     sys.modules.pop(module_name, None)
 
 
-# ---------------------------------------------------------------------
-# 1) open a design and yield an HFSS handle
-# ---------------------------------------------------------------------
-@pytest.fixture(scope="function")
-def simple_design(tmp_path):
-    """
-    Opens the reference .aedt file **once per test module** and yields the
-    HFSS handle.  After all tests in the module run, the context manager
-    closes HFSS automatically.
-    """
+@pytest.fixture(scope="session")
+def simple_design(tmp_path_factory):
+    tmp_path = tmp_path_factory.mktemp("aedt_project_simple")
+
     assert SIMPLE_DESIGN_AEDT.exists(), "Missing test asset: simple_design.aedt"
 
-    # Copy the design into the temp dir so tests never touch the git-tracked file
     local_copy = tmp_path / SIMPLE_DESIGN_AEDT.name
     local_copy.write_bytes(SIMPLE_DESIGN_AEDT.read_bytes())
 
-    params = PyaedtFileParameters(design_name='my_design', file_path=local_copy, non_graphical=True)
+    params = PyaedtFileParameters(
+        design_name='my_design',
+        file_path=local_copy,
+        non_graphical=True
+    )
 
-    # The helper is a context-manager; use `yield` fixture style
-    with open_pyaedt_file(params) as hfss:
-        yield hfss
+    try:
+        with open_pyaedt_file(params) as hfss:
+            yield hfss
+    except LicenseUnavailableError as e:
+        pytest.skip(f"Skipping test: {e}")
 
 
+@pytest.fixture(scope="session")
+def transmon_readout_purcell_design(tmp_path_factory):
+    tmp_path = tmp_path_factory.mktemp("aedt_project_complex")
+
+    local_copy = Path(TRANSMON_READOUT_PURCELL_DESIGN_AEDT)
+
+    assert TRANSMON_READOUT_PURCELL_DESIGN_AEDT.exists(), "Missing test asset: transmon_readout_purcell.aedt"
+
+    # local_copy = tmp_path / TRANSMON_READOUT_PURCELL_DESIGN_AEDT.name
+    # local_copy.write_bytes(TRANSMON_READOUT_PURCELL_DESIGN_AEDT.read_bytes())
+
+    params = PyaedtFileParameters(
+        design_name='my_design',
+        file_path=local_copy,
+        non_graphical=True
+    )
+
+    try:
+        with open_pyaedt_file(params) as hfss:
+            yield hfss
+    except LicenseUnavailableError as e:
+        pytest.skip(f"Skipping test: {e}")
+
+
+@pytest.fixture(scope='session')
+def eigenmode_results(simple_design):
+    simulation = EigenmodeAnalysis(
+        design_name='my_design',
+        setup_name='Setup1',
+        setup_parameters={
+            'NumModes': 5,
+            "MaximumPasses": 1,
+            "MinimumPasses": 1,
+        }
+    )
+
+    return simulation.analyze(simple_design)
+
+
+@pytest.fixture(scope="session")
+def transmon_readout_purcell_eigenmode_results(transmon_readout_purcell_design):
+    simulation = EigenmodeAnalysis(
+        design_name='my_design',
+        setup_name='Setup1',
+        setup_parameters={
+            'NumModes': 3,
+            "MaximumPasses": 3,
+            "MinimumPasses": 1,
+        }
+    )
+
+    return simulation.analyze(transmon_readout_purcell_design)

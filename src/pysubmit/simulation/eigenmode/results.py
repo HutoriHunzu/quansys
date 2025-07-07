@@ -92,7 +92,7 @@ def _single_mode_result_extraction(setup: Setup, mode_number: int):
 
 # class C
 def get_eigenmode_results(setup: Setup, frequencies_unit: str = 'GHz') -> EigenmodeResults:
-    # validation of setup setup and existing solution
+    # validation of setup and existing solution
     validate_solution_type(setup, setup_type='HfssEigen')
     validate_existing_solution(setup)
 

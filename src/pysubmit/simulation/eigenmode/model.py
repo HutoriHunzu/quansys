@@ -39,36 +39,3 @@ class EigenmodeAnalysis(BaseAnalysis):
 
     def report(self):
         pass
-
-        # hfss['chip_house_length'] = '22.2mm'
-
-        # setup.analyze(cores=self.cores, gpus=self.gpus)
-
-        # Save and exit
-        # hfss.save_project()
-
-        # get_solved_solutions(hfss)
-
-    # # def _get_formatter(self):
-    # #     formatter_type = {'type': self.formatter_type}
-    # #     formatter_args = {} if self.formatter_args is None else self.formatter_args
-    # #     return FORMAT_ADAPTER.validate_python(dict(**formatter_type, **formatter_args))
-    #
-    # @staticmethod
-    # def convert_result_to_dict(result) -> dict:
-    #     return result.model_dump()
-    #
-    # def load_result_by_dict(self, data: dict):
-    #     formatter = self._get_formatter()
-    #     return formatter.load(data)
-    #
-    # def _get_results(self, hfss: Hfss = None):
-    #     formatter = self._get_formatter()
-    #
-    #     # getting setup
-    #     setup = hfss.get_setup(self.setup_name)
-    #
-    #     return formatter.format(setup)
-    #
-    # def extract_parameters(self) -> dict:
-    #     return self.model_dump()

@@ -20,7 +20,6 @@ def ensure_list(value):
 
 
 MODES_TO_LABELS_TYPE = ModesAndLabels | dict[int, str]
-MODES_TO_LABELS_LST_TYPE = Annotated[list[MODES_TO_LABELS_TYPE], BeforeValidator(ensure_list)]
 JUNCTION_INFO_TYPE = Annotated[list[ConfigJunction], BeforeValidator(ensure_list)]
 
 
