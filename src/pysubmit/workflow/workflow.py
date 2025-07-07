@@ -1,10 +1,7 @@
-from .builder import SUPPORTED_BUILDERS
 from .session_handler import open_pyaedt_file, PyaedtFileParameters
 from .config import WorkflowConfig
-from .data_handler import DataHandler
-from .sweep import chain_sweeps
-from ..simulation import SUPPORTED_ANALYSIS, SIMULATION_RESULTS_ADAPTER
-from pykit.project import Project, Session
+from ..simulation import SIMULATION_RESULTS_ADAPTER
+from pykit.project import Project
 from pykit.save import save_json
 from pykit.aggregator import Aggregator
 
@@ -14,27 +11,6 @@ import shutil
 
 
 def execute_workflow(config: WorkflowConfig) -> None:
-    """
-    Execute the entire HFSS workflow based on a given configuration.
-
-    1. Create folders for storing data.
-    2. Start an HFSS session.
-    3. Optionally run a builder phase (with or without sweeps).
-    4. For each set of builder parameters, create an iteration, store them, and run simulations.
-    5. (Commented out) Optionally call `aggregate_and_save` to aggregate results at the end.
-
-    Args:
-        config (WorkflowConfig): The workflow configuration object containing:
-            - HFSS session parameters
-            - Simulation definitions
-            - Data handling configuration
-            - Builder definitions
-            - Builder sweeps
-    """
-    # Prepare data handler
-    # data_handler = config.data_handler
-    # data_handler.create_folders()
-
 
     project = Project(root=config.root_folder)
     iteration_proj = project.sub('iterations')
@@ -59,45 +35,6 @@ def execute_workflow(config: WorkflowConfig) -> None:
     for name, aggregator in config.aggregation_dict.items():
 
         _aggregation_phase(name, aggregator, aggregation_proj)
-
-        # aggregator.aggregate()
-
-
-        # with open_pyaedt_file(pyaedt_parameters) as hfss:
-        #
-        #     for identifier, simulation in config.simulations.items():
-        #
-        #         simulation_session = iteration_proj.session(identifier, params=params)
-        #
-        #         if simulation_session.is_done():
-        #             continue
-
-                # _run_
-
-    # for parameter in builder parameters
-    # for each parameter set:
-    #   start build session
-    #   if success yield a hfss instance
-    #   for every simulation run its own session with the hfss instance
-
-    # Start HFSS session
-    # with start_hfss_session(config.session_parameters) as hfss:
-    #
-    #     # sweep over builder parameters
-    #
-    #     # Run build phase
-    #     for build_parameters in _generate_build_parameters(
-    #             config.builder, config.builder_sweep, hfss
-    #     ):
-    #         # Create an iteration folder for each set of build parameters
-    #         data_handler.create_iteration()
-    #         data_handler.add_data_to_iteration("build_parameters", build_parameters)
-    #
-    #         # Run all simulations in this iteration
-    #         _execute_simulations(config.simulations, hfss, data_handler)
-    #
-    # # Aggregation according to grouping configuration
-    # data_handler.aggregate_and_save(adapter=SIMULATION_RESULTS_ADAPTER)
 
 
 def _build_phase(builder,
@@ -173,76 +110,4 @@ def _aggregation_phase(identifier_aggregator_dict: dict[str, Aggregator], relpat
 
         session.done()
 
-    # update session
 
-    pass
-
-
-
-def _generate_build_parameters(builder, sweeps, hfss):
-    """
-    Generate a series of build parameter dictionaries by chaining sweeps.
-
-    If no sweeps are defined, yields a single empty dictionary.
-
-    Args:
-        builder (SUPPORTED_BUILDERS | None): The optional builder.
-        sweeps (list[SUPPORTED_SWEEPS] | None): A list of sweep definitions, or None.
-        hfss: An active HFSS instance from which we can set or update designs.
-
-    Yields:
-        dict: A dictionary of parameters for the builder to apply.
-    """
-    if sweeps is None:
-        # No sweeps, just yield empty parameters
-        build_params_list = [{}]
-    else:
-        # Chain multiple sweeps into a sequence of parameter dictionaries
-        build_params_list = chain_sweeps(sweeps)
-
-    for build_params in build_params_list:
-        if builder is not None:
-            # Apply the builder with these parameters
-            generate_params_from_builder = builder.build(hfss, parameters=build_params)
-
-            # if the builder returns something that is not None save
-            # it instead of the sweeper parameters
-            if generate_params_from_builder is not None:
-                build_params = generate_params_from_builder
-
-        yield build_params
-
-
-def _execute_simulations(
-        simulations: dict[str, SUPPORTED_ANALYSIS],
-        hfss,
-        data_handler: DataHandler
-) -> None:
-    """
-    Run a dictionary of simulations, store their results, and optionally store each report.
-
-    Args:
-        simulations (dict[str, SUPPORTED_ANALYSIS]):
-            A dictionary with simulation ID (key) and the simulation object (value).
-        hfss:
-            The active HFSS session to run each simulation on.
-        data_handler (DataHandler):
-            Manages saving simulation outputs to disk.
-    """
-    # First, register all simulation identifiers for this iteration
-    for sim_id, simulation in simulations.items():
-        data_handler.register_identifier(sim_id)
-
-    # Now, run each simulation and store results
-    for sim_id, simulation in simulations.items():
-        # Run the simulation
-        result = simulation.analyze(hfss=hfss, data_handler=data_handler)
-
-        # Store the simulation results in JSON
-        data_handler.add_data_to_iteration(sim_id, result.model_dump())
-
-        # Optionally get a "report" object and store it as well
-        report = simulation.report()
-        if report is not None:
-            report_id = f"{sim_id}_report"
-            data_handler.add_data_to_iteration(report_id, report.model_dump())

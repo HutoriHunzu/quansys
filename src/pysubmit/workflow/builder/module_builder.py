@@ -30,7 +30,6 @@ class ModuleBuilder(BaseBuilder):
 
     def build(self,
               hfss: Hfss,
-              data_handler: DataHandler | None = None,
               parameters: dict | None = None) -> dict:
         """
         Imports the specified module, retrieves the designated function, and calls it

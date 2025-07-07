@@ -13,10 +13,8 @@ class FunctionBuilder(BaseBuilder):
     args: dict = Field(default_factory=dict)
 
     def build(self, hfss: Hfss,
-              data_handler: DataHandler | None = None,
               parameters: dict | None = None) -> dict:
-        # data_handler: HDF5Handler | None = None,
-        # kwargs = {'data_handler': data_handler}
+
         parameters = parameters or {}
         combined_args = merge_dicts(self.args, parameters)
 

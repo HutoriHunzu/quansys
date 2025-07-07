@@ -9,7 +9,6 @@ class BaseBuilder(BaseModel, ABC):
 
     @abstractmethod
     def build(self, hfss: Hfss,
-              data_handler: DataHandler | None,
               parameters: dict | None = None) -> dict:
         pass
 

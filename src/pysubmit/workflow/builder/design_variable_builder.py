@@ -12,8 +12,8 @@ class DesignVariableBuilder(BaseBuilder):
     setup_name: str
 
     def build(self, hfss: Hfss,
-              data_handler: DataHandler | None = None,
               parameters: dict = None):
+
         if parameters is None:
             return {}
 
