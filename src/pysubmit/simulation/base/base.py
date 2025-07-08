@@ -2,6 +2,7 @@ from pydantic import BaseModel, BeforeValidator, RootModel, TypeAdapter
 from typing import Literal, Self
 from abc import ABC, abstractmethod
 from enum import StrEnum, auto
+from ansys.aedt.core import Hfss
 import json
 
 FlatDictType = dict[str, str | bool | float]
@@ -66,7 +67,7 @@ class BaseAnalysis(BaseModel, ABC):
     type: SimulationTypesNames
 
     @abstractmethod
-    def analyze(self, **kwargs) -> BaseSimulationOutput:
+    def analyze(self, hfss: Hfss) -> BaseSimulationOutput:
         pass
 
     @abstractmethod

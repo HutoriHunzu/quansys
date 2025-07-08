@@ -1,6 +1,7 @@
-from copy import deepcopy
+from __future__ import annotations
 
-from pydantic import BaseModel, model_validator
+
+from pydantic import BaseModel, model_validator, Field
 from ..base import BaseSimulationOutput
 from ansys.aedt.core.application.analysis import Setup
 from functools import partial
@@ -12,10 +13,17 @@ from ..base import (FlatDictType, validate_solution_type, validate_existing_solu
 
 
 class SingleModeResult(BaseModel):
-    mode_number: int
-    quality_factor: float
-    frequency: Value
-    label: str | None = None
+    """Result data for a single eigenmode."""
+
+    mode_number: int = Field(..., description="The index number of the mode.")
+    quality_factor: float = Field(..., description="The Q factor of the mode.")
+    frequency: Value = Field(..., description="Frequency value with unit.")
+    label: str | None = Field(None, description="Optional label for the mode.")
+
+    # mode_number: int
+    # quality_factor: float
+    # frequency: Value
+    # label: str | None = None
 
     def format_mode_number(self):
         return self.label or f'Mode ({self.mode_number})'
@@ -31,17 +39,48 @@ class SingleModeResult(BaseModel):
 
 
 class EigenmodeResults(BaseSimulationOutput):
+    """
+    Result container for an Eigenmode simulation.
+
+    Stores computed modes, each with its frequency and quality factor.
+    Provides utilities to transform, flatten, and relabel the results.
+
+    Attributes:
+        type: Simulation result type identifier (always 'eigenmode_result').
+        results: Mapping of mode index to a SingleModeResult instance.
+        frequencies_unit: The unit in which frequencies are expressed (default: 'GHz').
+    """
+
     type: Literal[SimulationOutputTypesNames.EIGENMODE_RESULT] = SimulationOutputTypesNames.EIGENMODE_RESULT
-    results: dict[int, SingleModeResult]
-    frequencies_unit: str = 'GHz'
+    results: dict[int, SingleModeResult] = Field(..., description="Mapping of mode index to its result.")
+    frequencies_unit: str = Field('GHz', description="Unit used to report frequencies.")
+
+    # type: Literal[SimulationOutputTypesNames.EIGENMODE_RESULT] = SimulationOutputTypesNames.EIGENMODE_RESULT
+    # results: dict[int, SingleModeResult]
+    # frequencies_unit: str = 'GHz'
 
     # mode_to_labels: dict[int, str] | None = None  # only used for formatting for the flat case
 
     def __getitem__(self, item) -> SingleModeResult:
+        """
+        Access a mode result by its index.
+
+        Args:
+            item: Mode index (int)
+
+        Returns:
+            SingleModeResult: Data for the requested mode.
+        """
         return self.results[item]
 
     #
     def generate_simple_form(self) -> dict[int, dict[str, float]]:
+        """
+        Convert the result set to a simplified dict format.
+
+        Returns:
+            A dictionary mapping each mode to its frequency and quality factor.
+        """
         return {
             elem.mode_number: {'frequency': elem.frequency.value,
                                'quality_factor': elem.quality_factor}
@@ -49,19 +88,39 @@ class EigenmodeResults(BaseSimulationOutput):
         }
 
     def change_frequencies_unit(self, unit: str):
+        """
+        Change the unit of all stored frequencies.
+
+        Args:
+            unit: New frequency unit (e.g., 'MHz', 'GHz', etc.)
+        """
         self.frequencies_unit = unit
         for v in self.results.values():
             v.change_frequency_unit(self.frequencies_unit)
 
     def flatten(self) -> FlatDictType:
-        # sorting by mode number
+        """
+        Flatten the result into a dictionary for tabular or CSV output.
+
+        Returns:
+            A flat dictionary with labeled keys and scalar values.
+        """
         result = {}
         for mode_number in self.results.keys():
             current = self.results[mode_number].flatten()
             result.update(current)
         return result
 
-    def generate_a_labeled_version(self, mode_to_labels: dict[int, str]) -> 'EigenmodeResults':
+    def generate_a_labeled_version(self, mode_to_labels: dict[int, str]) -> EigenmodeResults:
+        """
+        Create a new result object with mode labels assigned.
+
+        Args:
+            mode_to_labels: Mapping of mode index to label string.
+
+        Returns:
+            EigenmodeResults: A labeled version of the results.
+        """
         new_results = {}
         modes = sorted(mode_to_labels.keys())
         for i, mode in enumerate(modes):

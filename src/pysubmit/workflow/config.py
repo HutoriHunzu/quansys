@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 
 from pydantic import BaseModel, BeforeValidator
@@ -10,6 +12,7 @@ from .session_handler import PyaedtFileParameters
 from .data_handler import DataHandler
 from ..simulation import SUPPORTED_ANALYSIS
 from pykit.aggregator import Aggregator
+from pykit.sweeper import NormalizedSweep, EmptySweep
 
 
 def ensure_path(s: str | Path) -> Path:
@@ -19,10 +22,55 @@ def ensure_path(s: str | Path) -> Path:
 
 PathType: TypeAlias = Annotated[Path, BeforeValidator(ensure_path)]
 
-from pykit.sweeper import NormalizedSweep, EmptySweep
 
 
 class WorkflowConfig(BaseModel):
+    """
+    Top-level configuration model for a simulation workflow.
+
+    This class defines how simulations are structured, executed, and aggregated. It is
+    typically serialized/deserialized to YAML for reproducible workflows.
+
+    Attributes:
+        root_folder: Root directory where simulation results will be saved.
+        pyaedt_file_parameters: Configuration for how the `.aedt` file is opened and managed during simulation.
+            See [`PyaedtFileParameters`][pysubmit.workflow.session_handler.config.PyaedtFileParameters]
+            for full control over versioning, licensing, and graphical behavior.
+
+        simulations: Mapping of simulation names to simulation configuration objects.
+            Each value must be one of the supported analysis types:
+
+            - [`EigenmodeAnalysis`][pysubmit.simulation.eigenmode.model.EigenmodeAnalysis]
+            - [`QuantumEpr`][pysubmit.simulation.quantum_epr.model.QuantumEpr]
+
+            These are selected using a `type` field discriminator, as defined in `SUPPORTED_ANALYSIS`.
+
+        builder: Optional object used to modify the HFSS model before simulation.
+
+            Supported builder types:
+
+            - [`DesignVariableBuilder`][pysubmit.workflow.builder.design_variable_builder.DesignVariableBuilder]
+            - [`FunctionBuilder`][pysubmit.workflow.builder.function_builder.FunctionBuilder]
+            - [`ModuleBuilder`][pysubmit.workflow.builder.module_builder.ModuleBuilder]
+
+            The builder must define a `type` field used for runtime selection.
+        builder_sweep: Optional parameter sweep applied to the builder phase.
+
+            Accepts any normalized sweep configuration such as:
+
+            - `DictSweep` (basic dictionary-based parameter combinations)
+            - `ChainSweep` (product of multiple sweeps)
+            - `EmptySweep` (default/no sweep)
+
+            These are automatically normalized using `NormalizedSweep`.
+        aggregation_dict: Optional aggregation rules for result post-processing.
+
+            Each key maps to an `Aggregator` object
+            that groups results across identifiers and merges them using custom logic
+            (e.g., flattening, validation, merging by UID).
+
+            See `pykit.aggregator.Aggregator` for behavior.
+    """
     root_folder: PathType = 'results'
     pyaedt_file_parameters: PyaedtFileParameters
     simulations: dict[str, SUPPORTED_ANALYSIS]
@@ -34,22 +82,22 @@ class WorkflowConfig(BaseModel):
 
     def save_to_yaml(self, path: str | Path) -> None:
         """
-        Save the workflow configuration to a YAML file.
+        Save this configuration to a YAML file.
 
         Args:
-            path (str | Path): The file path where the YAML should be written.
+            path: Target file path.
         """
         to_yaml_file(path, self, map_indent=4)
 
     @classmethod
-    def load_from_yaml(cls, path: str | Path) -> "WorkflowConfig":
+    def load_from_yaml(cls, path: str | Path) -> WorkflowConfig:
         """
-        Load the workflow configuration from a YAML file.
+        Load a workflow configuration from a YAML file.
 
         Args:
-            path (str | Path): The file path from which to load the YAML.
+            path: Source file path.
 
         Returns:
-            WorkflowConfig: An instance of the workflow configuration.
+            WorkflowConfig: Parsed configuration object.
         """
         return parse_yaml_file_as(cls, path)

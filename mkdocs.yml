@@ -1,0 +1,68 @@
+site_name: My Project Docs
+site_description: Simulation framework documentation
+site_url: https://example.com/
+strict: true
+
+theme:
+  name: 'material'
+  features:
+    - navigation.tabs
+    - navigation.top
+    - search.suggest
+    - content.code.copy
+    - content.tabs.link
+    - toc.follow
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+    - scheme: slate
+      primary: blue
+      accent: blue
+
+nav:
+  - Home: index.md
+  - Guides:
+      - Quickstart: guides/quickstart.md
+  - API Reference:
+      - Simulation:
+          - EigenmodeAnalysis: api/simulation/eigenmode_analysis.md
+          - QuantumEpr: api/simulation/quantum_epr.md
+      - Results:
+          - EigenmodeResults: api/results/eigenmode_results.md
+          - QuantumResult: api/results/quantum_results.md
+      - Workflow:
+          - WorkflowConfig: api/workflow/workflow_config.md
+          - PrepareFolderConfig: api/workflow/prepare_folder_config.md
+          - PyaedtFileParameters: api/workflow/pyaedt_file_parameters.md
+      - Builder:
+          - DesignVariableBuilder: api/builder/design_variable_builder.md
+          - FunctionBuilder: api/builder/function_builder.md
+          - ModuleBuilder: api/builder/module_builder.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_signature_annotations: true
+            separate_signature: true
+            merge_init_into_class: true
+            filters: ["!^_"]
+            heading_level: 2  #
+          rendering:
+            show_root_toc_entry: true
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.extra
+  - pymdownx.tabbed:
+      alternate_style: true
+

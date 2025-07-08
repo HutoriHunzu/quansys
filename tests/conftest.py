@@ -11,7 +11,7 @@ from pysubmit.workflow import (
     open_pyaedt_file,
     PyaedtFileParameters
 )
-from pysubmit.simulation import EigenmodeAnalysis, QuantumEpr
+from pysubmit.simulation import EigenmodeAnalysis
 from pysubmit.workflow.session_handler.session import LicenseUnavailableError
 
 # ---------------------------------------------------------------------

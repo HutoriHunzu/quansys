@@ -1,14 +1,13 @@
-from typing import Dict, Tuple, Any, List, Literal, TypeVar, Type, Callable, Iterable
-from numpy.typing import NDArray
+from typing import Literal, TypeVar, Type, Callable, Iterable
 from .structures import EprDiagResult, ParticipationDataset
 import numpy as np
 from .serializer import dataclass_to_dict, dict_to_dataclass
 from itertools import combinations
-from ..base import BaseSimulationOutput, SimulationTypesNames, SimulationOutputTypesNames
+from ..base import BaseSimulationOutput, SimulationTypesNames, SimulationOutputTypesNames, FlatDictType
 from ..eigenmode.results import EigenmodeResults
 
 from typing_extensions import Annotated
-from pydantic import BeforeValidator, ConfigDict, PlainSerializer
+from pydantic import BeforeValidator, ConfigDict, PlainSerializer, Field
 
 T = TypeVar('T')
 
@@ -43,15 +42,37 @@ EprDiagResultType = Annotated[
 ]
 
 
-class QuantumResult(BaseSimulationOutput):
+class QuantumResults(BaseSimulationOutput):
+    """
+    Final result object for quantum EPR analysis.
+
+    This result aggregates:
+    - A numerically diagonalized chi matrix (`epr`)
+    - A raw distributed simulation result (`distributed`)
+    - A labeled set of eigenmode data (`eigenmode_result`)
+
+    Attributes:
+        type: Simulation result type identifier (always 'quantum_epr_result').
+        epr: Result of chi matrix diagonalization and EPR computation.
+        distributed: Raw participation dataset across modes and junctions.
+        eigenmode_result: Labeled EigenmodeResults used in the computation.
+    """
+
     type: Literal[SimulationOutputTypesNames.QUANTUM_EPR_RESULT] = SimulationOutputTypesNames.QUANTUM_EPR_RESULT
-    epr: EprDiagResultType
-    distributed: ParticipationDatasetType
-    eigenmode_result: EigenmodeResults
+    epr: EprDiagResultType = Field(..., description="Numerical diagonalization and chi matrix result.")
+    distributed: ParticipationDatasetType = Field(..., description="Participation dataset from distributed simulation.")
+    eigenmode_result: EigenmodeResults = Field(..., description="Labeled eigenmode result object.")
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    def flatten(self) -> dict:
+    def flatten(self) -> FlatDictType:
+        """
+        Flatten the result into a dictionary containing chi matrix values,
+        frequencies, and quality factors.
+
+        Returns:
+            A flat dictionary with scalar entries suitable for tabular export.
+        """
 
         flat_dict = {}
 
@@ -64,27 +85,14 @@ class QuantumResult(BaseSimulationOutput):
 
 
 
-
-
-        # # Check if the chi matrix is all real
-        #
-        # # Flatten chi matrix into unique label pairs using combinations
-        # for (i, label_1), (j, label_2) in combinations(enumerate(labels_order), 2):
-        #     # For each unique pair of labels
-        #     key = f"{label_1}__{label_2}"
-        #
-        #     # Directly use the real value from chi_matrix (symmetric, so i, j and j, i are identical)
-        #     value = chi_matrix[i][j]
-        #
-        #     flat_dict[key] = value
-
-        # # Add frequencies for each label
-        # for i, label in enumerate(labels_order):
-        #     flat_dict[f"{label}_frequency"] = frequencies[i]
-        #
-        # return flat_dict
-
     def _flatten_chi(self) -> Iterable[tuple[str, float]]:
+        """
+        Internal method to flatten the chi matrix into labeled scalar values.
+
+        Returns:
+            Iterable of (label, value) for dispersion and anharmonicity.
+        """
+
         labels = self.distributed.labels_order
         chi_matrix = self.epr.chi
 
@@ -109,6 +117,12 @@ class QuantumResult(BaseSimulationOutput):
             yield key, value
 
     def _flatten_frequencies_and_q_factors(self):
+        """
+        Internal method to flatten mode frequency and Q-factor data.
+
+        Returns:
+            Iterable of (label, value) for mode frequency and quality data.
+        """
 
         labels = self.distributed.labels_order
         frequencies = self.epr.frequencies
