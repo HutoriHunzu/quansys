@@ -9,4 +9,4 @@ can be flattened into tabular form or relabeled for use in quantum workflows.
 
 ## Related
 
-- [`EigenmodeAnalysis`](../simulation/eigenmode_analysis.md)
+- [`EigenmodeAnalysis`](eigenmode_analysis.md)

@@ -14,6 +14,23 @@ class ModuleBuilder(BaseBuilder):
     This allows you to build HFSS models using external, version-controlled scripts.
     Especially useful for reusable templates and team collaboration.
 
+    The imported function must have the following signature:
+
+        def build(hfss: Hfss, **kwargs) -> dict:
+            ...
+
+    - `hfss`: The active HFSS session object.
+    - `**kwargs`: Arbitrary keyword arguments, typically containing build parameters.
+    - The function must return a dictionary with any results or output parameters.
+
+    Example:
+        ```python
+        def build(hfss, name_to_value):
+            for name, value in name_to_value.items():
+                hfss[name] = value
+            return {"status": "ok"}
+        ```
+
     Attributes:
         type: Identifier for this builder type.
         module: Python module path (e.g., 'mypkg.submodule').
@@ -22,9 +39,9 @@ class ModuleBuilder(BaseBuilder):
     """
 
     type: Literal["module_builder"] = "module_builder"
-    module: str = Field(..., description="Fully qualified Python module path, e.g. 'mypackage.subfolder'")
-    function: str = Field(default="build", description="Name of the function to call within the specified module.")
-    args: dict = Field(default_factory=dict, description="Arguments to pass to the build function.")
+    module: str
+    function: str = 'build'
+    args: dict = {}
 
     def build(self,
               hfss: Hfss,
@@ -38,6 +55,10 @@ class ModuleBuilder(BaseBuilder):
 
         Returns:
             dict: Output of the module's function call.
+
+        Raises:
+            ImportError: If the module or function cannot be imported.
+            Exception: Any exception raised by the user-supplied function will propagate up.
         """
         # Merge any runtime parameters with the builder's predefined arguments
         parameters = parameters or {}

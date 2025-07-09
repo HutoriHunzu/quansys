@@ -14,6 +14,23 @@ class FunctionBuilder(BaseBuilder):
     This builder is highly flexible and useful when programmatic or
     external control over the build process is needed.
 
+    The user-supplied function must have the following signature:
+
+        def my_builder_function(hfss: Hfss, **kwargs) -> dict:
+            ...
+
+    - `hfss`: The active HFSS session object.
+    - `**kwargs`: Arbitrary keyword arguments, typically containing build parameters.
+    - The function must return a dictionary with any results or output parameters.
+
+    Example:
+        ```python
+        def builder_function(hfss, name_value_dict):
+            for name, value in name_value_dict.items():
+                hfss[name] = value
+            return {"status": "ok"}
+        ```
+
     Attributes:
         type: Identifier for this builder type.
         function: Callable object (excluded from serialization).
@@ -30,10 +47,13 @@ class FunctionBuilder(BaseBuilder):
 
         Args:
             hfss: Active HFSS session.
-            parameters: Optional runtime parameters.
+            parameters: Optional runtime parameters. These are merged with `args` and passed as keyword arguments to the function.
 
         Returns:
             dict: Output of the user-defined function.
+
+        Raises:
+            Exception: Any exception raised by the user-supplied function will propagate up.
         """
 
         parameters = parameters or {}

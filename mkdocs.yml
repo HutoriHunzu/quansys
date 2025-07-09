@@ -25,20 +25,16 @@ nav:
   - Guides:
       - Quickstart: guides/quickstart.md
   - API Reference:
-      - Simulation:
-          - EigenmodeAnalysis: api/simulation/eigenmode_analysis.md
-          - QuantumEpr: api/simulation/quantum_epr.md
-      - Results:
-          - EigenmodeResults: api/results/eigenmode_results.md
-          - QuantumResult: api/results/quantum_results.md
-      - Workflow:
-          - WorkflowConfig: api/workflow/workflow_config.md
-          - PrepareFolderConfig: api/workflow/prepare_folder_config.md
-          - PyaedtFileParameters: api/workflow/pyaedt_file_parameters.md
-      - Builder:
-          - DesignVariableBuilder: api/builder/design_variable_builder.md
-          - FunctionBuilder: api/builder/function_builder.md
-          - ModuleBuilder: api/builder/module_builder.md
+        - EigenmodeAnalysis: api/eigenmode_analysis.md
+        - EigenmodeResults: api/eigenmode_results.md
+        - QuantumEpr: api/quantum_epr.md
+        - QuantumResult: api/quantum_results.md
+        - WorkflowConfig: api/workflow_config.md
+        - PrepareFolderConfig: api/prepare_folder_config.md
+        - PyaedtFileParameters: api/pyaedt_file_parameters.md
+        - DesignVariableBuilder: api/design_variable_builder.md
+        - FunctionBuilder: api/function_builder.md
+        - ModuleBuilder: api/module_builder.md
 
 plugins:
   - search
