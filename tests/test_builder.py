@@ -21,7 +21,6 @@ def test_design_variable_builder(simple_design):
     """Tests that DesignVariableBuilder sets parameters correctly in the HFSS design."""
     builder = DesignVariableBuilder(
         design_name='my_design',
-        setup_name='Setup1'
     )
 
     builder.build(simple_design, parameters={VARIABLE_TO_CHANGE: '3mm'})

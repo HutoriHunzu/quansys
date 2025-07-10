@@ -7,10 +7,7 @@ import pytest
 # ---------------------------------------------------------------------
 # Library imports from your package
 # ---------------------------------------------------------------------
-from pysubmit.workflow import (
-    open_pyaedt_file,
-    PyaedtFileParameters
-)
+from pysubmit.workflow import PyaedtFileParameters
 from pysubmit.simulation import EigenmodeAnalysis
 from pysubmit.workflow.session_handler.session import LicenseUnavailableError
 
@@ -75,7 +72,7 @@ def simple_design(tmp_path_factory):
     )
 
     try:
-        with open_pyaedt_file(params) as hfss:
+        with params.open_pyaedt_file() as hfss:
             yield hfss
     except LicenseUnavailableError as e:
         pytest.skip(f"Skipping test: {e}")
@@ -111,7 +108,7 @@ def transmon_readout_purcell_design(tmp_path_factory):
     )
 
     try:
-        with open_pyaedt_file(params) as hfss:
+        with params.open_pyaedt_file() as hfss:
             yield hfss
     except LicenseUnavailableError as e:
         pytest.skip(f"Skipping test: {e}")

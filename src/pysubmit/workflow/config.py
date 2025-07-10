@@ -13,6 +13,7 @@ from .data_handler import DataHandler
 from ..simulation import SUPPORTED_ANALYSIS
 from pykit.aggregator import Aggregator
 from pykit.sweeper import NormalizedSweep, EmptySweep
+from .prepare import PrepareFolderConfig
 
 
 def ensure_path(s: str | Path) -> Path:
@@ -65,9 +66,9 @@ class WorkflowConfig(BaseModel):
             These are automatically normalized using `NormalizedSweep`.
         aggregation_dict: Optional aggregation rules for result post-processing.
 
-            Each key maps to an `Aggregator` object
-            that groups results across identifiers and merges them using custom logic
-            (e.g., flattening, validation, merging by UID).
+            Each key maps to a list of strings which should be all simulation identifiers.
+            This dict is converted to `Aggregator` which than go for each key and aggregate
+            its list of identifiers (e.g., flattening, validation, merging by UID).
 
             See `pykit.aggregator.Aggregator` for behavior.
     """
@@ -75,10 +76,11 @@ class WorkflowConfig(BaseModel):
     pyaedt_file_parameters: PyaedtFileParameters
     simulations: dict[str, SUPPORTED_ANALYSIS]
 
-    # builder phase
+
     builder: SUPPORTED_BUILDERS | None = None
     builder_sweep: NormalizedSweep = EmptySweep()
-    aggregation_dict: dict[str, Aggregator] = {}
+    aggregation_dict: dict[str, list[str]] = {}
+    prepare_folder: PrepareFolderConfig = PrepareFolderConfig()
 
     def save_to_yaml(self, path: str | Path) -> None:
         """

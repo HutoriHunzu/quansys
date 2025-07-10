@@ -16,12 +16,10 @@ class DesignVariableBuilder(BaseBuilder):
     Attributes:
         type: Identifier for this builder type.
         design_name: Name of the HFSS design to activate.
-        setup_name: Name of the HFSS setup used (optional, reserved).
     """
 
     type: Literal['design_variable_builder'] = 'design_variable_builder'
     design_name: str
-    setup_name: str
 
     def build(self, hfss: Hfss,
               parameters: dict = None) -> dict:
