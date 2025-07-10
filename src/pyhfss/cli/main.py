@@ -32,9 +32,9 @@ def submit(
     project_dir = Path(name)
 
     # Check if the project directory exists
-    if project_dir.exists() and not overwrite:
-        typer.echo(f"Project '{name}' already exists. Use --overwrite to replace it.")
-        raise typer.Exit()
+    # if project_dir.exists() and not overwrite:
+    #     typer.echo(f"Project '{name}' already exists. Use --overwrite to replace it.")
+    #     raise typer.Exit()
 
     # Remove the existing project folder if overwrite is enabled
     if project_dir.exists() and overwrite:
