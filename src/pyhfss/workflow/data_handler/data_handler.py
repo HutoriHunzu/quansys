@@ -6,7 +6,7 @@ from typing_extensions import Annotated, Literal
 import shutil
 import pandas as pd
 
-from pysubmit.workflow.data_handler.json_utils import unique_name_by_counter
+from pyhfss.workflow.data_handler.json_utils import unique_name_by_counter
 from .json_utils import json_write
 from .metadata import Metadata
 from .aggregator import Aggregator

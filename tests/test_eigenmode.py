@@ -1,5 +1,5 @@
 import pytest
-from pysubmit.simulation import EigenmodeAnalysis
+from pyhfss.simulation import EigenmodeAnalysis
 
 
 NUM_OF_MODES_IN_SETUP = 5

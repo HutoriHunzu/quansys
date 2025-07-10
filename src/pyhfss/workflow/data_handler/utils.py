@@ -1,7 +1,7 @@
 # utils.py
 from typing import Any
 from pydantic import TypeAdapter
-from pysubmit.workflow.sweep.utils import apply_adapter, flatten
+from pyhfss.workflow.sweep.utils import apply_adapter, flatten
 from pathlib import Path
 
 

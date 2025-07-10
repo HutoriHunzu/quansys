@@ -1,6 +1,6 @@
 import pytest
 from itertools import combinations
-from pysubmit.simulation import QuantumEpr
+from pyhfss.simulation import QuantumEpr
 
 # Constant mapping from mode number to label
 MODE_TO_LABEL = {

@@ -1,4 +1,4 @@
-from pysubmit import WorkflowConfig
+from pyhfss import WorkflowConfig
 
 
 def generate_job_submission_script(results_dir, config: WorkflowConfig, mem_mb, timeout,

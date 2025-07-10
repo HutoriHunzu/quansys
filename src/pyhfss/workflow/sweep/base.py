@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, TypeAdapter, BeforeValidator
 from typing_extensions import Any, Annotated, Iterable, Iterator
 from abc import ABC, abstractmethod
 from .utils import split_dict_by_adapter, merge_by_update, flatten, unflatten
-from pysubmit.shared.variables_types import SUPPORTED_COMPOUND_VALUES
+from pyhfss.shared.variables_types import SUPPORTED_COMPOUND_VALUES
 
 SweepInputListType = list | tuple
 SweepInputTypes = SUPPORTED_COMPOUND_VALUES | SweepInputListType

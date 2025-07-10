@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/pysubmit.iml" filepath="$PROJECT_DIR$/.idea/pysubmit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pyhfss.iml" filepath="$PROJECT_DIR$/.idea/pyhfss.iml" />
     </modules>
   </component>
 </project>

@@ -7,9 +7,9 @@ import pytest
 # ---------------------------------------------------------------------
 # Library imports from your package
 # ---------------------------------------------------------------------
-from pysubmit.workflow import PyaedtFileParameters
-from pysubmit.simulation import EigenmodeAnalysis
-from pysubmit.workflow.session_handler.session import LicenseUnavailableError
+from pyhfss.workflow import PyaedtFileParameters
+from pyhfss.simulation import EigenmodeAnalysis
+from pyhfss.workflow.session_handler.session import LicenseUnavailableError
 
 # ---------------------------------------------------------------------
 # Paths / constants

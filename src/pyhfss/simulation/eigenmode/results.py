@@ -7,7 +7,7 @@ from ansys.aedt.core.application.analysis import Setup
 from functools import partial
 from typing import Literal
 
-from pysubmit.shared import Value
+from pyhfss.shared import Value
 from ..base import (FlatDictType, validate_solution_type, validate_existing_solution, SimulationOutputTypesNames,
                     SimulationTypesNames)
 
