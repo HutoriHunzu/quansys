@@ -4,7 +4,6 @@ from pathlib import Path
 from .prepare import prepare_job
 from .submit import submit_job
 from ..workflow import WorkflowConfig, execute_workflow
-from .utils import update_status, read_status
 import shutil
 
 # Suppress FutureWarning from pyaedt

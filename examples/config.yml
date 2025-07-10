@@ -1,0 +1,39 @@
+aggregation_dict:
+    classical_agg:
+    - classical
+
+builder:
+    design_name: my_design
+    type: design_variable_builder
+
+builder_sweep:
+    sweepers:
+    - constants: {}
+      parameters:
+          chip_base_width:
+          - 3mm
+          - 4mm
+      strategy: product
+
+prepare_folder:
+    copy_enabled: true
+    dest_name: build.aedt
+
+pyaedt_file_parameters:
+    close_on_exit: true
+    design_name: temp
+    file_path: simple_design.aedt
+    new_desktop: true
+    non_graphical: false
+    version: '2024.2'
+
+root_folder: results
+
+simulations:
+    classical:
+        cores: 4
+        design_name: my_design
+        gpus: 0
+        setup_name: Setup1
+        setup_parameters: {}
+        type: eigenmode

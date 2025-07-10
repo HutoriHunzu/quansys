@@ -39,7 +39,7 @@ mkdocs = [
 
 
 [project.scripts]
-workflow = "pyhfss.cli.main:app"
+pyhfss = "pyhfss.cli.main:app"
 
 [tool.hatch.metadata]
 allow-direct-references = true
