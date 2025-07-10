@@ -19,6 +19,15 @@ theme:
     - scheme: slate
       primary: blue
       accent: blue
+#  palette:
+#    - scheme: slate
+#      primary: red
+#      accent: red
+#  font:
+#    text: 'Spectral'
+#    code: 'Fira Code'
+
+
 
 nav:
   - Home: index.md
@@ -37,6 +46,7 @@ nav:
         - ModuleBuilder: api/module_builder.md
 
 plugins:
+  - offline
   - search
   - mkdocstrings:
       handlers:

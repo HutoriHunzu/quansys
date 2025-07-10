@@ -10,7 +10,6 @@ def generate_job_submission_script(results_dir, config: WorkflowConfig, mem_mb, 
     core_lst = map(lambda x: x.cores if hasattr(x, 'cores') else 1, config.simulations.values())
     cores = max(default_cores, max(core_lst))
 
-    # cores = config.simulations.cores
     project_name = results_dir.stem
     results_dir = results_dir.resolve()  # Ensure full path
 
@@ -30,7 +29,7 @@ bsub -J {project_name} \\
     job_script.write_text(template)
 
 
-def generate_simulation_script(results_dir):
+def generate_simulation_script(results_dir, venv):
     """
     Generate the simulation_script.sh script and set execute permissions.
     """
@@ -41,7 +40,7 @@ def generate_simulation_script(results_dir):
 module load ANSYS/Electromagnetics242
 source /apps/easybd/programs/miniconda/24.9.2_environmentally/etc/profile.d/conda.sh
 module load miniconda/24.9.2_environmentally
-conda activate pyaedt_11
+conda activate {venv}
 workflow run-flow {config_path}
     """
     simulation_script.write_text(template)
