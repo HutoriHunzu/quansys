@@ -1,8 +1,6 @@
-import subprocess
-from pathlib import Path
-
 
 def submit_job(results_dir):
+    import subprocess
     """
     Submit the job to the cluster using bsub.
     """

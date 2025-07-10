@@ -7,12 +7,9 @@ from pydantic_yaml import to_yaml_file, parse_yaml_file_as
 from typing_extensions import Annotated, TypeAlias
 
 from .builder import SUPPORTED_BUILDERS
-from .sweep import SUPPORTED_SWEEPS
 from .session_handler import PyaedtFileParameters
-from .data_handler import DataHandler
 from ..simulation import SUPPORTED_ANALYSIS
-from pykit.aggregator import Aggregator
-from pykit.sweeper import NormalizedSweep, EmptySweep, DictSweep
+from pykit.sweeper import EmptySweep, DictSweep
 from .prepare import PrepareFolderConfig
 
 
@@ -33,7 +30,7 @@ class WorkflowConfig(BaseModel):
     typically serialized/deserialized to YAML for reproducible workflows.
 
     Attributes:
-        root_folder: Root directory where simulation results will be saved.
+        root_folder: Root directory where simulation results will be saved. default: 'results'
         pyaedt_file_parameters: Configuration for how the `.aedt` file is opened and managed during simulation.
             See [`PyaedtFileParameters`][pyhfss.workflow.session_handler.config.PyaedtFileParameters]
             for full control over versioning, licensing, and graphical behavior.

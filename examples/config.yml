@@ -7,7 +7,6 @@ builder:
     type: design_variable_builder
 
 builder_sweep:
-    sweepers:
     - constants: {}
       parameters:
           chip_base_width:

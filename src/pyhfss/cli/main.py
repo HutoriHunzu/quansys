@@ -1,10 +1,11 @@
 import warnings
 import typer
 from pathlib import Path
+import shutil
 from .prepare import prepare_job
 from .submit import submit_job
-from ..workflow import WorkflowConfig, execute_workflow
-import shutil
+from .run import run_job
+
 
 # Suppress FutureWarning from pyaedt
 warnings.filterwarnings("ignore", category=FutureWarning, module="pyaedt")
@@ -40,11 +41,8 @@ def submit(
         typer.echo(f"Overwriting the existing project '{name}'...")
         shutil.rmtree(project_dir)
 
-    # Load and validate config.yaml
-    config = WorkflowConfig.load_from_yaml(config_path)
-
     # Prepare the job
-    results_dir = prepare_job(config, project_dir, files, mem, timeout, venv)
+    results_dir = prepare_job(config_path, project_dir, files, mem, timeout, venv)
 
     if prepare:
         typer.echo(f"Job prepared. Results directory: {results_dir}")
@@ -64,11 +62,9 @@ def run(config_path: Path = typer.Argument(..., help="Path to the config.yaml fi
     Updates the status file upon success or failure.
     """
     # Load config.yaml
-    config = WorkflowConfig.load_from_yaml(config_path)
-
     try:
         # Execute the flow
-        execute_workflow(config)
+        run_job(config_path)
         typer.echo(f"Flow execution completed for config: {config_path}")
     except Exception as e:
         # Log the error and update status to "failed"
