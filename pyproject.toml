@@ -27,6 +27,17 @@ classifiers = [
 ]
 
 
+[project.optional-dependencies]
+mkdocs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocs-material-extensions",
+    "mkdocstrings",
+    "mkdocstrings-python",
+    "pymdown-extensions"
+]
+
+
 [project.scripts]
 workflow = "pyhfss.cli.main:app"
 

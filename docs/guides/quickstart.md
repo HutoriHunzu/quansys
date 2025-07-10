@@ -2,5 +2,5 @@
 
 ```bash
 pip install pysubmit                       # or local `-e .`
-pysubmit run examples/minimal.yml
+pyhfss run examples/minimal.yml
 ```

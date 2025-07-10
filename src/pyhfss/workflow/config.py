@@ -35,14 +35,14 @@ class WorkflowConfig(BaseModel):
     Attributes:
         root_folder: Root directory where simulation results will be saved.
         pyaedt_file_parameters: Configuration for how the `.aedt` file is opened and managed during simulation.
-            See [`PyaedtFileParameters`][pysubmit.workflow.session_handler.config.PyaedtFileParameters]
+            See [`PyaedtFileParameters`][pyhfss.workflow.session_handler.config.PyaedtFileParameters]
             for full control over versioning, licensing, and graphical behavior.
 
         simulations: Mapping of simulation names to simulation configuration objects.
             Each value must be one of the supported analysis types:
 
-            - [`EigenmodeAnalysis`][pysubmit.simulation.eigenmode.model.EigenmodeAnalysis]
-            - [`QuantumEpr`][pysubmit.simulation.quantum_epr.model.QuantumEpr]
+            - [`EigenmodeAnalysis`][pyhfss.simulation.eigenmode.model.EigenmodeAnalysis]
+            - [`QuantumEpr`][pyhfss.simulation.quantum_epr.model.QuantumEpr]
 
             These are selected using a `type` field discriminator, as defined in `SUPPORTED_ANALYSIS`.
 
@@ -50,9 +50,9 @@ class WorkflowConfig(BaseModel):
 
             Supported builder types:
 
-            - [`DesignVariableBuilder`][pysubmit.workflow.builder.design_variable_builder.DesignVariableBuilder]
-            - [`FunctionBuilder`][pysubmit.workflow.builder.function_builder.FunctionBuilder]
-            - [`ModuleBuilder`][pysubmit.workflow.builder.module_builder.ModuleBuilder]
+            - [`DesignVariableBuilder`][pyhfss.workflow.builder.design_variable_builder.DesignVariableBuilder]
+            - [`FunctionBuilder`][pyhfss.workflow.builder.function_builder.FunctionBuilder]
+            - [`ModuleBuilder`][pyhfss.workflow.builder.module_builder.ModuleBuilder]
 
             The builder must define a `type` field used for runtime selection.
         builder_sweep: Optional parameter sweep applied to the builder phase.
