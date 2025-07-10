@@ -6,7 +6,7 @@ from pydantic import BeforeValidator, Field
 from .distributed_analysis import DistributedAnalysis
 from .epr_calculator import EprCalculator
 from .modes_and_labels import ModesAndLabels
-from pyhfss.simulation.base import (BaseAnalysis, SimulationTypesNames, validate_and_set_design)
+from ..base import (BaseAnalysis, SimulationTypesNames, validate_and_set_design)
 from ..eigenmode.results import get_eigenmode_results
 
 from .results import QuantumResults
@@ -89,7 +89,7 @@ class QuantumEpr(BaseAnalysis):
 
         epr, distributed = self._analyze(hfss, modes_to_labels)
 
-        return QuantumResult(
+        return QuantumResults(
             epr=epr,
             distributed=distributed,
             eigenmode_result=eigenmode_result.generate_a_labeled_version(modes_to_labels)
