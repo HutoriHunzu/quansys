@@ -12,19 +12,23 @@ def generate_job_submission_script(results_dir, config: WorkflowConfig, mem_mb, 
 
     project_name = results_dir.stem
     results_dir = results_dir.resolve()  # Ensure full path
-
+    simulation_script_path = (results_dir / 'simulation_script.sh').resolve()
     job_script = results_dir / "job_submission.sh"
+
+    # results_dir = results_dir.as_posix()
+    # simulation_script_path.as_posix()
+
 
     template = f"""#!/bin/bash
 bsub -J {project_name} \\
     -q short \\
-    -oo {results_dir}/lsf_output_%J.log \\
-    -eo {results_dir}/lsf_error_%J.err \\
+    -oo {(results_dir / 'lsf_output_%J.log')} \\
+    -eo {(results_dir / 'lsf_error_%J.err')} \\
     -n {cores} \\
     -W {timeout} \\
     -R "rusage[mem={mem_mb // cores}] span[hosts=1]" \\
     -cwd {results_dir} \\
-    {results_dir}/simulation_script.sh
+    {simulation_script_path}
     """
     job_script.write_text(template)
 
