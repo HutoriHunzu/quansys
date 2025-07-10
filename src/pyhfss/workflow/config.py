@@ -12,7 +12,7 @@ from .session_handler import PyaedtFileParameters
 from .data_handler import DataHandler
 from ..simulation import SUPPORTED_ANALYSIS
 from pykit.aggregator import Aggregator
-from pykit.sweeper import NormalizedSweep, EmptySweep
+from pykit.sweeper import NormalizedSweep, EmptySweep, DictSweep
 from .prepare import PrepareFolderConfig
 
 
@@ -78,7 +78,7 @@ class WorkflowConfig(BaseModel):
 
 
     builder: SUPPORTED_BUILDERS | None = None
-    builder_sweep: NormalizedSweep = EmptySweep()
+    builder_sweep: list[DictSweep] = EmptySweep()
     aggregation_dict: dict[str, list[str]] = {}
     prepare_folder: PrepareFolderConfig = PrepareFolderConfig()
 

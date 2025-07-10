@@ -9,6 +9,7 @@ from .prepare import PrepareFolderConfig
 from ..simulation import SIMULATION_RESULTS_ADAPTER
 
 from pykit.project import Project, StorageMode
+from pykit.sweeper import ChainSweep
 from pykit.save import save_json
 from pykit.aggregator import Aggregator
 
@@ -25,7 +26,9 @@ def execute_workflow(config: WorkflowConfig) -> None:
     project = Project(root=config.root_folder)
     iteration_proj = project.sub("iterations")
 
-    for params in config.builder_sweep.generate():
+    chain_sweep = ChainSweep(sweepers=config.builder_sweep)
+
+    for params in chain_sweep.generate():
 
         # 1. PREPARE (copy template .aedt if policy allows)
         run_params = _prepare_folder_phase(

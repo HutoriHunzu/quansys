@@ -41,7 +41,7 @@ module load ANSYS/Electromagnetics242
 source /apps/easybd/programs/miniconda/24.9.2_environmentally/etc/profile.d/conda.sh
 module load miniconda/24.9.2_environmentally
 conda activate {venv}
-workflow run-flow {config_path}
+pyhfss run {config_path}
     """
     simulation_script.write_text(template)
 

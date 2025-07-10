@@ -1,4 +1,3 @@
-from pathlib import Path
 from pyhfss.workflow import WorkflowConfig
 from .utils import copy_files
 from .templates import generate_job_submission_script, generate_simulation_script
