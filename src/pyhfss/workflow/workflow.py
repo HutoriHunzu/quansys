@@ -80,7 +80,6 @@ def _prepare_folder_phase(
         hfss_path = session.files['hfss']
         return pyaedt.model_copy(update={"file_path": hfss_path})
 
-
     session.start()
     dest: Path = session.path(cfg.dest_name, include_identifier=False)
 
@@ -95,12 +94,18 @@ def _prepare_folder_phase(
 
 
 def _build_phase(builder, pyaedt_params, params, project):
+
     session = project.session("build", params=params)
 
     if session.is_done():
         return
 
     session.start()
+
+    parameters_path = session.path('parameters.json')
+    save_json(parameters_path, params)
+    session.attach_files({'data': parameters_path})
+
     with pyaedt_params.open_pyaedt_file() as hfss:
         builder.build(hfss, parameters=params)
     session.done()
