@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pysubmit"
-version = "2.0.0"
+name = "pyhfss"
+version = "3.0.0"
 dependencies = [
     "qutip",
     "pyaedt[all]",
@@ -15,6 +15,7 @@ dependencies = [
     "typer",
     "pytest>=8.3.4",
     "drawing @ git+https://github.com/RosenblumLab/drawing.git",
+    "pykit @ git+https://github.com/HutoriHunzu/pykit.git",
     "nbmake"
 
 ]
@@ -27,13 +28,13 @@ classifiers = [
 
 
 [project.scripts]
-workflow = "pysubmit.cli.main:app"
+workflow = "pyhfss.cli.main:app"
 
 [tool.hatch.metadata]
 allow-direct-references = true
 
 
-[tool.pytest.ini_options]
-markers = [
-    "tutorial: marks tests as part of the tutorial suite (deselect with '-m \"not tutorial\"')",
+filterwarnings = [
+    "ignore::DeprecationWarning:defusedxml.*",
+    "ignore::DeprecationWarning:ansys.aedt.*",
 ]

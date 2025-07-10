@@ -257,8 +257,9 @@ $begin 'AnsoftProject'
 				VariableProp('readout_e1_y', 'UD', '', 'chip_base_thickness / 2', oa(i=false, int=false, Min='-1um', Max='1um', MinStep='0.02um', MaxStep='0.2um', MinFocus='-1um', MaxFocus='1um', UseManufacturableValues='false', Level='[-1: 1] um'), sa(i=false, int=false, Min='-1um', Max='1um', IDisp='0.2um'), ta(i=false, int=false, Step='0.2um', Min='-1um', Max='1um'))
 				VariableProp('readout_e1_z', 'UD', '', '-chip_base_length/2 + readout_size_z/2', oa(i=false, int=false, Min='-1um', Max='1um', MinStep='0.02um', MaxStep='0.2um', MinFocus='-1um', MaxFocus='1um', UseManufacturableValues='false', Level='[-1: 1] um'), sa(i=false, int=false, Min='-1um', Max='1um', IDisp='0.2um'), ta(i=false, int=false, Step='0.2um', Min='-1um', Max='1um'))
 				VariableProp('readout_size_z', 'UD', '', '5840um', oa(i=false, int=false, Min='2920um', Max='8760um', MinStep='58.4um', MaxStep='584um', MinFocus='2920um', MaxFocus='8760um', UseManufacturableValues='false', Level='[2920: 8760] um'), sa(i=false, int=false, Min='2920um', Max='8760um', IDisp='584um'), ta(i=false, int=false, Step='584um', Min='2920um', Max='8760um'))
+				VariableProp('chip_base_width_plus_one_mm', 'UD', '', 'chip_base_width + 1mm')
 			$end 'Properties'
-			VariableOrders[8: 'chip_house_radius', 'chip_base_length', 'chip_base_thickness', 'chip_base_width', 'readout_e1_x', 'readout_e1_y', 'readout_e1_z', 'readout_size_z']
+			VariableOrders[9: 'chip_house_radius', 'chip_base_length', 'chip_base_thickness', 'chip_base_width', 'readout_e1_x', 'readout_e1_y', 'readout_e1_z', 'readout_size_z', 'chip_base_width_plus_one_mm']
 			$begin 'Editor3D Doc Preferences'
 				BackgroundColorVersion=1
 				'Plane Background'=0
@@ -5708,12 +5709,11 @@ $begin 'AnsoftProject'
 		Notes=$begin_cdata$ $end_cdata$
 		$begin 'AnimationSetups'
 		$end 'AnimationSetups'
-		CacheHeaderFile='HDR61902336017518665433.tmp'
+		CacheHeaderFile='HDR4C611608017518749173.tmp'
 	$end 'HFSSModel'
 	$begin 'DataInstances'
 		DesignEditor='TopLevel'
 		Refdes('1', 'U2')
-		Refdes('0', 'U1')
 		$begin 'CompInstances'
 			$begin 'Compinst'
 				ID='1'
@@ -5736,7 +5736,7 @@ $begin 'AnsoftProject'
 				DesignInstanceID=3
 				$begin 'WindowPosition'
 					$begin 'EditorWindow'
-						Circuit(Editor3d(View('View Orientation Gadget'=1, WindowPos(3, -1, -1, -8, -31, 0, 0, 1126, 592), OrientationMatrix(0.018571401014924, -0.0518477037549019, 0.0156700648367405, 0, -0.0173597894608974, 0.00999392103403807, 0.0536412931978703, 0, -0.0513067096471786, -0.0221487618982792, -0.0124775962904096, 0, -0.331416815519333, -0.039045050740242, -5.80134439468384, 1, 0, -1.10651862621307, 1.32192194461823, -0.696284472942352, 0.988353788852692, 3.27221202850342, 8.13083553314209), Drawings[5: 'chip_house_waveguide', 'chip_base', 'readout', 'chip_base_mesh', 'readout_mesh'], 'View Data'('Render Mode'=1, 'Show Ruler'=1, 'Coordinate Systems View Mode'=1, 'CS Triad View Mode'=0, 'Render Facets'=1, GridVisible=1, GridAutoAdjust=1, GridAutoExtents=1, GridType='Rect', GridStyle='Line', NumPixels=30, dXForGrid=1, dYForGrid=1, dZForGrid=1, dRForGrid=1, dThetaForGrid=10), ClipPlanes(ClipPlaneOptions(DisableWhenDrawingNewPlane=true, ForceOpqaueForUnclipped=false, ShowClipped=false, Transparency=0, HandleColor=16776960)))))
+						Circuit(Editor3d(View('View Orientation Gadget'=1, WindowPos(3, -1, -1, -8, -31, 0, 0, 1126, 592), OrientationMatrix(0.018571401014924, -0.0518477037549019, 0.0156700648367405, 0, -0.0173597894608974, 0.00999392103403807, 0.0536412931978703, 0, -0.0513067096471786, -0.0221487618982792, -0.0124775962904096, 0, -0.331416815519333, -0.039045050740242, -5.80134439468384, 1, 0, -1.10651862621307, 1.32192194461823, -0.696284472942352, 0.988353788852692, 3.2722156047821, 8.13083171844482), Drawings[5: 'chip_house_waveguide', 'chip_base', 'readout', 'chip_base_mesh', 'readout_mesh'], 'View Data'('Render Mode'=1, 'Show Ruler'=1, 'Coordinate Systems View Mode'=1, 'CS Triad View Mode'=0, 'Render Facets'=1, GridVisible=1, GridAutoAdjust=1, GridAutoExtents=1, GridType='Rect', GridStyle='Line', NumPixels=30, dXForGrid=1, dYForGrid=1, dZForGrid=1, dRForGrid=1, dThetaForGrid=10), ClipPlanes(ClipPlaneOptions(DisableWhenDrawingNewPlane=true, ForceOpqaueForUnclipped=false, ShowClipped=false, Transparency=0, HandleColor=16776960)))))
 					$end 'EditorWindow'
 				$end 'WindowPosition'
 				$begin 'ReportSetup'

@@ -1,10 +1,10 @@
-# pysubmit
+# pyhfss
 
-pysubmit is a Python package designed for automating HFSS simulations by migrating pyepr to use pyaedt instead of COM, automating parameter scans via customizable workflows, and providing a CLI for cluster execution.
+pyhfss is a Python package designed for automating HFSS simulations by migrating pyepr to use pyaedt instead of COM, automating parameter scans via customizable workflows, and providing a CLI for cluster execution.
 
 ## Overview
 
-pysubmit serves three primary functions:
+pyhfss serves three primary functions:
 1. **API Migration:**  
    Migrates the pyepr package to leverage pyaedt for HFSS simulations.
 2. **Automated Workflows:**  
@@ -28,8 +28,8 @@ pysubmit serves three primary functions:
 
 ## Installation
 
-Install pysubmit via pip:
+Install pyhfss via pip:
 
 ```bash
-git clone https://github.com/RosenblumLab/pysubmit.git
-pip install <path_to_pysubmit_repo>
+git clone https://github.com/RosenblumLab/pyhfss.git
+pip install <path_to_pyhfss_repo>

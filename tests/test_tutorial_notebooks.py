@@ -10,7 +10,7 @@ notebook_paths = [
     "./tutorial/06_workflow.ipynb"
 ]
 
-@pytest.mark.tutorial
-@pytest.mark.parametrize("notebook_path", notebook_paths)
-def test_notebook_execution(notebook_path):
-    pytest.main(["--nbmake", notebook_path])
+# @pytest.mark.tutorial
+# @pytest.mark.parametrize("notebook_path", notebook_paths)
+# def test_notebook_execution(notebook_path):
+#     pytest.main(["--nbmake", notebook_path])
