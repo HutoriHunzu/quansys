@@ -1,6 +1,6 @@
 
 
-def prepare_job(config_path: Path, project_dir, files, mem, timeout, venv):
+def prepare_job(config_path, project_dir, files, mem, timeout, venv):
 
     from pyhfss.workflow import WorkflowConfig
     from .utils import copy_files
