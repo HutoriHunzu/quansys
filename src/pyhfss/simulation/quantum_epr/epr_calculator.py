@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.constants import Planck, elementary_charge, pi  # pylint: disable=unused-import
 
+import warnings
 from .structures import ParticipationDataset, EprDiagResult
 from .black_box import black_box_numeric as black_box
 
@@ -60,7 +61,7 @@ class EprCalculator:
         u_mode = (total_inductance_energy + total_capacitance_energy) / 2.
         u_diff = abs(total_capacitance_energy - total_inductance_energy) / u_mode
         if np.any(u_diff > 0.15):
-            raise ValueError(f"WARNING: U_tot_cap-U_tot_ind / mean = {np.max(np.abs(u_diff)) * 100:.1f}% is > 15%. \
+            warnings.warn(f"WARNING: U_tot_cap-U_tot_ind / mean = {np.max(np.abs(u_diff)) * 100:.1f}% is > 15%. \
                 \nIs the simulation converged? Proceed with caution")
 
         # global sums of participations
@@ -85,7 +86,7 @@ class EprCalculator:
         # Pm_cap = Pm_cap.mul(Pm_cap_norm, axis=0)
 
         if np.any(participation_ratio_induction < 0.0):
-            raise ValueError("  ! Warning:  Some p_mj was found <= 0. This is probably a numerical error,'\
+            warnings.warn("  ! Warning:  Some p_mj was found <= 0. This is probably a numerical error,'\
                 'or a super low-Q mode.  We will take the abs value.  Otherwise, rerun with more precision,'\
                 'inspect, and do due diligence.)")
             # print(Pm, '\n')
