@@ -1,52 +1,93 @@
 site_name: My Project Docs
 site_description: Simulation framework documentation
 site_url: https://example.com/
+
+# Ensure build breaks on broken links
 strict: true
 
 theme:
-  name: 'material'
+  name: material
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
   features:
+    # UI Enhancements
+    - announce.dismiss
     - navigation.tabs
     - navigation.top
-    - search.suggest
-    - content.code.copy
-    - content.tabs.link
+    - navigation.instant
+    - navigation.indexes
     - toc.follow
+
+    # Code & Content
+    - content.tabs.link
+    - content.code.copy
+    - content.code.annotations
+
+    # Search enhancements
+    - search.share
+    - search.highlight
+    - search.suggest
+
   palette:
-    - scheme: default
-      primary: blue
-      accent: blue
-    - scheme: slate
-      primary: blue
-      accent: blue
-#  palette:
-#    - scheme: slate
+#    # 1 ▸ Default built-in light theme
+#    - scheme: default
 #      primary: red
-#      accent: red
-#  font:
-#    text: 'Spectral'
-#    code: 'Fira Code'
+#      accent: deep orange
+#      toggle:
+#        icon: material/weather-night
+#        name: Switch to Red-Curtain
+#
+#    # 2 ▸ Custom "Red-Curtain" dark theme
+#    - scheme: red-curtain
+#      primary: custom
+#      accent: custom
+#      toggle:
+#        icon: material/water
+#        name: Switch to Blue-Velvet
 
+    # 3 ▸ Custom "Blue-Velvet" dark theme
+    - scheme: blue-velvet
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to Noir-Minimal
 
+    # 4 ▸ Custom "Noir-Minimal" light theme
+    - scheme: noir-minimal
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to Default
+
+extra_css:
+  # Custom stylesheets for themes
+#  - stylesheets/shared-vars.css     # ← shared definitions must come first
+#  - stylesheets/red-curtain.css
+  - stylesheets/blue-velvet.css
+  - stylesheets/noir-minimal.css
 
 nav:
   - Home: index.md
   - Guides:
       - Quickstart: guides/quickstart.md
   - API Reference:
-        - EigenmodeAnalysis: api/eigenmode_analysis.md
-        - EigenmodeResults: api/eigenmode_results.md
-        - QuantumEpr: api/quantum_epr.md
-        - QuantumResult: api/quantum_results.md
-        - WorkflowConfig: api/workflow_config.md
-        - PrepareFolderConfig: api/prepare_folder_config.md
-        - PyaedtFileParameters: api/pyaedt_file_parameters.md
-        - DesignVariableBuilder: api/design_variable_builder.md
-        - FunctionBuilder: api/function_builder.md
-        - ModuleBuilder: api/module_builder.md
+      - EigenmodeAnalysis: api/eigenmode_analysis.md
+      - EigenmodeResults: api/eigenmode_results.md
+      - QuantumEpr: api/quantum_epr.md
+      - QuantumResult: api/quantum_results.md
+      - WorkflowConfig: api/workflow_config.md
+      - PrepareFolderConfig: api/prepare_folder_config.md
+      - PyaedtFileParameters: api/pyaedt_file_parameters.md
+      - DesignVariableBuilder: api/design_variable_builder.md
+      - FunctionBuilder: api/function_builder.md
+      - ModuleBuilder: api/module_builder.md
 
 plugins:
-  - offline
   - search
   - mkdocstrings:
       handlers:
@@ -57,18 +98,26 @@ plugins:
             separate_signature: true
             merge_init_into_class: true
             filters: ["!^_"]
-            heading_level: 2  #
+            heading_level: 2
           rendering:
             show_root_toc_entry: true
 
 markdown_extensions:
-  - toc:
-      permalink: true
   - admonition
-  - pymdownx.details
-  - pymdownx.superfences
-  - pymdownx.highlight
-  - pymdownx.extra
-  - pymdownx.tabbed:
-      alternate_style: true
+  - pymdownx.highlight:
+      noclasses: false                # Inline styles instead of CSS classes
+      anchor_linenums: true           # Line anchor links
+      line_spans: __span              # Span wrappers for each line
+      pygments_lang_class: true       # Add language class to <code>
 
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.extra
+
+  - pymdownx.tabbed:
+      alternate_style: true           # Clean visual tab styling
+
+  - toc:
+      permalink: true                 # Show link icons on headings

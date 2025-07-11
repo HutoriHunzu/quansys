@@ -1,0 +1,121 @@
+/*───────────────────────────────────────────────
+  Blue-Velvet – Midnight cool syntax & theme
+───────────────────────────────────────────────*/
+[data-md-color-scheme="blue-velvet"] {
+
+  /*── Brand & Backgrounds ──*/
+  --md-primary-fg-color: #14406b;
+  --md-accent-fg-color:  #ffbf00;
+  --md-default-bg-color: #0f1b2f;
+  --md-code-bg-color:    #1e1e1e;
+  --md-code-bg-color--light: #2a2a2a;
+
+  /*── Typography ──*/
+  --md-default-fg-color:        #e6e9f2;
+  --md-default-fg-color--light: #e6e9f2;
+  --md-default-fg-color--dark:  #e6e9f2;
+  --md-typeset-heading-color:   #ffffff;
+  --md-typeset-color:           var(--md-default-fg-color);
+  --md-typeset-muted-color:     #a0a7b8;
+  --md-typeset-a-color:         #ffd54f;
+  --md-typeset-table-color:     #e6e9f2;
+
+  /*── Code default text ──*/
+  --md-code-fg-color: #f0f0f0;
+}
+
+/*───────────────────────────────────────────────
+  Code Block Styling
+───────────────────────────────────────────────*/
+[data-md-color-scheme="blue-velvet"] .highlight,
+[data-md-color-scheme="blue-velvet"] .highlight pre,
+[data-md-color-scheme="blue-velvet"] pre,
+[data-md-color-scheme="blue-velvet"] code,
+[data-md-color-scheme="blue-velvet"] .tabbed-content {
+  background-color: var(--md-code-bg-color) !important;
+}
+
+[data-md-color-scheme="blue-velvet"] details,
+[data-md-color-scheme="blue-velvet"] details > summary {
+  background: var(--md-code-bg-color) !important;
+  color: var(--md-default-fg-color);
+}
+
+/* mkdocstrings headings */
+[data-md-color-scheme="blue-velvet"] .doc .doc-heading,
+[data-md-color-scheme="blue-velvet"] .doc .doc-contents h2,
+[data-md-color-scheme="blue-velvet"] .doc .doc-contents h3,
+[data-md-color-scheme="blue-velvet"] .doc .doc-contents h4,
+[data-md-color-scheme="blue-velvet"] .doc .doc-attr,
+[data-md-color-scheme="blue-velvet"] .doc .doc-property,
+[data-md-color-scheme="blue-velvet"] .doc .doc-class,
+[data-md-color-scheme="blue-velvet"] .doc .doc-method,
+[data-md-color-scheme="blue-velvet"] .doc .doc-function {
+  color: var(--md-typeset-heading-color) !important;
+}
+
+/*───────────────────────────────────────────────
+  Syntax Highlighting – Token Classes
+───────────────────────────────────────────────*/
+
+/* Keywords */
+[data-md-color-scheme="blue-velvet"] .highlight .k        { color: #ffb366; }
+
+/* Builtins, types */
+[data-md-color-scheme="blue-velvet"] .highlight .bp       { color: #ffc66d; }
+[data-md-color-scheme="blue-velvet"] .highlight .kt       { color: #89ddff; }
+
+/* Function definitions */
+[data-md-color-scheme="blue-velvet"] .highlight .nf       { color: #ffe484; }
+
+/* Class names */
+[data-md-color-scheme="blue-velvet"] .highlight .nc       { color: #82aaff; }
+
+/* Variable names / identifiers */
+[data-md-color-scheme="blue-velvet"] .highlight .n        { color: #e0e0e0; }
+
+/* Parameters / arguments */
+[data-md-color-scheme="blue-velvet"] .highlight .nv       { color: #fffd95; }
+
+/* Strings */
+[data-md-color-scheme="blue-velvet"] .highlight .s        { color: #9ae9b1; }
+
+/* Docstrings */
+[data-md-color-scheme="blue-velvet"] .highlight .sd,
+[data-md-color-scheme="blue-velvet"] .highlight .s2 {
+  color: #b2f5ea;
+  font-style: italic;
+}
+
+/* Numbers */
+[data-md-color-scheme="blue-velvet"] .highlight .m        { color: #f78c6c; }
+
+/* Comments */
+[data-md-color-scheme="blue-velvet"] .highlight .c,
+[data-md-color-scheme="blue-velvet"] .highlight .c1,
+[data-md-color-scheme="blue-velvet"] .highlight .cm,
+[data-md-color-scheme="blue-velvet"] .highlight .cp {
+  color: #7f8c98;
+  font-style: italic;
+}
+
+/* Decorators */
+[data-md-color-scheme="blue-velvet"] .highlight .nd       { color: #c792ea; }
+
+/* Operators */
+[data-md-color-scheme="blue-velvet"] .highlight .o        { color: #cccccc; }
+
+/* Punctuation */
+[data-md-color-scheme="blue-velvet"] .highlight .p        { color: #aaaaaa; }
+
+/* Errors */
+[data-md-color-scheme="blue-velvet"] .highlight .err {
+  color: #ff5555;
+  background-color: #2f1f1f;
+  font-weight: bold;
+}
+
+/* Highlighted lines */
+[data-md-color-scheme="blue-velvet"] .highlight .hll {
+  background-color: rgba(0, 128, 255, 0.12);
+}
