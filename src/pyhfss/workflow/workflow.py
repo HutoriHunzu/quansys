@@ -19,9 +19,59 @@ from pykit.aggregator import Aggregator
 # ---------------------------------------------------------------------------
 def execute_workflow(config: WorkflowConfig) -> None:
     """
-    Drive the complete HFSS experiment workflow.
+    Run a complete, cached HFSS experiment workflow.
 
-    Phases: prepare  →  build  →  simulations  →  aggregations
+    The engine performs four deterministic phases:
+
+    1. **Prepare** – create an isolated results folder and, if requested,
+       copy the template ``.aedt`` project into it.
+    2. **Build** – apply the current sweep parameters to the HFSS design
+       through the configured builder object.
+    3. **Simulate** – execute one or more analyses for every parameter set
+       and store their JSON results.
+    4. **Aggregate** – flatten and merge selected results into CSV files
+       for downstream analysis.
+
+    Args:
+        config (WorkflowConfig):
+            Parsed workflow definition.
+            See the full field reference in
+            [`api/workflow_config.md`](../api/workflow_config.md).
+
+    Returns:
+        None
+
+    Raises:
+        ValueError: If the configuration is incomplete.
+        RuntimeError: If an HFSS session cannot be opened or a simulation
+            fails unexpectedly.
+
+    Example:
+        ```python
+        from pathlib import Path
+        from pyhfss import (
+            WorkflowConfig, PyaedtFileParameters,
+            EigenmodeAnalysis, DesignVariableBuilder, execute_workflow
+        )
+        from pykit.sweeper import DictSweep
+
+        cfg = WorkflowConfig(
+            pyaedt_file_parameters=PyaedtFileParameters(
+                file_path=Path("resources/simple_design.aedt"),
+                non_graphical=True
+            ),
+            builder=DesignVariableBuilder(design_name="my_design"),
+            builder_sweep=[DictSweep(parameters={"chip_base_width": ["3 mm", "4 mm"]})],
+            simulations={
+                "classical": EigenmodeAnalysis(setup_name="Setup1",
+                                               design_name="my_design")
+            },
+            aggregation_dict={"classical_agg": ["classical"]}
+        )
+
+        execute_workflow(cfg)
+        # → results/aggregations/classical_agg.csv is produced
+        ```
     """
     project = Project(root=config.root_folder)
     iteration_proj = project.sub("iterations")

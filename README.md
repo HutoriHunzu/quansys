@@ -33,3 +33,4 @@ Install pyhfss via pip:
 ```bash
 git clone https://github.com/RosenblumLab/pyhfss.git
 pip install <path_to_pyhfss_repo>
+```

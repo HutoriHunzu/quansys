@@ -74,13 +74,18 @@ extra_css:
 nav:
   - Home: index.md
   - Guides:
-      - Quickstart: guides/quickstart.md
+      - Installation: guides/installation.md
+      - Simulations: guides/simulations.md
+      - Automation: guides/automation.md
+      - Customization: guides/customization.md
+      - Terminal & CLI: guides/terminal.md
   - API Reference:
       - EigenmodeAnalysis: api/eigenmode_analysis.md
       - EigenmodeResults: api/eigenmode_results.md
       - QuantumEpr: api/quantum_epr.md
       - QuantumResult: api/quantum_results.md
       - WorkflowConfig: api/workflow_config.md
+      - execute_workflow: api/execute_workflow.md
       - PrepareFolderConfig: api/prepare_folder_config.md
       - PyaedtFileParameters: api/pyaedt_file_parameters.md
       - DesignVariableBuilder: api/design_variable_builder.md
@@ -121,3 +126,4 @@ markdown_extensions:
 
   - toc:
       permalink: true                 # Show link icons on headings
+
