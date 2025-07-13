@@ -25,6 +25,8 @@ classifiers = [
     "Programming Language :: Python"
 ]
 
+license = { text = "MIT" }
+
 
 [project.optional-dependencies]
 mkdocs = [

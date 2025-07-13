@@ -23,8 +23,7 @@ pyhfss serves three primary functions:
 - **CLI Interface:**  
   Built using Typer for an intuitive command-line experience. Key commands include:
   - `submit`: Prepare and optionally submit a simulation job.
-  - `rerun`: Re-run a simulation job from an existing project.
-  - `run_flow`: Execute the complete workflow as defined in a configuration file.
+  - `run`: Execute the complete workflow as defined in a configuration file.
 
 ## Installation
 
