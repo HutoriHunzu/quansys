@@ -53,8 +53,8 @@ A minimal Python example using [`WorkflowConfig`](../api/workflow_config.md) and
 
 ```text
 results/iterations/<uid>/
-├─ build/parameters.json        # {"chip_base_width": "3 mm" | "4 mm"}
-└─ classical/classical.json     # simulation output
+├─ build_parameters.json        # {"chip_base_width": "3 mm" | "4 mm"}
+└─ classical.json               # simulation output
 
 results/aggregations/classical_agg.csv   # parameters merged with results
 ```
@@ -97,7 +97,7 @@ A **builder** receives an open HFSS session plus the current parameter dict.
 | [`ModuleBuilder`](../api/module_builder.md)                  | Import and execute `<module>.build()` |
 
 !!! tip "Traceability"
-    Each sweep’s parameters are saved to `build/parameters.json`.
+    Each sweep’s parameters are saved to `build_parameters.json`.
 
 ---
 
