@@ -7,14 +7,16 @@
   --md-primary-fg-color: #14406b;
   --md-accent-fg-color:  #ffbf00;
   --md-default-bg-color: #0f1b2f;
-  --md-code-bg-color:    #1e1e1e;
+/*  --md-code-bg-color:    #1e1e1e;*/
+  --md-code-bg-color:    #1a2538;
   --md-code-bg-color--light: #2a2a2a;
 
   /*── Typography ──*/
   --md-default-fg-color:        #e6e9f2;
   --md-default-fg-color--light: #e6e9f2;
   --md-default-fg-color--dark:  #e6e9f2;
-  --md-typeset-heading-color:   #ffffff;
+  /*--md-typeset-heading-color:   #ffffff;*/
+  --md-typeset-heading-color:   #f0f4ff;
   --md-typeset-color:           var(--md-default-fg-color);
   --md-typeset-muted-color:     #a0a7b8;
   --md-typeset-a-color:         #ffd54f;
@@ -118,4 +120,27 @@
 /* Highlighted lines */
 [data-md-color-scheme="blue-velvet"] .highlight .hll {
   background-color: rgba(0, 128, 255, 0.12);
+}
+
+
+/*───────────────────────────────────────────────
+  Admonition Styling – Match Blue-Velvet Theme
+───────────────────────────────────────────────*/
+[data-md-color-scheme="blue-velvet"] .admonition,
+[data-md-color-scheme="blue-velvet"] .md-typeset details {
+  background-color: var(--md-default-bg-color) !important;
+  color: var(--md-default-fg-color);
+}
+
+[data-md-color-scheme="blue-velvet"] .admonition-title {
+  /*background-color: var(--md-default-bg-color) !important;*/
+  background-color: #192841 !important;
+  color: var(--md-default-fg-color);
+  font-weight: 600;
+}
+
+[data-md-color-scheme="blue-velvet"] .admonition code {
+  background-color: #1b2a45;  /* Slight bluish-gray background */
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
 }

@@ -17,7 +17,8 @@
   --md-typeset-heading-color:   #000000;
   --md-typeset-color:           var(--md-default-fg-color);
   --md-typeset-muted-color:     #555555;
-  --md-typeset-a-color:         #c21807;
+  /*--md-typeset-a-color:         #c21807;*/
+  --md-typeset-a-color:         #ad1457;
   --md-typeset-table-color:     #1a1a1a;
 
   /*── Code default text ──*/
@@ -118,4 +119,27 @@
 /* Highlighted lines */
 [data-md-color-scheme="noir-minimal"] .highlight .hll {
   background-color: rgba(0, 0, 0, 0.05);
+}
+
+/*───────────────────────────────────────────────
+  Admonition Styling – Match Noir-Minimal Theme
+───────────────────────────────────────────────*/
+[data-md-color-scheme="noir-minimal"] .admonition,
+[data-md-color-scheme="noir-minimal"] .md-typeset details {
+  background-color: var(--md-default-bg-color) !important;
+  color: var(--md-default-fg-color);
+}
+
+[data-md-color-scheme="noir-minimal"] .admonition-title {
+  /*background-color: var(--md-default-bg-color) !important;*/
+  background-color: #eeeeee !important;
+  color: var(--md-default-fg-color);
+  font-weight: 600;
+}
+
+
+[data-md-color-scheme="noir-minimal"] .admonition code {
+  background-color: #eaeaea;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
 }
