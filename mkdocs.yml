@@ -33,42 +33,24 @@ theme:
     - search.suggest
 
   palette:
-#    # 1 ▸ Default built-in light theme
-#    - scheme: default
-#      primary: red
-#      accent: deep orange
-#      toggle:
-#        icon: material/weather-night
-#        name: Switch to Red-Curtain
-#
-#    # 2 ▸ Custom "Red-Curtain" dark theme
-#    - scheme: red-curtain
-#      primary: custom
-#      accent: custom
-#      toggle:
-#        icon: material/water
-#        name: Switch to Blue-Velvet
-
-    # 3 ▸ Custom "Blue-Velvet" dark theme
-    - scheme: blue-velvet
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to Noir-Minimal
-
-    # 4 ▸ Custom "Noir-Minimal" light theme
     - scheme: noir-minimal
       primary: custom
       accent: custom
       toggle:
         icon: material/weather-night
-        name: Switch to Default
+        name: Switch to Dark Mode
+      media: "(prefers-color-scheme: no-preference)"  # <-- Makes this the default
+
+    - scheme: blue-velvet
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to Light Mode
+      media: "(prefers-color-scheme: dark)"
+
 
 extra_css:
-  # Custom stylesheets for themes
-#  - stylesheets/shared-vars.css     # ← shared definitions must come first
-#  - stylesheets/red-curtain.css
   - stylesheets/blue-velvet.css
   - stylesheets/noir-minimal.css
 
