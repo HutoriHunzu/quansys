@@ -1,0 +1,121 @@
+/*───────────────────────────────────────────────
+  Noir-Minimal – Bright, clean, high-contrast light
+───────────────────────────────────────────────*/
+[data-md-color-scheme="noir-minimal"] {
+
+  /*── Brand & Backgrounds ──*/
+  --md-primary-fg-color: #161616;
+  --md-accent-fg-color:  #c21807;
+  --md-default-bg-color: #fafafa;
+  --md-code-bg-color:    #f3f3f3;
+  --md-code-bg-color--light: #f7f7f7;
+
+  /*── Text ──*/
+  --md-default-fg-color:        #1a1a1a;
+  --md-default-fg-color--light: #1a1a1a;
+  --md-default-fg-color--dark:  #1a1a1a;
+  --md-typeset-heading-color:   #000000;
+  --md-typeset-color:           var(--md-default-fg-color);
+  --md-typeset-muted-color:     #555555;
+  --md-typeset-a-color:         #c21807;
+  --md-typeset-table-color:     #1a1a1a;
+
+  /*── Code default text ──*/
+  --md-code-fg-color: #2a2a2a;
+}
+
+/*───────────────────────────────────────────────
+  Code Block Styling
+───────────────────────────────────────────────*/
+[data-md-color-scheme="noir-minimal"] .highlight,
+[data-md-color-scheme="noir-minimal"] .highlight pre,
+[data-md-color-scheme="noir-minimal"] pre,
+[data-md-color-scheme="noir-minimal"] code,
+[data-md-color-scheme="noir-minimal"] .tabbed-content {
+  background-color: var(--md-code-bg-color) !important;
+}
+
+[data-md-color-scheme="noir-minimal"] details,
+[data-md-color-scheme="noir-minimal"] details > summary {
+  background: var(--md-code-bg-color) !important;
+  color: var(--md-default-fg-color);
+}
+
+/* mkdocstrings headings */
+[data-md-color-scheme="noir-minimal"] .doc .doc-heading,
+[data-md-color-scheme="noir-minimal"] .doc .doc-contents h2,
+[data-md-color-scheme="noir-minimal"] .doc .doc-contents h3,
+[data-md-color-scheme="noir-minimal"] .doc .doc-contents h4,
+[data-md-color-scheme="noir-minimal"] .doc .doc-attr,
+[data-md-color-scheme="noir-minimal"] .doc .doc-property,
+[data-md-color-scheme="noir-minimal"] .doc .doc-class,
+[data-md-color-scheme="noir-minimal"] .doc .doc-method,
+[data-md-color-scheme="noir-minimal"] .doc .doc-function {
+  color: var(--md-typeset-heading-color) !important;
+}
+
+/*───────────────────────────────────────────────
+  Syntax Highlighting – Token Classes
+───────────────────────────────────────────────*/
+
+/* Keywords */
+[data-md-color-scheme="noir-minimal"] .highlight .k        { color: #d32f2f; }
+
+/* Builtins, types */
+[data-md-color-scheme="noir-minimal"] .highlight .bp       { color: #d84315; }
+[data-md-color-scheme="noir-minimal"] .highlight .kt       { color: #512da8; }
+
+/* Function definitions */
+[data-md-color-scheme="noir-minimal"] .highlight .nf       { color: #1565c0; }
+
+/* Class names */
+[data-md-color-scheme="noir-minimal"] .highlight .nc       { color: #1a237e; }
+
+/* Variable names / identifiers */
+[data-md-color-scheme="noir-minimal"] .highlight .n        { color: #212121; }
+
+/* Parameters / arguments */
+[data-md-color-scheme="noir-minimal"] .highlight .nv       { color: #5c5c5c; }
+
+/* Strings */
+[data-md-color-scheme="noir-minimal"] .highlight .s        { color: #2e7d32; }
+
+/* Docstrings */
+[data-md-color-scheme="noir-minimal"] .highlight .sd,
+[data-md-color-scheme="noir-minimal"] .highlight .s2 {
+  color: #00695c;
+  font-style: italic;
+}
+
+/* Numbers */
+[data-md-color-scheme="noir-minimal"] .highlight .m        { color: #7b1fa2; }
+
+/* Comments */
+[data-md-color-scheme="noir-minimal"] .highlight .c,
+[data-md-color-scheme="noir-minimal"] .highlight .c1,
+[data-md-color-scheme="noir-minimal"] .highlight .cm,
+[data-md-color-scheme="noir-minimal"] .highlight .cp {
+  color: #999999;
+  font-style: italic;
+}
+
+/* Decorators */
+[data-md-color-scheme="noir-minimal"] .highlight .nd       { color: #ab47bc; }
+
+/* Operators */
+[data-md-color-scheme="noir-minimal"] .highlight .o        { color: #111111; }
+
+/* Punctuation */
+[data-md-color-scheme="noir-minimal"] .highlight .p        { color: #333333; }
+
+/* Errors */
+[data-md-color-scheme="noir-minimal"] .highlight .err {
+  color: #c62828;
+  background-color: #ffebee;
+  font-weight: bold;
+}
+
+/* Highlighted lines */
+[data-md-color-scheme="noir-minimal"] .highlight .hll {
+  background-color: rgba(0, 0, 0, 0.05);
+}
