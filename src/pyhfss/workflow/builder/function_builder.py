@@ -1,6 +1,6 @@
 from pydantic import Field
-from .base import BaseBuilder, DataHandler
-from typing import Literal, Callable, Iterable
+from .base import BaseBuilder
+from typing import Literal, Callable
 from ..sweep.utils import merge_dicts
 
 

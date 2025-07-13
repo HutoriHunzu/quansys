@@ -6,10 +6,12 @@ from pydantic import BaseModel, BeforeValidator
 from pydantic_yaml import to_yaml_file, parse_yaml_file_as
 from typing_extensions import Annotated, TypeAlias
 
+from pykit.sweeper import EmptySweep, DictSweep
+
+from ..simulation import SUPPORTED_ANALYSIS
+
 from .builder import SUPPORTED_BUILDERS
 from .session_handler import PyaedtFileParameters
-from ..simulation import SUPPORTED_ANALYSIS
-from pykit.sweeper import EmptySweep, DictSweep
 from .prepare import PrepareFolderConfig
 
 

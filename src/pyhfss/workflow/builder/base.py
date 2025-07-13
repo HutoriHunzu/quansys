@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from abc import ABC, abstractmethod
-from ..data_handler import DataHandler
 
 from ansys.aedt.core.hfss import Hfss
 

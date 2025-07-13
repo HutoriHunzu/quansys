@@ -3,7 +3,7 @@ from .structures import EprDiagResult, ParticipationDataset
 import numpy as np
 from .serializer import dataclass_to_dict, dict_to_dataclass
 from itertools import combinations
-from ..base import BaseSimulationOutput, SimulationTypesNames, SimulationOutputTypesNames, FlatDictType
+from ..base import BaseSimulationOutput, SimulationOutputTypesNames, FlatDictType
 from ..eigenmode.results import EigenmodeResults
 
 from typing_extensions import Annotated

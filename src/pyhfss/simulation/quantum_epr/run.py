@@ -1,6 +1,5 @@
 from ansys.aedt.core.hfss import Hfss
-from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 # from pysubmit.simulation.config_handler.junction_scheme import ConfigJunction
 from .structures import QuantumResult, ConfigJunction

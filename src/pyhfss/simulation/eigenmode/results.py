@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 
-from pydantic import BaseModel, model_validator, Field
+from pydantic import BaseModel, Field
 from ..base import BaseSimulationOutput
 from ansys.aedt.core.application.analysis import Setup
 from functools import partial
 from typing import Literal
 
 from ...shared import Value
-from ..base import (FlatDictType, validate_solution_type, validate_existing_solution, SimulationOutputTypesNames,
-                    SimulationTypesNames)
+from ..base import (FlatDictType, validate_solution_type, validate_existing_solution, SimulationOutputTypesNames)
 
 
 class SingleModeResult(BaseModel):

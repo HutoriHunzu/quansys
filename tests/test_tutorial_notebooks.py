@@ -1,4 +1,3 @@
-import pytest
 
 # Define the paths to your notebooks
 notebook_paths = [

@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Any
 
 from pydantic import BaseModel, RootModel
-from typing_extensions import TypeVar, Generic, Literal
+from typing_extensions import TypeVar, Generic
 
 
 class BaseResult(RootModel[dict], ABC):

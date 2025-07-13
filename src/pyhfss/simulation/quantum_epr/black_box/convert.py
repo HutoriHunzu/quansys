@@ -16,8 +16,7 @@ import pandas as pd
 from numpy import sqrt
 
 from .basic import CalcsBasic
-from .constants import (Planck, e_el, elementary_charge, fluxQ, hbar, pi, ħ, π,
-                        ϕ0)
+from .constants import (Planck, e_el, hbar, ϕ0)
 
 
 class Convert():

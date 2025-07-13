@@ -5,7 +5,7 @@ pyEPR constants and convenience definitions.
 """
 # pylint: disable=invalid-name
 
-from scipy.constants import Planck, elementary_charge, epsilon_0, pi  # pylint: disable=unused-import
+from scipy.constants import Planck, elementary_charge, pi  # pylint: disable=unused-import
 
 # Pi
 π = pi

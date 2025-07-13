@@ -6,7 +6,7 @@ from typing import Literal
 
 def _validate_design(hfss: Hfss, design_name: str):
     lst_of_designs = hfss.design_list
-    if not design_name in lst_of_designs:
+    if design_name not in lst_of_designs:
         raise ValueError(f'{design_name} does not appear in design list: {lst_of_designs}')
 
 
@@ -21,7 +21,7 @@ def validate_and_set_design(hfss: Hfss, design_name: str):
 
 def _validate_setup(hfss: Hfss, setup_name: str):
     lst_of_setups = hfss.setup_names
-    if not setup_name in lst_of_setups:
+    if setup_name not in lst_of_setups:
         raise ValueError(f'{setup_name} does not appear in setup list: {lst_of_setups}')
 
 

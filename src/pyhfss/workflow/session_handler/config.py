@@ -44,7 +44,7 @@ class PyaedtFileParameters(BaseModel):
     file_path: PATH_TYPE
     design_name: str = 'temp'
     version: Literal['2024.2'] = '2024.2'
-    non_graphical: bool = False
+    non_graphical: bool = True
     new_desktop: bool = True
     close_on_exit: bool = True
 

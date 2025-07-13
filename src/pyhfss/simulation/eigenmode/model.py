@@ -1,6 +1,5 @@
 from ansys.aedt.core import Hfss
 from typing import Literal
-from pydantic import Field
 from ..base import (BaseAnalysis, SimulationTypesNames, set_design_and_get_setup,
                     update_setup_parameters, validate_solution_type)
 

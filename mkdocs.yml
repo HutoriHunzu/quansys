@@ -1,6 +1,7 @@
 site_name: pyhfss
 site_description: Simulation framework documentation
-#site_url: https://example.com/
+site_url: https://rosenblumlab.github.io/pyhfss/
+
 
 # Ensure build breaks on broken links
 strict: true

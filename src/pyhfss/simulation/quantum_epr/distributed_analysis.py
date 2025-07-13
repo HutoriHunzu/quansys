@@ -1,6 +1,5 @@
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple, Type, TypeVar
+from typing import List, Tuple
 
 import numpy as np
 from ansys.aedt.core.hfss import Hfss

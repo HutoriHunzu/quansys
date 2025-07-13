@@ -1,7 +1,5 @@
 from ....shared.variables_types import GenericValue, Value
 from ansys.aedt.core import Hfss
-from typing import Iterable
-from functools import partial
 from pydantic import TypeAdapter
 
 SupportedInputType = dict[str, GenericValue | Value]

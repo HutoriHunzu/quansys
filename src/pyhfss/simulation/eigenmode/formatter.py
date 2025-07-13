@@ -1,7 +1,7 @@
-from pydantic import BaseModel, RootModel
+from pydantic import BaseModel
 from typing import Literal
 
-from ..base.base_formatters import BaseResult, BaseFormatter, TResult
+from ..base.base_formatters import BaseResult, BaseFormatter
 
 
 # class BaseFormatter(BaseModel):

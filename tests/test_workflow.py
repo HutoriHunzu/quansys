@@ -1,8 +1,8 @@
 from pyhfss import WorkflowConfig, PyaedtFileParameters, EigenmodeAnalysis, DesignVariableBuilder
-from pykit.sweeper import DictSweep
 from pyhfss import execute_workflow
+from pykit.sweeper import DictSweep
 
-from pandas import DataFrame, read_csv
+from pandas import read_csv
 
 from pathlib import Path
 

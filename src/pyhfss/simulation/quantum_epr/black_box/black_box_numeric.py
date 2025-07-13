@@ -97,12 +97,9 @@ def black_box_hamiltonian(fs, ljs, fzpfs, cos_trunc=5, fock_trunc=8, individual=
 
     fzpfs = np.transpose(fzpfs)  # Take from MxJ  to JxM
 
-    assert np.isnan(fzpfs).any(
-    ) == False, "Phi ZPF has NAN, this is NOT allowed! Fix me. \n%s" % fzpfs
-    assert np.isnan(ljs).any(
-    ) == False, "Ljs has NAN, this is NOT allowed! Fix me."
-    assert np.isnan(
-        fs).any() == False, "freqs has NAN, this is NOT allowed! Fix me."
+    assert not np.isnan(fzpfs).any(), "Phi ZPF has NAN, this is NOT allowed! Fix me. \n%s" % fzpfs
+    assert not np.isnan(ljs).any(), "Ljs has NAN, this is NOT allowed! Fix me."
+    assert not np.isnan(fs).any(), "freqs has NAN, this is NOT allowed! Fix me."
     assert fzpfs.shape == (njuncs, n_modes), "incorrect shape for zpf array, {} not {}".format(
         fzpfs.shape, (njuncs, n_modes))
     assert fs.shape == (n_modes,), "incorrect number of mode frequencies"
@@ -153,8 +150,7 @@ def make_dispersive(H, fock_trunc, fzpfs=None, f0s=None, chi_prime=False,
         [H_lin, H_nl] = H
         H = H_lin + H_nl
     else:  # make sure its a quanutm object
-        assert type(
-            H) == qutip.qobj.Qobj, "Please pass in either a list of Qobjs or Qobj for the Hamiltonian"
+        assert isinstance(H, qutip.qobj.Qobj), "Please pass in either a list of Qobjs or Qobj for the Hamiltonian"
 
     print("Starting the diagonalization")
     evals, evecs = H.eigenstates()

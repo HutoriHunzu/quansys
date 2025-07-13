@@ -27,7 +27,6 @@ def test_classical_result_flat_types(eigenmode_results):
 
 
 def test_change_frequencies_unit(eigenmode_results):
-    original_unit = eigenmode_results.frequencies_unit
     original_freq = eigenmode_results[1].frequency.value
 
     eigenmode_results.change_frequencies_unit("MHz")

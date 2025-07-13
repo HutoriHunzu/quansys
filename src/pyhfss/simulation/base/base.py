@@ -1,9 +1,7 @@
-from pydantic import BaseModel, BeforeValidator, RootModel, TypeAdapter
-from typing import Literal, Self
+from pydantic import BaseModel, TypeAdapter
 from abc import ABC, abstractmethod
 from enum import StrEnum, auto
 from ansys.aedt.core import Hfss
-import json
 
 FlatDictType = dict[str, str | bool | float]
 FlatDictAdapter = TypeAdapter(FlatDictType)

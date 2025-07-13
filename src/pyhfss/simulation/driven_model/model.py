@@ -1,5 +1,5 @@
 from ansys.aedt.core import Hfss
-from pydantic import BaseModel, TypeAdapter, Field
+from pydantic import TypeAdapter, Field
 
 from ..base import (BaseAnalysis, SimulationTypesNames,
                     set_design_and_get_setup, update_setup_parameters,

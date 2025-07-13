@@ -1,12 +1,9 @@
-from typing import Dict, Tuple, Any, List
+from typing import Dict, Tuple
 from numpy.typing import NDArray
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from pydantic import BaseModel
 from ...shared import variables_types
 import numpy as np
-from .serializer import dataclass_to_dict, dict_to_dataclass
-from itertools import combinations
-from ..eigenmode.results import EigenmodeResults
 
 
 class ConfigJunction(BaseModel):
