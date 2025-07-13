@@ -1,15 +1,17 @@
-name: Deploy MkDocs to GitHub Pages
+name: Lint and Deploy Docs
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 permissions:
   contents: write
 
 jobs:
-  deploy:
+  lint:
+    name: Ruff Lint Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,10 +20,31 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install uv and mkdocs deps
+      - name: Install uv and Ruff
         run: |
           pip install uv
-          uv pip install ".[mkdocs]"  # Install mkdocs group from pyproject.toml
+          uv sync --extra lint --frozen
+
+      - name: Run Ruff
+        run: |
+          uv run ruff check .
+
+  deploy:
+    name: MkDocs Deploy
+    runs-on: ubuntu-latest
+    needs: lint  # This ensures deployment only happens if lint passes
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install uv and MkDocs Deps
+        run: |
+          pip install uv
+          uv sync --extra mkdocs --frozen
 
       - name: Deploy to GitHub Pages
         run: |

@@ -38,6 +38,10 @@ mkdocs = [
     "ruff"
 ]
 
+lint = [
+    "ruff"
+]
+
 
 [project.scripts]
 pyhfss = "pyhfss.cli.main:app"
