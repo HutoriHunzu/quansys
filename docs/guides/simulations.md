@@ -4,14 +4,14 @@ This guide outlines the usage, design principles, and interfaces of the simulati
 
 Currently supported simulation types:
 
-- [Eigenmode Analysis](../api/eigenmode_analysis.md)
-- [Quantum EPR](../api/quantum_epr.md)
+- [EigenmodeAnalysis](../api/eigenmode_analysis.md)
+- [QuantumEPR](../api/quantum_epr.md)
 
 All simulation classes follow a consistent interface to ensure ease of use, automation, and result handling.
 
 ---
 
-## 🧠 Design Philosophy
+## Design Philosophy
 
 !!! abstract "Unified Simulation Interface"
     All simulation classes conform to two core constraints:
@@ -44,11 +44,11 @@ This approach enables uniform integration into pipelines, simplifies logging, an
 
 ---
 
-## 🚀 Using Simulation Classes
+## Using Simulation Classes
 
 !!! example "Importing and Executing a Simulation"
     ```python
-    from pyhfss.simulation import EigenmodeAnalysis, QuantumEpr
+    from pyhfss.simulation import EigenmodeAnalysis
 
     analysis = EigenmodeAnalysis(
         design_name="MyDesign",

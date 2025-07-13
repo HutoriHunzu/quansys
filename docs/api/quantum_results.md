@@ -7,4 +7,4 @@ participation data from the distributed analysis, and labeled modal data from Ei
 
 ## Related
 
-- [`QuantumEpr`](quantum_epr.md)
+- [`QuantumEPR`](quantum_epr.md)

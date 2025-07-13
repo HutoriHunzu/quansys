@@ -23,7 +23,7 @@ MODES_TO_LABELS_TYPE = ModesAndLabels | dict[int, str]
 JUNCTION_INFO_TYPE = Annotated[list[ConfigJunction], BeforeValidator(ensure_list)]
 
 
-class QuantumEpr(BaseAnalysis):
+class QuantumEPR(BaseAnalysis):
     """
     Runs an EPR-based quantum simulation using Eigenmode results and junction data.
 

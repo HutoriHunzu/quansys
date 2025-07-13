@@ -1,6 +1,6 @@
 import pytest
 from itertools import combinations
-from pyhfss.simulation import QuantumEpr
+from pyhfss.simulation import QuantumEPR
 
 # Constant mapping from mode number to label
 MODE_TO_LABEL = {
@@ -25,7 +25,7 @@ def resolve_modes(mode_numbers):
 # Fixture for full 3-mode simulation
 @pytest.fixture(scope="module")
 def full_epr_result(transmon_readout_purcell_design, transmon_readout_purcell_eigenmode_results):
-    sim = QuantumEpr(
+    sim = QuantumEPR(
         design_name='my_design',
         setup_name='Setup1',
         modes_to_labels=resolve_modes([1, 2, 3]),
@@ -44,7 +44,7 @@ def full_epr_result(transmon_readout_purcell_design, transmon_readout_purcell_ei
 ])
 def test_epr_submatrix_consistency(transmon_readout_purcell_design, full_epr_result, mode_subset):
     # Run partial simulation
-    sim = QuantumEpr(
+    sim = QuantumEPR(
         design_name='my_design',
         setup_name='Setup1',
         modes_to_labels=resolve_modes(mode_subset),

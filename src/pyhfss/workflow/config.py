@@ -39,7 +39,7 @@ class WorkflowConfig(BaseModel):
             Each value must be one of the supported analysis types:
 
             - [`EigenmodeAnalysis`][pyhfss.simulation.eigenmode.model.EigenmodeAnalysis]
-            - [`QuantumEpr`][pyhfss.simulation.quantum_epr.model.QuantumEpr]
+            - [`QuantumEPR`][pyhfss.simulation.quantum_epr.model.QuantumEPR]
 
             These are selected using a `type` field discriminator, as defined in `SUPPORTED_ANALYSIS`.
 

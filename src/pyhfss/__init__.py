@@ -1,3 +1,3 @@
 from .workflow import (execute_workflow, PyaedtFileParameters, WorkflowConfig,
                        DesignVariableBuilder, ModuleBuilder, FunctionBuilder)
-from .simulation import EigenmodeAnalysis, QuantumEpr
+from .simulation import EigenmodeAnalysis, QuantumEPR

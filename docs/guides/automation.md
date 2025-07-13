@@ -1,6 +1,6 @@
 # ⚙️ Automation Workflows
 
-A **workflow** is a function that **facilitates** automated simulation runs.  
+A **workflow** is a function that enables automated simulation runs.  
 For each parameter set it passes through four phases:
 
 | Phase     | What happens                                            | Config keys¹               |
@@ -73,7 +73,8 @@ results/aggregations/classical_agg.csv   # parameters merged with results
 
 ### Prepare – Folders & Templates
 
-`PrepareFolderConfig` decides whether the template **.AEDT** file is copied.
+`PrepareFolderConfig` decides whether the template **.AEDT** file is copied and what name it will have.
+The user doesn't need specify anything, this is a default behavior.
 
 ```text
 results/iterations/<uid>/
@@ -82,7 +83,6 @@ results/iterations/<uid>/
 
 !!! note "Copy rules"
     `copy_enabled = True` (default) – duplicate the template for each sweep.
-    If `file_path=None`, a **builder** must create the project from scratch.
 
 ---
 
@@ -116,7 +116,7 @@ for aggregation.
         simulations = {
             "classical": EigenmodeAnalysis(setup_name="Setup1",
                                            design_name="my_design"),
-            "epr": QuantumEpr(setup_name="Setup1",
+            "epr": QuantumEPR(setup_name="Setup1",
                               design_name="my_design",
                               modes_to_labels={0: "q0"})
         }
@@ -142,7 +142,7 @@ aggregation_dict = {
 For each entry the engine:
 
 1. Loads matching result files.
-2. Calls `.flatten()` so nested keys become columns (see Simulations guide).
+2. Calls `.flatten()` **to turn** nested keys into columns (see Simulations guide).
 3. Writes a CSV in `results/aggregations/`.
 
 ---

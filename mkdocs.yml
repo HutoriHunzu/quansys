@@ -1,6 +1,6 @@
-site_name: My Project Docs
+site_name: pyhfss
 site_description: Simulation framework documentation
-site_url: https://example.com/
+#site_url: https://example.com/
 
 # Ensure build breaks on broken links
 strict: true
@@ -18,7 +18,7 @@ theme:
     - navigation.tabs
     - navigation.top
     - navigation.instant
-    - navigation.indexes
+#    - navigation.indexes
     - toc.follow
 
     # Code & Content
@@ -72,13 +72,14 @@ extra_css:
   - stylesheets/noir-minimal.css
 
 nav:
-  - Home: index.md
+  - Get Started:
+      - Welcome to pyhfss: index.md
+      - Installation: install.md
   - Guides:
-      - Installation: guides/installation.md
       - Simulations: guides/simulations.md
       - Automation: guides/automation.md
-      - Customization: guides/customization.md
       - Terminal & CLI: guides/terminal.md
+      - Best Practices: guides/best_practices.md
   - API Reference:
       - EigenmodeAnalysis: api/eigenmode_analysis.md
       - EigenmodeResults: api/eigenmode_results.md
