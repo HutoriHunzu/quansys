@@ -17,7 +17,6 @@
   --md-typeset-heading-color:   #000000;
   --md-typeset-color:           var(--md-default-fg-color);
   --md-typeset-muted-color:     #555555;
-  /*--md-typeset-a-color:         #c21807;*/
   --md-typeset-a-color:         #ad1457;
   --md-typeset-table-color:     #1a1a1a;
 
@@ -128,13 +127,6 @@
 [data-md-color-scheme="noir-minimal"] .md-typeset details {
   background-color: var(--md-default-bg-color) !important;
   color: var(--md-default-fg-color);
-}
-
-[data-md-color-scheme="noir-minimal"] .admonition-title {
-  /*background-color: var(--md-default-bg-color) !important;*/
-  background-color: #eeeeee !important;
-  color: var(--md-default-fg-color);
-  font-weight: 600;
 }
 
 
