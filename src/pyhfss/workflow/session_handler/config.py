@@ -79,6 +79,7 @@ class PyaedtFileParameters(BaseModel):
 
             try:
                 yield hfss
+                hfss.save_project()
             finally:
                 # Optional cleanup
                 if 'temp' in hfss.design_list:
