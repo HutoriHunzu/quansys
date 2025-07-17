@@ -161,7 +161,11 @@ def _build_phase(builder, pyaedt_params, params, project):
     session.done()
 
 
-def _simulations_phase(identifier_simulation_dict, params, run_params: PyaedtFileParameters, project):
+def _simulations_phase(identifier_simulation_dict,
+                       params: dict,
+                       run_params: PyaedtFileParameters,
+                       keep_hffs_solutions: bool,
+                       project: Project):
 
     designs = []
 
@@ -183,11 +187,12 @@ def _simulations_phase(identifier_simulation_dict, params, run_params: PyaedtFil
             session.attach_files({"data": path})
             session.done()
 
-    for design_name in set(designs):
-        run_params.design_name = design_name
-        with run_params.open_pyaedt_file() as hfss:
-            hfss.cleanup_solution()
 
+    if not keep_hffs_solutions:
+        with run_params.open_pyaedt_file() as hfss:
+            for design_name in set(designs):
+                hfss.set_active_design(design_name)
+                hfss.cleanup_solution()
 
 
 def _aggregation_phase(name: str, aggregator: Aggregator, project: Project, iteration_project: Project):

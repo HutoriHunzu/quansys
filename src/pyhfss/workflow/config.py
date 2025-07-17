@@ -33,6 +33,8 @@ class WorkflowConfig(BaseModel):
 
     Attributes:
         root_folder: Root directory where simulation results will be saved. default: 'results'
+        keep_hfss_solutions: If True the HFSS solution are kept (allowing for field plotting) for every
+                        iteration. Should be False as keeping all solution takes a lot of memory. default: False
         pyaedt_file_parameters: Configuration for how the `.aedt` file is opened and managed during simulation.
             See [`PyaedtFileParameters`][pyhfss.workflow.session_handler.config.PyaedtFileParameters]
             for full control over versioning, licensing, and graphical behavior.
@@ -79,6 +81,7 @@ class WorkflowConfig(BaseModel):
             See `pykit.aggregator.Aggregator` for behavior.
     """
     root_folder: PathType = 'results'
+    keep_hfss_solutions: bool = False
     pyaedt_file_parameters: PyaedtFileParameters
     simulations: dict[str, SUPPORTED_ANALYSIS]
 
