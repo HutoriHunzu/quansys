@@ -2,7 +2,7 @@ from typing import Literal
 import importlib
 
 from .base import BaseBuilder
-from ..sweep.utils import merge_dicts
+from pykit.dict_utils import merge_dicts
 from ansys.aedt.core.hfss import Hfss
 
 
