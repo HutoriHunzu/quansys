@@ -96,7 +96,8 @@ def execute_workflow(config: WorkflowConfig) -> None:
             config.simulations,
             params,
             run_params.model_copy(),
-            iteration_proj,
+            config.keep_hfss_solutions,
+            iteration_proj
         )
 
     # 4. AGGREGATION
