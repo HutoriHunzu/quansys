@@ -19,8 +19,6 @@ def ensure_list(value):
     return value
 
 
-MODES_TO_LABELS_TYPE = ModesAndLabels | dict[int, str]
-JUNCTION_INFO_TYPE = Annotated[list[ConfigJunction], BeforeValidator(ensure_list)]
 
 
 class QuantumEPR(BaseAnalysis):
@@ -42,13 +40,8 @@ class QuantumEPR(BaseAnalysis):
     type: Literal[SimulationTypesNames.QUANTUM_EPR] = SimulationTypesNames.QUANTUM_EPR
     design_name: str = Field(..., description="Design name in HFSS.")
     setup_name: str = Field(..., description="Setup name in HFSS.")
-    modes_to_labels: MODES_TO_LABELS_TYPE = Field(..., description="Mode index-to-label mapping or parser.")
-    junctions_infos: JUNCTION_INFO_TYPE = Field(..., description="List of junction configuration objects.")
-    # type: Literal[SimulationTypesNames.QUANTUM_EPR] = SimulationTypesNames.QUANTUM_EPR
-    # design_name: str
-    # setup_name: str
-    # modes_to_labels: MODES_TO_LABELS_TYPE
-    # junctions_infos: JUNCTION_INFO_TYPE
+    modes_to_labels: ModesAndLabels | dict[int, str] = Field(..., description="Mode index-to-label mapping or parser.")
+    junctions_infos: list[ConfigJunction] = Field(..., description="List of junction configuration objects.")
 
     def analyze(self, hfss: Hfss) -> QuantumResults:
         """

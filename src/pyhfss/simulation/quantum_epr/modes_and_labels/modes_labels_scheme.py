@@ -3,13 +3,49 @@ from typing import Annotated
 from .inferences import ManualInference, OrderInference
 
 SUPPORTED_INFERENCES = Annotated[ManualInference | OrderInference, Field(discriminator='type')]
+"""
+Union of supported inference types for mode labeling.
+
+Includes:
+- [`ManualInference`][pyhfss.simulation.quantum_epr.modes_and_labels.ManualInference]
+- [`OrderInference`][pyhfss.simulation.quantum_epr.modes_and_labels.OrderInference]
+"""
 INFERENCE_ADAPTER = TypeAdapter(SUPPORTED_INFERENCES)
 
 
 class ModesAndLabels(BaseModel):
+    """
+    A scheme for assigning labels to eigenmodes using a list of inference rules.
+
+    This class orchestrates the application of multiple inference strategies,
+    first applying all [`ManualInference`][pyhfss.simulation.quantum_epr.modes_and_labels.ManualInference]
+    and then [`OrderInference`][pyhfss.simulation.quantum_epr.modes_and_labels.OrderInference]
+    in sequence to extract labels for eigenmodes.
+
+    Attributes:
+        inferences (list[SUPPORTED_INFERENCES]):
+            A list of inference strategies. Each must be either
+            [`ManualInference`][pyhfss.simulation.quantum_epr.modes_and_labels.ManualInference]
+            or [`OrderInference`][pyhfss.simulation.quantum_epr.modes_and_labels.OrderInference].
+
+    """
     inferences: list[SUPPORTED_INFERENCES]
 
     def parse(self, eigenmode_results: dict[int, dict[str, float]]) -> dict[int, str]:
+        """
+        Applies all configured inference rules to generate a mapping from mode numbers to labels.
+
+        Manual inferences are executed before automatic (order-based) inferences.
+        Once a mode is labeled by an inference, it is excluded from further processing by others.
+
+        Args:
+            eigenmode_results (dict[int, dict[str, float]]):
+                A dictionary where each key is a mode number, and the value is a dictionary
+                of mode properties such as frequency or quality factor.
+
+        Returns:
+            dict[int, str]: A mapping from mode number to assigned label.
+        """
 
         # first execution of manual inferences
         manual_inferences = filter(lambda x: isinstance(x, ManualInference), self.inferences)

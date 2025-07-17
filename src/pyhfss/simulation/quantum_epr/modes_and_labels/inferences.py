@@ -11,12 +11,33 @@ class InferenceBase(BaseModel):
 
 
 class ManualInference(InferenceBase):
+    """
+    Manual inference strategy to explicitly label a specific mode.
+
+    Attributes:
+        type (Literal['manual']): Discriminator field with value `'manual'`.
+        mode_number (int): The eigenmode index to which the label should be assigned.
+        label (str): The label to assign.
+
+    """
     type: Literal['manual'] = 'manual'
     mode_number: int
     label: str
 
     def infer(self, eigenmode_results: dict[int, dict[str, float]]) -> dict[int, str]:
-        """Return a manually specified mode."""
+        """
+        Assigns a predefined label to a specific mode number.
+
+        Args:
+            eigenmode_results (dict[int, dict[str, float]]):
+                Dictionary of available modes and their corresponding properties.
+
+        Returns:
+            dict[int, str]: A dictionary with a single key-value pair mapping the mode number to the label.
+
+        Raises:
+            ValueError: If the mode number is not present in `eigenmode_results`.
+        """
         # check it is a valid number
         if eigenmode_results.get(self.mode_number) is None:
             raise ValueError(f'mode not exists in the given result {eigenmode_results}')
@@ -25,6 +46,17 @@ class ManualInference(InferenceBase):
 
 
 class OrderInference(InferenceBase):
+    """
+    Inference strategy based on sorting modes by a specified property and assigning labels by order.
+
+    Attributes:
+        type (Literal['order']): Discriminator field with value `'order'`.
+        num (int): Number of modes to assign labels to.
+        min_or_max (Literal['min', 'max']): Whether to choose modes with minimum or maximum values.
+        ordered_labels_by_frequency (list[str]): List of labels to assign in the determined order.
+        quantity (Literal['frequency', 'quality_factor']): The property to use for sorting modes.
+
+    """
     type: Literal['order'] = 'order'
     num: int
     min_or_max: Literal['min', 'max']
@@ -41,7 +73,23 @@ class OrderInference(InferenceBase):
         return self
 
     def infer(self, eigenmode_results: dict[int, dict[str, float]]) -> dict[int, str]:
-        """Perform some calculation to determine the mode and map to labels."""
+        """
+        Selects and labels a number of modes by sorting them based on a specified property.
+
+        Modes are ranked based on the `quantity` field (e.g., frequency or quality factor),
+        either ascending (`min`) or descending (`max`), and labeled in the order specified
+        by `ordered_labels_by_frequency`.
+
+        Args:
+            eigenmode_results (dict[int, dict[str, float]]):
+                Dictionary of modes and their corresponding frequency or quality factor.
+
+        Returns:
+            dict[int, str]: Mapping from selected mode numbers to labels.
+
+        Raises:
+            ValueError: If `ordered_labels_by_frequency` length does not match `num`.
+        """
         # Extract the desired quantity from mode_to_freq_and_q_factor
         mode_and_quantity = [(k, v[self.quantity]) for k, v in eigenmode_results.items()]
 

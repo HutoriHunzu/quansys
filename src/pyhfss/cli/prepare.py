@@ -17,7 +17,8 @@ def prepare_job(config_path, project_dir, files, mem, timeout, venv):
     config.save_to_yaml(config_path)
 
     # Combine builder files with CLI-specified files
-    copy_files(files, project_dir)
+    if files is not None:
+        copy_files(files, project_dir)
 
     # Generate cluster scripts
     generate_job_submission_script(project_dir, config, mem, timeout)

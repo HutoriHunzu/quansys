@@ -54,15 +54,22 @@ class WorkflowConfig(BaseModel):
             - [`ModuleBuilder`][pyhfss.workflow.builder.module_builder.ModuleBuilder]
 
             The builder must define a `type` field used for runtime selection.
-        builder_sweep: Optional parameter sweep applied to the builder phase.
 
-            Accepts any normalized sweep configuration such as:
+        builder_sweep: parameter sweep applied to the builder phase. each `DictSweep` instance
+            allows for iteration over dict values.
 
-            - `DictSweep` (basic dictionary-based parameter combinations)
-            - `ChainSweep` (product of multiple sweeps)
-            - `EmptySweep` (default/no sweep)
+            For example:
 
-            These are automatically normalized using `NormalizedSweep`.
+            `DictSweep(constants={'a':1},
+            parameters={'b': [1,2], 'c':[3,4]},
+            strategy='product')
+
+            --> {'a': 1, 'b': 1, 'c': 3}
+            --> {'a': 1, 'b': 1, 'c': 4}
+            --> {'a': 1, 'b': 2, 'c': 3}
+            --> {'a': 1, 'b': 2, 'c': 4}
+            `
+
         aggregation_dict: Optional aggregation rules for result post-processing.
 
             Each key maps to a list of strings which should be all simulation identifiers.

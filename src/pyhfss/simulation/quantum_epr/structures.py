@@ -7,7 +7,20 @@ import numpy as np
 
 
 class ConfigJunction(BaseModel):
-    name: str
+    """
+    Configuration data for a Josephson junction used in EPR analysis.
+
+    This object specifies the physical and variable names required to
+    compute participation and energy ratios.
+
+    Attributes:
+        line_name (str):
+            The name of the line path representing the junction in the HFSS model.
+
+        inductance_variable_name (str):
+            The name of the variable that defines this junction’s inductance.
+    """
+    line_name: str
     inductance_variable_name: str
 
 

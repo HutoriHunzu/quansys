@@ -66,8 +66,8 @@ nav:
   - API Reference:
       - EigenmodeAnalysis: api/eigenmode_analysis.md
       - EigenmodeResults: api/eigenmode_results.md
-      - QuantumEpr: api/quantum_epr.md
-      - QuantumResult: api/quantum_results.md
+      - QuantumEPR: api/quantum_epr.md
+      - QuantumResults: api/quantum_results.md
       - WorkflowConfig: api/workflow_config.md
       - execute_workflow: api/execute_workflow.md
       - PrepareFolderConfig: api/prepare_folder_config.md
@@ -75,6 +75,10 @@ nav:
       - DesignVariableBuilder: api/design_variable_builder.md
       - FunctionBuilder: api/function_builder.md
       - ModuleBuilder: api/module_builder.md
+      - ModesAndLabels: api/modes_and_labels.md
+      - ManualInference: api/manual_inference.md
+      - OrderInference: api/order_inference.md
+      - ConfigJunction: api/junctions.md
 
 plugins:
   - search
