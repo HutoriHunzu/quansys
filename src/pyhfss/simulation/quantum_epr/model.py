@@ -1,7 +1,6 @@
 from typing import Literal
 from ansys.aedt.core.hfss import Hfss
-from typing_extensions import Annotated
-from pydantic import BeforeValidator, Field
+from pydantic import Field
 
 from .distributed_analysis import DistributedAnalysis
 from .epr_calculator import EprCalculator

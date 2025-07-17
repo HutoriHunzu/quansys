@@ -255,7 +255,7 @@ class DistributedAnalysis:
         def helper():
             for info in junction_infos:
                 yield self._calculate_line_voltage(
-                    mode_frequency, info.info.name, info.inductance.value
+                    mode_frequency, info.info.line_name, info.inductance.value
                 )
 
         peak_currents, peak_voltages = list(zip(*helper()))
