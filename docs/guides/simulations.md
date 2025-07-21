@@ -37,13 +37,24 @@ Let’s walk through how to run a basic simulation using the `EigenmodeAnalysis`
 !!! example "Running a Simulation"
     ```python
     from quansys.simulation import EigenmodeAnalysis
+    from quansys.workflow import PyaedtFileParameters
 
+    # Load the AEDT design file
+    run_params = PyaedtFileParameters(
+        file_path="./simple_design.aedt",
+        design_name="my_design",
+        non_graphical=False  # We set to False to open the GUI, default is True
+    )
+
+    # Create an EigenmodeAnalysis instance
     analysis = EigenmodeAnalysis(
-        design_name="MyDesign",
+        design_name="my_design",
         setup_name="Setup1"
     )
 
-    result = analysis.analyze(hfss)
+    # opening the AEDT file and running the analysis
+    with run_params.open_pyaedt_file() as hfss:
+        result = analysis.analyze(hfss)
 
     # Access specific results
     result.results[1].quality_factor    # Quality factor for mode 1
@@ -51,6 +62,11 @@ Let’s walk through how to run a basic simulation using the `EigenmodeAnalysis`
 
     # For saving or aggregation, see .model_dump(), .flatten(), etc.
     ```
+
+!!! note "Opening AEDT"
+    You can refer to [`PyaedtFileParameters`](../api/pyaedt_file_parameters.md) for more information about the class. 
+    In the above context we are using `run_params.open_pyaedt_file()` to open the specified AEDT file and ensures it is properly closed after the analysis. 
+    However, you can also use raw `pyaedt` methods if you prefer more control over the AEDT session.
 
 ---
 
