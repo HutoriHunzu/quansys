@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pyhfss"
+name = "quansys"
 version = "3.0.0"
 dependencies = [
     "qutip",
@@ -45,7 +45,7 @@ lint = [
 
 
 [project.scripts]
-pyhfss = "pyhfss.cli.main:app"
+quansys = "quansys.cli.main:app"
 
 [tool.hatch.metadata]
 allow-direct-references = true
