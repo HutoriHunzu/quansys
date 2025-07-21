@@ -1,11 +1,11 @@
 # 🖥️ Command-Line Usage Guide
 
-The `pyhfss` command-line interface (CLI) allows you to manage simulation workflows using configuration files — no Python scripting needed.
+The `quansys` command-line interface (CLI) allows you to manage simulation workflows using configuration files — no Python scripting needed.
 
 There are two primary commands:
 
-- `pyhfss run`: Run a simulation locally
-- `pyhfss submit`: Submit a simulation job to a compute cluster
+- `quansys run`: Run a simulation locally
+- `quansys submit`: Submit a simulation job to a compute cluster
 
 Both commands rely on a `config.yaml` file to define the workflow logic and parameters.
 
@@ -14,8 +14,8 @@ Both commands rely on a `config.yaml` file to define the workflow logic and para
     To explore available options for either command, use:
     
     ```bash
-    pyhfss run --help
-    pyhfss submit --help
+    quansys run --help
+    quansys submit --help
     ```
 
 ---
@@ -25,7 +25,7 @@ Both commands rely on a `config.yaml` file to define the workflow logic and para
 The `run` command is a configuration-based tool for executing workflows locally:
 
 ```bash
-pyhfss run config.yaml
+quansys run config.yaml
 ```
 
 It is typically used to:
@@ -38,8 +38,8 @@ It is typically used to:
     This avoids duplicating Python code and makes testing easier.
 
     ```bash
-    pyhfss run configs/design_3mm.yaml
-    pyhfss run configs/design_4mm.yaml
+    quansys run configs/design_3mm.yaml
+    quansys run configs/design_4mm.yaml
     ```
 
 ---
@@ -49,7 +49,7 @@ It is typically used to:
 The `submit` command packages and submits a simulation job to a compute cluster (e.g., LSF with `bsub`):
 
 ```bash
-pyhfss submit config.yaml my_env --name job_name
+quansys submit config.yaml my_env --name job_name
 ```
 
 This creates a new folder and places all required files inside it to run the job remotely.
@@ -68,12 +68,12 @@ job_name/
 | ---------------------- |--------------------------------------------------------------------|
 | `config.yaml`          | The configuration file defining the simulation workflow            |
 | `[copied input files]` | Any additional files provided via the `--files` option             |
-| `simulate.sh`          | Activates `my_env` (Conda) and runs `pyhfss run config.yaml`       |
+| `simulate.sh`          | Activates `my_env` (Conda) and runs `quansys run config.yaml`       |
 | `job_submission.sh`    | A submission script to run `simulate.sh` via `bsub` on the cluster |
 
 !!! example "Usage example"
     ```bash
-    pyhfss submit config.yaml my_env --name batch_run --files my_design.aedt --mem 160000 --timeout 06:00
+    quansys submit config.yaml my_env --name batch_run --files my_design.aedt --mem 160000 --timeout 06:00
     ```
 
 !!! note

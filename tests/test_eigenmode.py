@@ -1,5 +1,5 @@
 import pytest
-from pyhfss.simulation import EigenmodeAnalysis
+from quansys.simulation import EigenmodeAnalysis
 
 
 NUM_OF_MODES_IN_SETUP = 5

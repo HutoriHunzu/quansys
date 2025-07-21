@@ -10,7 +10,7 @@ Includes both success and failure scenarios.
 """
 
 import pytest
-from pyhfss.workflow import DesignVariableBuilder, ModuleBuilder, FunctionBuilder
+from quansys.workflow import DesignVariableBuilder, ModuleBuilder, FunctionBuilder
 
 
 VARIABLE_TO_CHANGE = 'chip_base_width'

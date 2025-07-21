@@ -24,7 +24,7 @@ A minimal Python example using [`WorkflowConfig`](../api/workflow_config.md) and
 !!! example "Python example"
     ```python
     from pathlib import Path
-    from pyhfss import (
+    from quansys import (
         WorkflowConfig, PyaedtFileParameters,
         EigenmodeAnalysis, DesignVariableBuilder, execute_workflow
     )

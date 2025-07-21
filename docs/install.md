@@ -10,7 +10,7 @@ The two non trivial requirements for this package are:
 ## Steps
 
 ```bash
-git clone https://github.com/RosenblumLab/pyhfss.git
-pip install -e <PATH_TO_PYHFSS>
+git clone https://github.com/hutorihunzuLab/quansys.git
+pip install -e <PATH_TO_quansys>
 ```
 

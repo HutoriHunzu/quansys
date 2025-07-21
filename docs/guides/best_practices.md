@@ -1,6 +1,6 @@
 # 🚀 Best Practices for Cluster Jobs
 
-`pyhfss` is designed so that a workflow you test on your laptop will behave the same way on a large compute cluster.  
+`quansys` is designed so that a workflow you test on your laptop will behave the same way on a large compute cluster.  
 Follow the sequence below to keep every run **predictable, repeatable, and cluster-ready**.
 
 ---
@@ -28,7 +28,7 @@ If it might change between runs, put it in the config—not in Python code.
 ## 3 · Test Locally
 
 ```bash
-pyhfss run config.yaml
+quansys run config.yaml
 ```
 
 A local run confirms the builder and settings work before you consume cluster hours.
@@ -38,7 +38,7 @@ A local run confirms the builder and settings work before you consume cluster ho
 ## 4 · Submit to the Cluster
 
 ```bash
-pyhfss submit config.yaml my_env --name job_name
+quansys submit config.yaml my_env --name job_name
 ```
 
 `submit` copies the project, packages the config, and hands off the job to the scheduler.

@@ -48,7 +48,7 @@ This approach enables uniform integration into pipelines, simplifies logging, an
 
 !!! example "Importing and Executing a Simulation"
     ```python
-    from pyhfss.simulation import EigenmodeAnalysis
+    from quansys.simulation import EigenmodeAnalysis
 
     analysis = EigenmodeAnalysis(
         design_name="MyDesign",

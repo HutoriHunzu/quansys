@@ -6,5 +6,5 @@ This class wraps setup configuration, simulation execution, and result parsing
 in a single, declarative interface. It's typically used in workflow configurations
 to automate eigenmode extraction.
 
-::: pyhfss.simulation.eigenmode.model.EigenmodeAnalysis
+::: quansys.simulation.eigenmode.model.EigenmodeAnalysis
 

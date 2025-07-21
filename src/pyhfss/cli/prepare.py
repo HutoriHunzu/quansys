@@ -2,7 +2,7 @@
 
 def prepare_job(config_path, project_dir, files, mem, timeout, venv):
 
-    from pyhfss.workflow import WorkflowConfig
+    from quansys.workflow import WorkflowConfig
     from .utils import copy_files
     from .templates import generate_job_submission_script, generate_simulation_script
     """

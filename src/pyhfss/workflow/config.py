@@ -36,14 +36,14 @@ class WorkflowConfig(BaseModel):
         keep_hfss_solutions: If True the HFSS solution are kept (allowing for field plotting) for every
                         iteration. Should be False as keeping all solution takes a lot of memory. default: False
         pyaedt_file_parameters: Configuration for how the `.aedt` file is opened and managed during simulation.
-            See [`PyaedtFileParameters`][pyhfss.workflow.session_handler.config.PyaedtFileParameters]
+            See [`PyaedtFileParameters`][quansys.workflow.session_handler.config.PyaedtFileParameters]
             for full control over versioning, licensing, and graphical behavior.
 
         simulations: Mapping of simulation names to simulation configuration objects.
             Each value must be one of the supported analysis types:
 
-            - [`EigenmodeAnalysis`][pyhfss.simulation.eigenmode.model.EigenmodeAnalysis]
-            - [`QuantumEPR`][pyhfss.simulation.quantum_epr.model.QuantumEPR]
+            - [`EigenmodeAnalysis`][quansys.simulation.eigenmode.model.EigenmodeAnalysis]
+            - [`QuantumEPR`][quansys.simulation.quantum_epr.model.QuantumEPR]
 
             These are selected using a `type` field discriminator, as defined in `SUPPORTED_ANALYSIS`.
 
@@ -51,9 +51,9 @@ class WorkflowConfig(BaseModel):
 
             Supported builder types:
 
-            - [`DesignVariableBuilder`][pyhfss.workflow.builder.design_variable_builder.DesignVariableBuilder]
-            - [`FunctionBuilder`][pyhfss.workflow.builder.function_builder.FunctionBuilder]
-            - [`ModuleBuilder`][pyhfss.workflow.builder.module_builder.ModuleBuilder]
+            - [`DesignVariableBuilder`][quansys.workflow.builder.design_variable_builder.DesignVariableBuilder]
+            - [`FunctionBuilder`][quansys.workflow.builder.function_builder.FunctionBuilder]
+            - [`ModuleBuilder`][quansys.workflow.builder.module_builder.ModuleBuilder]
 
             The builder must define a `type` field used for runtime selection.
 

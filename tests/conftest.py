@@ -7,9 +7,9 @@ import pytest
 # ---------------------------------------------------------------------
 # Library imports from your package
 # ---------------------------------------------------------------------
-from pyhfss.workflow import PyaedtFileParameters
-from pyhfss.simulation import EigenmodeAnalysis
-from pyhfss.workflow.session_handler.session import LicenseUnavailableError
+from quansys.workflow import PyaedtFileParameters
+from quansys.simulation import EigenmodeAnalysis
+from quansys.workflow.session_handler.session import LicenseUnavailableError
 
 # ---------------------------------------------------------------------
 # Paths / constants

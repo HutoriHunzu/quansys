@@ -11,4 +11,4 @@ def my_function(x, y):
     return result
 ```
 
-::: pyhfss.workflow.config.WorkflowConfig
+::: quansys.workflow.config.WorkflowConfig

@@ -7,8 +7,8 @@ SUPPORTED_INFERENCES = Annotated[ManualInference | OrderInference, Field(discrim
 Union of supported inference types for mode labeling.
 
 Includes:
-- [`ManualInference`][pyhfss.simulation.quantum_epr.modes_and_labels.ManualInference]
-- [`OrderInference`][pyhfss.simulation.quantum_epr.modes_and_labels.OrderInference]
+- [`ManualInference`][quansys.simulation.quantum_epr.modes_and_labels.ManualInference]
+- [`OrderInference`][quansys.simulation.quantum_epr.modes_and_labels.OrderInference]
 """
 INFERENCE_ADAPTER = TypeAdapter(SUPPORTED_INFERENCES)
 
@@ -18,15 +18,15 @@ class ModesAndLabels(BaseModel):
     A scheme for assigning labels to eigenmodes using a list of inference rules.
 
     This class orchestrates the application of multiple inference strategies,
-    first applying all [`ManualInference`][pyhfss.simulation.quantum_epr.modes_and_labels.ManualInference]
-    and then [`OrderInference`][pyhfss.simulation.quantum_epr.modes_and_labels.OrderInference]
+    first applying all [`ManualInference`][quansys.simulation.quantum_epr.modes_and_labels.ManualInference]
+    and then [`OrderInference`][quansys.simulation.quantum_epr.modes_and_labels.OrderInference]
     in sequence to extract labels for eigenmodes.
 
     Attributes:
         inferences (list[SUPPORTED_INFERENCES]):
             A list of inference strategies. Each must be either
-            [`ManualInference`][pyhfss.simulation.quantum_epr.modes_and_labels.ManualInference]
-            or [`OrderInference`][pyhfss.simulation.quantum_epr.modes_and_labels.OrderInference].
+            [`ManualInference`][quansys.simulation.quantum_epr.modes_and_labels.ManualInference]
+            or [`OrderInference`][quansys.simulation.quantum_epr.modes_and_labels.OrderInference].
 
     """
     inferences: list[SUPPORTED_INFERENCES]

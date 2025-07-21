@@ -1,6 +1,6 @@
-# 📡 Welcome to pyhfss
+# 📡 Welcome to quansys
 
-`pyhfss` is a Python package for automating **HFSS simulations** using [PyAEDT](https://github.com/ansys/pyaedt).  
+`quansys` is a Python package for automating **HFSS simulations** using [PyAEDT](https://github.com/ansys/pyaedt).  
 It supports structured workflows, parameter sweeps, and JSON/CSV result aggregation.  
 Simulation interfaces for `EigenmodeAnalysis` and `QuantumEPR` are included.
 
@@ -14,6 +14,6 @@ Simulation interfaces for `EigenmodeAnalysis` and `QuantumEPR` are included.
 ---
 
 !!! tip "Example workflows available"
-    Check the [`examples/`](https://github.com/RosenblumLab/pyhfss/tree/main/examples) folder in the repo for working templates.
+    Check the [`examples/`](https://github.com/hutorihunzuLab/quansys/tree/main/examples) folder in the repo for working templates.
 
 ---

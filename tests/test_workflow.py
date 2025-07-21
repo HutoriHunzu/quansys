@@ -1,5 +1,5 @@
-from pyhfss import WorkflowConfig, PyaedtFileParameters, EigenmodeAnalysis, DesignVariableBuilder
-from pyhfss import execute_workflow
+from quansys import WorkflowConfig, PyaedtFileParameters, EigenmodeAnalysis, DesignVariableBuilder
+from quansys import execute_workflow
 from pykit.sweeper import DictSweep
 
 from pandas import read_csv

@@ -49,7 +49,7 @@ def execute_workflow(config: WorkflowConfig) -> None:
     Example:
         ```python
         from pathlib import Path
-        from pyhfss import (
+        from quansys import (
             WorkflowConfig, PyaedtFileParameters,
             EigenmodeAnalysis, DesignVariableBuilder, execute_workflow
         )

@@ -1,4 +1,4 @@
-from pyhfss import WorkflowConfig
+from quansys import WorkflowConfig
 
 
 def generate_job_submission_script(results_dir, config: WorkflowConfig, mem_mb, timeout,
@@ -45,7 +45,7 @@ module load ANSYS/Electromagnetics242
 source /apps/easybd/programs/miniconda/24.9.2_environmentally/etc/profile.d/conda.sh
 module load miniconda/24.9.2_environmentally
 conda activate {venv}
-pyhfss run {config_path}
+quansys run {config_path}
     """
     simulation_script.write_text(template)
 

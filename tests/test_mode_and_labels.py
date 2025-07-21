@@ -1,5 +1,5 @@
 import pytest
-from pyhfss.simulation.quantum_epr import ManualInference, OrderInference, ModesAndLabels
+from quansys.simulation.quantum_epr import ManualInference, OrderInference, ModesAndLabels
 
 @pytest.fixture
 def mock_eigenmode_data():
