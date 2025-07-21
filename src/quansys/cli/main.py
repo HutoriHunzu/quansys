@@ -67,5 +67,17 @@ def run(config_path: Path = typer.Argument(..., help="Path to the config.yaml fi
         raise e  # Optionally re-raise the exception for debugging
 
 
+@app.command()
+def example():
+    from .example import copy_example_files
+    """
+    Copy an example AEDT file that can be used to test the workflow.
+    """
+    copied_files = copy_example_files()
+
+    for f in copied_files:
+        print(f"Copied {f}")
+
+
 if __name__ == "__main__":
     app()

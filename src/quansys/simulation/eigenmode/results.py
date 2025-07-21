@@ -48,17 +48,13 @@ class EigenmodeResults(BaseSimulationOutput):
         type: Simulation result type identifier (always 'eigenmode_result').
         results: Mapping of mode index to a SingleModeResult instance.
         frequencies_unit: The unit in which frequencies are expressed (default: 'GHz').
+        profile: Additional metadata or profile information.
     """
 
     type: Literal[SimulationOutputTypesNames.EIGENMODE_RESULT] = SimulationOutputTypesNames.EIGENMODE_RESULT
     results: dict[int, SingleModeResult] = Field(..., description="Mapping of mode index to its result.")
     frequencies_unit: str = Field('GHz', description="Unit used to report frequencies.")
-
-    # type: Literal[SimulationOutputTypesNames.EIGENMODE_RESULT] = SimulationOutputTypesNames.EIGENMODE_RESULT
-    # results: dict[int, SingleModeResult]
-    # frequencies_unit: str = 'GHz'
-
-    # mode_to_labels: dict[int, str] | None = None  # only used for formatting for the flat case
+    profile: dict = Field({}, description="Holds additional metadata or profile information.")
 
     def __getitem__(self, item) -> SingleModeResult:
         """

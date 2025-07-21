@@ -1,52 +1,40 @@
 # 🧪 Simulations Guide
 
-This guide outlines the usage, design principles, and interfaces of the simulation classes provided in this package.
-
-Currently supported simulation types:
-
-- [EigenmodeAnalysis](../api/eigenmode_analysis.md)
-- [QuantumEPR](../api/quantum_epr.md)
-
-All simulation classes follow a consistent interface to ensure ease of use, automation, and result handling.
+This guide explains how to use the simulation classes provided in this package. It includes a quickstart example, how to handle results, and design principles.
 
 ---
 
-## Design Philosophy
+## ✅ Supported Simulation Types
 
-!!! abstract "Unified Simulation Interface"
-    All simulation classes conform to two core constraints:
+The package currently supports the following simulations:
 
-    1. Implement an `.analyze(hfss)` method that runs the simulation.
-    2. Return a **JSON-serializable** object that supports **flattening** for aggregation.
+- [`EigenmodeAnalysis`](../api/eigenmode_analysis.md)  
+- [`QuantumEPR`](../api/quantum_epr.md)
 
-This approach enables uniform integration into pipelines, simplifies logging, and supports downstream analysis (e.g., storing results in databases or converting to tables using Pandas).
+All simulation classes follow a consistent interface to make automation, result handling, and integration simple and predictable.
 
 ---
 
-!!! note "About Flattening"
-    The `.flatten()` method converts the result into a flat dictionary with simple key-value pairs.  
-    This is useful for aggregation or tabular data storage but may omit nested information.
+## 🚀 Quickstart Example
 
-    For full data preservation, use:
+Let’s walk through how to run a basic simulation using the `EigenmodeAnalysis` class.
 
-    ```python
-    result.model_dump()        # Full result as a nested dict
-    result.model_dump_json()   # JSON-formatted string
+1. Make sure the `quansys` package is installed and your virtual environment is activated.
+ 
+2. Create a simple AEDT design for the simulation. From your terminal:
+
+    ```bash
+    quansys example
     ```
+    This command generates:
 
-    Use `.flatten()` primarily for aggregation, and `.model_dump()` or `.model_dump_json()` for saving or inspection.
+    - `simple_design.aedt`: a basic HFSS design with a single resonator.
+   
+    - `config.yml`: an automation config (see the [automation guide](automation.md)).
 
----
+3. Create a Python script with the following content:
 
-??? note "CPU Configuration"
-    The [Eigenmode Analysis](../api/eigenmode_analysis.md) class includes a `cores` attribute. 
-    This can be used to control how many CPU cores are requested or used, particularly useful when submitting jobs to a computing cluster.
-
----
-
-## Using Simulation Classes
-
-!!! example "Importing and Executing a Simulation"
+!!! example "Running a Simulation"
     ```python
     from quansys.simulation import EigenmodeAnalysis
 
@@ -65,3 +53,50 @@ This approach enables uniform integration into pipelines, simplifies logging, an
     ```
 
 ---
+
+## 📤 Accessing & Saving Results
+
+Simulation results are returned as structured objects, with methods for exporting and inspection:
+
+- `result.model_dump()` → Full result as a nested Python dictionary.
+- `result.model_dump_json()` → Same, but in JSON string format.
+- `result.flatten()` → A flat dictionary (key-value pairs) for easy storage or tabular conversion.
+
+Use `.flatten()` for quick aggregation (e.g., pandas DataFrame), and `.model_dump()` for full detail or archival.
+
+---
+
+## 🔄 Serialization & Flattening
+
+!!! note "About Flattening"
+    The `.flatten()` method simplifies a result into a flat dictionary.  
+    This is ideal for storing in databases or converting to tables — but it may drop nested structure.
+
+    For complete data retention:
+    ```python
+    result.model_dump()        # Full nested dictionary
+    result.model_dump_json()   # JSON-formatted string
+    ```
+
+---
+
+## 🧠 Design Philosophy
+
+!!! abstract "Unified Simulation Interface"
+    All simulation classes follow these two core rules:
+
+    1. They implement an `.analyze(hfss)` method to run the simulation.
+    2. They return a **JSON-serializable** result that supports `.flatten()` for aggregation.
+
+This design allows easy integration into automation pipelines and downstream processing (e.g., logging, analysis, and visualization).
+
+---
+
+## ⚙️ Advanced Notes
+
+??? note "CPU Configuration"
+    The [`EigenmodeAnalysis`](../api/eigenmode_analysis.md) class includes a `cores` attribute.  
+    This can be used to control how many CPU cores are requested — especially useful in cluster environments.
+
+---
+

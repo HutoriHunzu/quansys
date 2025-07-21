@@ -1,5 +1,8 @@
 from ansys.aedt.core import Hfss
 from typing import Literal
+
+from ansys.aedt.core.modules.solve_setup import Setup
+
 from ..base import (BaseAnalysis, SimulationTypesNames, set_design_and_get_setup,
                     update_setup_parameters, validate_solution_type)
 
@@ -20,6 +23,7 @@ class EigenmodeAnalysis(BaseAnalysis):
         cores: Number of CPU cores to allocate (default is 4).
         gpus: Number of GPUs to allocate (default is 0).
         setup_parameters: Optional dictionary of parameters to override the setup configuration.
+        frequency_unit: Optional string to specify the frequency unit (default is 'GHz').
     """
     type: Literal[SimulationTypesNames.EIGENMODE] = SimulationTypesNames.EIGENMODE
     setup_name: str
@@ -27,6 +31,7 @@ class EigenmodeAnalysis(BaseAnalysis):
     cores: int = 4
     gpus: int = 0
     setup_parameters: dict = {}
+    frequency_unit: str = 'GHz'
 
     def analyze(self, hfss: Hfss) -> EigenmodeResults:
         """
@@ -55,15 +60,19 @@ class EigenmodeAnalysis(BaseAnalysis):
         # Analyze
         setup.analyze(cores=self.cores, gpus=self.gpus)
 
-        # Save and exit
+        # Save
         hfss.save_project()
 
-        return get_eigenmode_results(setup=setup)
+        # Get eigenmode results
+        results = get_eigenmode_results(setup=setup)
 
-    def check_requirement(self):
-        """Check simulation requirements. Currently, a placeholder."""
-        pass
+        # Add profile information
+        results.profile = self.get_profile(setup)
 
-    def report(self):
+        return results
+
+
+    @staticmethod
+    def get_profile(setup: Setup) -> dict:
         """Generate a simulation report. Currently, a placeholder."""
-        pass
+        return setup.get_profile()

@@ -68,10 +68,6 @@ class BaseAnalysis(BaseModel, ABC):
     def analyze(self, hfss: Hfss) -> BaseSimulationOutput:
         pass
 
-    @abstractmethod
-    def report(self) -> BaseSimulationOutput:
-        pass
-
     # def serialize(self) -> dict:
     #     return self.model_dump()
 

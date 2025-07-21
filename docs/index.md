@@ -14,6 +14,6 @@ Simulation interfaces for `EigenmodeAnalysis` and `QuantumEPR` are included.
 ---
 
 !!! tip "Example workflows available"
-    Check the [`examples/`](https://github.com/hutorihunzuLab/quansys/tree/main/examples) folder in the repo for working templates.
+    Check the [`examples/`](https://github.com/hutorihunzu/quansys/tree/main/examples) folder in the repo for working templates.
 
 ---
