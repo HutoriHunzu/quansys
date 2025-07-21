@@ -2686,59 +2686,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pyhfss"
-version = "3.0.0"
-source = { editable = "." }
-dependencies = [
-    { name = "h5py" },
-    { name = "nbmake" },
-    { name = "pandas" },
-    { name = "pint" },
-    { name = "pyaedt", extra = ["all"] },
-    { name = "pydantic-yaml" },
-    { name = "pykit" },
-    { name = "pytest" },
-    { name = "qutip" },
-    { name = "typer" },
-]
-
-[package.optional-dependencies]
-lint = [
-    { name = "ruff" },
-]
-mkdocs = [
-    { name = "mkdocs" },
-    { name = "mkdocs-material" },
-    { name = "mkdocs-material-extensions" },
-    { name = "mkdocstrings" },
-    { name = "mkdocstrings-python" },
-    { name = "pymdown-extensions" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "h5py", specifier = ">=3.12.1" },
-    { name = "mkdocs", marker = "extra == 'mkdocs'" },
-    { name = "mkdocs-material", marker = "extra == 'mkdocs'" },
-    { name = "mkdocs-material-extensions", marker = "extra == 'mkdocs'" },
-    { name = "mkdocstrings", marker = "extra == 'mkdocs'" },
-    { name = "mkdocstrings-python", marker = "extra == 'mkdocs'" },
-    { name = "nbmake" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "pint" },
-    { name = "pyaedt", extras = ["all"] },
-    { name = "pydantic-yaml" },
-    { name = "pykit", git = "https://github.com/HutoriHunzu/pykit.git" },
-    { name = "pymdown-extensions", marker = "extra == 'mkdocs'" },
-    { name = "pytest", specifier = ">=8.3.4" },
-    { name = "qutip" },
-    { name = "ruff", marker = "extra == 'lint'" },
-    { name = "ruff", marker = "extra == 'mkdocs'" },
-    { name = "typer" },
-]
-
-[[package]]
 name = "pykit"
 version = "0.1.0"
 source = { git = "https://github.com/HutoriHunzu/pykit.git#ce1bbf079089467ab924fb030ec5073bc72815fd" }
@@ -3026,6 +2973,59 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ab/ba/64af397e0f421453dc68e31d5e0784d554bf39013a2de0872056e96e58af/pyzmq-27.0.0-pp311-pypy311_pp73-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:14fe7aaac86e4e93ea779a821967360c781d7ac5115b3f1a171ced77065a0174", size = 567400 },
     { url = "https://files.pythonhosted.org/packages/63/87/ec956cbe98809270b59a22891d5758edae147a258e658bf3024a8254c855/pyzmq-27.0.0-pp311-pypy311_pp73-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:6ad0562d4e6abb785be3e4dd68599c41be821b521da38c402bc9ab2a8e7ebc7e", size = 747031 },
     { url = "https://files.pythonhosted.org/packages/be/8a/4a3764a68abc02e2fbb0668d225b6fda5cd39586dd099cee8b2ed6ab0452/pyzmq-27.0.0-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:9df43a2459cd3a3563404c1456b2c4c69564daa7dbaf15724c09821a3329ce46", size = 544726 },
+]
+
+[[package]]
+name = "quansys"
+version = "3.0.0"
+source = { editable = "." }
+dependencies = [
+    { name = "h5py" },
+    { name = "nbmake" },
+    { name = "pandas" },
+    { name = "pint" },
+    { name = "pyaedt", extra = ["all"] },
+    { name = "pydantic-yaml" },
+    { name = "pykit" },
+    { name = "pytest" },
+    { name = "qutip" },
+    { name = "typer" },
+]
+
+[package.optional-dependencies]
+lint = [
+    { name = "ruff" },
+]
+mkdocs = [
+    { name = "mkdocs" },
+    { name = "mkdocs-material" },
+    { name = "mkdocs-material-extensions" },
+    { name = "mkdocstrings" },
+    { name = "mkdocstrings-python" },
+    { name = "pymdown-extensions" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "h5py", specifier = ">=3.12.1" },
+    { name = "mkdocs", marker = "extra == 'mkdocs'" },
+    { name = "mkdocs-material", marker = "extra == 'mkdocs'" },
+    { name = "mkdocs-material-extensions", marker = "extra == 'mkdocs'" },
+    { name = "mkdocstrings", marker = "extra == 'mkdocs'" },
+    { name = "mkdocstrings-python", marker = "extra == 'mkdocs'" },
+    { name = "nbmake" },
+    { name = "pandas", specifier = ">=2.2.3" },
+    { name = "pint" },
+    { name = "pyaedt", extras = ["all"] },
+    { name = "pydantic-yaml" },
+    { name = "pykit", git = "https://github.com/HutoriHunzu/pykit.git" },
+    { name = "pymdown-extensions", marker = "extra == 'mkdocs'" },
+    { name = "pytest", specifier = ">=8.3.4" },
+    { name = "qutip" },
+    { name = "ruff", marker = "extra == 'lint'" },
+    { name = "ruff", marker = "extra == 'mkdocs'" },
+    { name = "typer" },
 ]
 
 [[package]]
