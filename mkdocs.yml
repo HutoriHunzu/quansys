@@ -1,6 +1,6 @@
-site_name: pyhfss
+site_name: quansys
 site_description: Simulation framework documentation
-site_url: https://rosenblumlab.github.io/pyhfss/
+site_url: https://hutorihunzu.github.io/quansys/
 
 
 # Ensure build breaks on broken links
@@ -57,7 +57,7 @@ extra_css:
 
 nav:
   - Get Started:
-      - Welcome to pyhfss: index.md
+      - Welcome to quansys: index.md
       - Installation: install.md
   - Guides:
       - Simulations: guides/simulations.md
