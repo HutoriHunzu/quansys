@@ -54,7 +54,7 @@ class EigenmodeResults(BaseSimulationOutput):
     type: Literal[SimulationOutputTypesNames.EIGENMODE_RESULT] = SimulationOutputTypesNames.EIGENMODE_RESULT
     results: dict[int, SingleModeResult] = Field(..., description="Mapping of mode index to its result.")
     frequencies_unit: str = Field('GHz', description="Unit used to report frequencies.")
-    profile: dict = Field({}, description="Holds additional metadata or profile information.")
+    profile: dict = Field(default_factory=dict, description="Holds additional metadata or profile information.")
 
     def __getitem__(self, item) -> SingleModeResult:
         """

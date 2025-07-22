@@ -1,0 +1,48 @@
+aggregation_dict:
+    classical_agg:
+    - build
+    - classical
+    quantum_agg:
+    - build
+    - quantum_res
+builder:
+    design_name: my_design
+    type: design_variable_builder
+builder_sweep:
+- constants: {}
+  parameters:
+      junction_inductance:
+      - 10nh
+      - 11nh
+  strategy: product
+keep_hfss_solutions: false
+prepare_folder:
+    copy_enabled: true
+    dest_name: build.aedt
+pyaedt_file_parameters:
+    close_on_exit: true
+    design_name: temp
+    file_path: complex_design.aedt
+    new_desktop: true
+    non_graphical: true
+    version: '2024.2'
+root_folder: results
+simulations:
+    classical:
+        cores: 4
+        design_name: my_design
+        frequency_unit: GHz
+        gpus: 0
+        setup_name: Setup1
+        setup_parameters: {}
+        type: eigenmode
+    quantum_res:
+        design_name: my_design
+        junctions_infos:
+        - inductance_variable_name: junction_inductance
+          line_name: transmon_junction_line
+        modes_to_labels:
+            '1': transmon
+            '2': readout
+        setup_name: Setup1
+        type: quantum_epr

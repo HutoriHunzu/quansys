@@ -1,31 +1,36 @@
 # 📦 Installation Guide
 
-## Requirements
+## 1 Prerequisites
 
-Ensure you have Python 3.11 or higher installed. 
+!!! info "Required software"
+    * **ANSYS Electronics Desktop 2024 R2** – to open `.aedt` projects  
+    * **Python≥3.11** with `pip` (or **uv**) available  
+    * Windows 10/11 or a Linux workstation that can run HFSS in non‑graphical mode
 
-!!! note "Included in the package"
-    The two non-trivial packages that are installed automatically when you install `quansys`:
+---
 
-    - [pyaedt](https://github.com/ansys/pyaedt) - used **for interacting** with HFSS
-    - [pykit](https://github.com/HutoriHunzu/pykit.git) - used **for** automation and safe data manipulation (see [Automation](guides/automation.md))
-    
+## 2 Install quansys
 
-## Clone and Install
+Clone the repository and install it in *editable* mode (handy when you want to modify the source):
 
-Clone the repository from [https://github.com/hutorihunzu/quansys.git](https://github.com/hutorihunzu/quansys.git)
-to your local machine and install the pacakge using pip:
 ```bash
 git clone https://github.com/hutorihunzu/quansys.git
-pip install -e <PATH_TO_QUANSYS>
+pip install -e ./quansys          # standard pip
 ```
 
-!!! note "Using uv"
-    If you have [`uv`](https://github.com/astral-sh/uv) installed, you can use:
+!!! note "Prefer uv?"
+    If you use [uv](https://github.com/astral-sh/uv) for faster installs:
     ```bash
-    uv pip install -e <PATH_TO_QUANSYS>
+    uv pip install -e ./quansys
     ```
 
+## 3 Packages pulled in automatically
 
+- [PyAEDT](https://github.com/ansys/pyaedt) – Python bridge to HFSS 
+- [pykit](https://github.com/HutoriHunzu/pykit) – utilities for sweeping and safe data handling
+(See the [Automation](guides/automation.md) for how pykit is used.)
 
+No manual installation is needed for these; `pip install quansys` brings them along.
 
+---
+Next stop: ⚡ [Quick‑Start Example Files](getting_started.md) to grab your first design.

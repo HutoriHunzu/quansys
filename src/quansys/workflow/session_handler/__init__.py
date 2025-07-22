@@ -1,3 +1,3 @@
-from .config import PyaedtFileParameters
+from .config import PyaedtFileParameters, LicenseUnavailableError
 
-__all__ = ["PyaedtFileParameters"]
+__all__ = ["PyaedtFileParameters", "LicenseUnavailableError"]

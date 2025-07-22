@@ -1,148 +1,163 @@
 # ⚙️ Automation Workflows
 
-A **workflow** is a function that enables automated simulation runs.  
-For each parameter set it passes through four phases:
+A **workflow** is a repeatable four‑phase loop that quansys drives for each unique sweep point:
 
-| Phase     | What happens                                            | Config keys¹               |
-|-----------|---------------------------------------------------------|----------------------------|
-| Prepare   | Create a folder; optionally copy an existing **.AEDT**. | `prepare_folder`           |
-| Build     | Modify the **.AEDT** for the current parameters.        | `builder`, `builder_sweep` |
-| Simulate  | Run analyses for each sweep point.²                     | `simulations`              |
-| Aggregate | Merge JSON outputs into CSV tables.                     | `aggregation_dict`         |
+| Phase         | What happens                                                       | Key `WorkflowConfig` fields |
+|---------------|--------------------------------------------------------------------|-----------------------------|
+| **Prepare**   | Make an iteration folder, optionally copy a fresh template`.aedt`  | `prepare_folder`            |
+| **Build**     | Edit the project for the current parameters                        | `builder`, `builder_sweep`  |
+| **Simulate**  | Run one or more `Simulation` objects                               | `simulations`               |
+| **Aggregate** | Flatten JSON results and write CSVs                                | `aggregation_dict`          |
 
-¹ Full field docs: [WorkflowConfig](../api/workflow_config.md)  
-² Identifiers **"build"** and **"prepare"** are reserved – see details in *Simulate*.
+!!! tip "Stateful & resumable"
 
-Reruns are incremental: finished steps are skipped automatically.
+    quansys **hashes every sweep dict** (e.g. `{"chip_base_width": "3 mm"}`) and keeps a ledger of completed phases.  
+    - If the hash is **new**, it allocates the next zero‑padded UID folder (`000`,`001`, …).  
+    - If the hash **matches** a previous run, the engine skips the entire sweep—or resumes at the first unfinished phase.
+
+!!! tip "Reserved identifier: `build`"
+
+    - quansys automatically writes **`build_parameters.json`** inside every UID folder.  
+    - The identifier for those parameters is hard‑coded as **`build`**.  
+    - Therefore: never name a simulation `"build"` or `"prepare"`, but **do** use `"build"` when you want the parameter columns in `aggregation_dict`.
+
 
 ---
 
-## Quick-start
+## Quick‑start (Python)
 
-A minimal Python example using [`WorkflowConfig`](../api/workflow_config.md) and [`execute_workflow`](../api/execute_workflow.md).
+Below is a minimal workflow in **pure Python**.  
+For demo purposes we sweep `junction inductance` over `"10nh"` and `"11nh"`.
 
-!!! example "Python example"
-    ```python
-    from pathlib import Path
-    from quansys import (
-        WorkflowConfig, PyaedtFileParameters,
-        EigenmodeAnalysis, DesignVariableBuilder, execute_workflow
-    )
-    from pykit.sweeper import DictSweep
+```python  
+from pathlib import Path
+from quansys import (
+    WorkflowConfig, PyaedtFileParameters, DesignVariableBuilder,
+    EigenmodeAnalysis, QuantumEPR, execute_workflow
+)
+from quansys.simulation import ConfigJunction
+from pykit.sweeper import DictSweep
 
-    config = WorkflowConfig(
-        pyaedt_file_parameters=PyaedtFileParameters(
-            file_path=Path("resources/simple_design.aedt")                  # Read AEDT
-        ),
-        builder=DesignVariableBuilder(design_name="my_design"),             # Modify model
+cfg = WorkflowConfig(
+    pyaedt_file_parameters=PyaedtFileParameters(file_path=Path("complex_design.aedt")),
 
-        builder_sweep=[DictSweep(                                           # Parameter combos
-                        parameters={"chip_base_width": ["3 mm", "4 mm"]}
-                        )],                                                 
-        simulations={                                                       # What to run
-            "classical": EigenmodeAnalysis(setup_name="Setup1",
-                                           design_name="my_design")
-        },
-        aggregation_dict={"classical_agg": ["build", "classical"]}          # How to merge
-    )
+    builder=DesignVariableBuilder(design_name="my_design"),
+    builder_sweep=[DictSweep(parameters={
+        "junction_inductance": ["10nh", "11nh"],
+    })],
 
-    execute_workflow(config)
+    simulations={
+        "classical": EigenmodeAnalysis(design_name="my_design", setup_name="Setup1"),
+        "quantum_res": QuantumEPR(
+            design_name="my_design",
+            setup_name="Setup1",
+            modes_to_labels={1: "transmon", 2: "readout"},
+            junctions_infos=[ConfigJunction(line_name="transmon_junction_line",
+                               inductance_variable_name="junction_inductance")]
+        )
+    },
+
+    aggregation_dict={
+        "classical_agg": ["build", "classical"],
+        "quantum_agg":   ["build", "quantum_res"]
+    }
+)
+
+
+execute_workflow(cfg)  
+
+```
+
+---
+
+### Folder layout
+
+```text  
+results/  
+├─ iterations/  
+│├─ 000/   # inductance 10nh  
+││├─ build.aedt  
+││├─ build_parameters.json  
+││├─ classical.json  
+││└─ quantum_res.json  
+│└─ 001/   # inductance 11nh  
+│├─ …  
+└─ aggregations/  
+├─ classical_agg.csv  
+└─ quantum_agg.csv  
+
+```
+
+Re‑running the script creates **002**, **003**, … only for *new* parameter hashes.
+
+---
+
+## Phase details
+
+### 1 Prepare
+
+*Default*: copy AEDT file into each UID folder.  
+
+### 2 Build
+
+| Builder                  | Goal                              | Docs                                                          |
+|--------------------------|-----------------------------------|---------------------------------------------------------------|
+| `DesignVariableBuilder`  | Set HFSS design variables         | [`DesignVariableBuilder`](../api/design_variable_builder.md)  |
+| `FunctionBuilder`        | Execute an inline Python callable | [`FunctionBuilder`](../api/function_builder.md)               |
+| `ModuleBuilder`          | Import & call `<module>.build()`  | [`ModuleBuilder`](../api/module_builder.md)                   |
+
+Each sweep’s parameters are recorded in `build_parameters.json`.
+
+### 3 Simulate
+
+`simulations` is a **dict** that maps *identifier → Simulation instance*.  
+Identifiers must be unique and **must not** be `"build"` or `"prepare"`.
+
+
+!!! warning "QuantumEPR label cap"
+    A single `QuantumEPR` can label **at most three modes**.  
+    Need more? Create additional entries, each with up to three labels:
+
+    ```python  
+    simulations.update({  
+        "epr_set1": QuantumEPR(..., modes_to_labels={1: "q0", 2: "r0", 3: "bus"}),  
+        "epr_set2": QuantumEPR(..., modes_to_labels={4: "q1", 5: "q2"})  
+    })
     ```
 
-**What you’ll see**
+### 4 Aggregate
 
-```text
-results/iterations/<uid>/
-├─ build_parameters.json        # {"chip_base_width": "3 mm" | "4 mm"}
-└─ classical.json               # simulation output
-
-results/aggregations/classical_agg.csv   # parameters merged with results
-```
-
-!!! note
-    `"build"` and `"prepare"` are reserved identifiers and therefore **cannot**
-    be used as keys in `simulations`. `"build"` holds sweep parameters;
-    `"prepare"` stores the path to the copied AEDT.
+Each CSV listed in `aggregation_dict` becomes a merged table—`build` columns first, followed by flattened result columns.
 
 ---
 
+## YAML workflows (no‑code option)
 
----
+A declarative **`workflow.yaml`** gives you the same power without rebuilding the config in Python—perfect for CLI runs or CI pipelines.
 
-## Phases
+### 1 Save your current workflow to YAML
 
-### Prepare – Folders & Templates
-
-`PrepareFolderConfig` decides whether the template **.AEDT** file is copied and what name it will have.
-The user doesn't need specify anything, this is a default behavior.
-
-```text
-results/iterations/<uid>/
-└─ build.aedt
-```
-
-!!! note "Copy rules"
-    `copy_enabled = True` (default) – duplicate the template for each sweep.
-
----
-
-### Build – Modify the Model
-
-A **builder** receives an open HFSS session plus the current parameter dict.
-
-| Builder type                                                 | Purpose                               |
-| ------------------------------------------------------------ | ------------------------------------- |
-| [`DesignVariableBuilder`](../api/design_variable_builder.md) | Set design variables                  |
-| [`FunctionBuilder`](../api/function_builder.md)              | Run a user-supplied Python function   |
-| [`ModuleBuilder`](../api/module_builder.md)                  | Import and execute `<module>.build()` |
-
-!!! tip "Traceability"
-    Each sweep’s parameters are saved to `build_parameters.json`.
-
----
-
-### Simulate – Run Analyses
-
-`simulations` is a `dict[str, Simulation]` (see the
-[Simulations guide](simulations.md) for APIs). Keys are **identifiers** used later
-for aggregation.
-
-!!! danger "Reserved identifiers"
-    Do **not** name a simulation `"build"` or `"prepare"` – those identifiers
-    are reserved for internal bookkeeping.
-
-!!! example "Simulations dict"
-    ```python
-        simulations = {
-            "classical": EigenmodeAnalysis(setup_name="Setup1",
-                                           design_name="my_design"),
-            "epr": QuantumEPR(setup_name="Setup1",
-                              design_name="my_design",
-                              modes_to_labels={0: "q0"})
-        }
+!!! example "Save workflow"
+    ```python  
+    # cfg is the Python WorkflowConfig we created above  
+    cfg.save_to_yaml("complex_config.yaml")   # writes a self‑contained YAML file
     ```
 
-Outputs are JSON files:
+### 2 Load the YAML later and execute
 
-```text
-results/iterations/<uid>/<identifier>.json
-```
+!!! example "Load & run"
+    ```python  
+    from quansys import WorkflowConfig, execute_workflow  
 
----
+    cfg = WorkflowConfig.load_from_yaml("complex_config.yaml")  
+    cfg.pyaedt_file_parameters.non_graphical = False   # tweak if desired  
+    execute_workflow(cfg)
+    ```
 
-### Aggregate – Collect Results
 
-```python
-aggregation_dict = {
-    "classical_agg": ["classical"],
-    "combined":      ["classical", "epr"]
-}
-```
+You can now **hand‑edit `complex_config.yaml`**—add new sweep ranges, change builders, or swap simulations—then re‑run the three‑line loader above.
 
-For each entry the engine:
-
-1. Loads matching result files.
-2. Calls `.flatten()` **to turn** nested keys into columns (see Simulations guide).
-3. Writes a CSV in `results/aggregations/`.
 
 ---
+
+For advanced options—custom output paths, parallel workers, logging hooks—see the [`execute_workflow` API](../api/execute_workflow.md).

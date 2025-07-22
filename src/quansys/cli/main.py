@@ -5,6 +5,7 @@ import shutil
 from .prepare import prepare_job
 from .submit import submit_job
 from .run import run_job
+from typing import Literal
 
 
 # Suppress FutureWarning from pyaedt
@@ -68,16 +69,36 @@ def run(config_path: Path = typer.Argument(..., help="Path to the config.yaml fi
 
 
 @app.command()
-def example():
+def example(
+    example_type: Literal["simple", "complex"] = typer.Option(
+        "simple",
+        "--type",
+        "-t",
+        help="Type of example files to copy ('simple' or 'complex')",
+        show_default=True
+    ),
+    with_config: bool = typer.Option(True, "--with-config/--no-config", help="Include config file in output"),
+    example_list: bool = typer.Option(False, "--list", help="Show available example types and exit")
+):
+    """
+    Copy example AEDT and optionally config files to the current directory.
+    """
+
+    if example_list:
+        typer.echo("Available example types:")
+        typer.echo("  - simple   : minimal AEDT and config for basic sweep")
+        typer.echo("  - complex  : larger AEDT and config with multiple analyses")
+        raise typer.Exit()
+
     from .example import copy_example_files
-    """
-    Copy an example AEDT file that can be used to test the workflow.
-    """
-    copied_files = copy_example_files()
 
-    for f in copied_files:
-        print(f"Copied {f}")
-
+    try:
+        copied_files = copy_example_files(example_type, with_config)
+        for f in copied_files:
+            typer.echo(f"Copied: {f}")
+    except Exception as e:
+        typer.echo(f"Failed to copy examples: {e}")
+        raise typer.Exit(1)
 
 if __name__ == "__main__":
     app()

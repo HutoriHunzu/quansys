@@ -1,6 +1,6 @@
 import pytest
 from itertools import combinations
-from quansys.simulation import QuantumEPR
+from quansys.simulation import QuantumEPR, ConfigJunction
 
 # Constant mapping from mode number to label
 MODE_TO_LABEL = {
@@ -29,8 +29,8 @@ def full_epr_result(transmon_readout_purcell_design, transmon_readout_purcell_ei
         design_name='my_design',
         setup_name='Setup1',
         modes_to_labels=resolve_modes([1, 2, 3]),
-        junctions_infos=[
-            {'name': 'transmon_junction_line', 'inductance_variable_name': 'junction_inductance'}
+        junctions_infos=[ConfigJunction(line_name='transmon_junction_line',
+                                        inductance_variable_name='junction_inductance')
         ]
     )
     return sim.analyze(transmon_readout_purcell_design)
@@ -48,9 +48,8 @@ def test_epr_submatrix_consistency(transmon_readout_purcell_design, full_epr_res
         design_name='my_design',
         setup_name='Setup1',
         modes_to_labels=resolve_modes(mode_subset),
-        junctions_infos=[
-            {'name': 'transmon_junction_line', 'inductance_variable_name': 'junction_inductance'}
-        ]
+        junctions_infos=[ConfigJunction(line_name='transmon_junction_line',
+                                        inductance_variable_name='junction_inductance')]
     )
     result = sim.analyze(transmon_readout_purcell_design)
 

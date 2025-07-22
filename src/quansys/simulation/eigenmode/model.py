@@ -75,4 +75,5 @@ class EigenmodeAnalysis(BaseAnalysis):
     @staticmethod
     def get_profile(setup: Setup) -> dict:
         """Generate a simulation report. Currently, a placeholder."""
-        return setup.get_profile()
+        return {}
+        # return setup.get_profile()

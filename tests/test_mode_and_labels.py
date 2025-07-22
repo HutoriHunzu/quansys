@@ -1,5 +1,5 @@
 import pytest
-from quansys.simulation.quantum_epr import ManualInference, OrderInference, ModesAndLabels
+from quansys.simulation.quantum_epr import ManualInference, OrderInference, ModesToLabels
 
 @pytest.fixture
 def mock_eigenmode_data():
@@ -65,7 +65,7 @@ def test_order_inference_min_frequency(mock_eigenmode_data):
 
 
 def test_modes_and_labels_parse_combined(mock_eigenmode_data):
-    modes_and_labels = ModesAndLabels(inferences=[
+    modes_and_labels = ModesToLabels(inferences=[
         ManualInference(mode_number=2, label='Bus'),
         OrderInference(
             num=2,

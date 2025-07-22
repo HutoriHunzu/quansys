@@ -2,6 +2,12 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.build]
+include = [
+    "quansys/examples/*.aedt",
+    "quansys/examples/*.yml",
+]
+
 [project]
 name = "quansys"
 version = "3.0.0"
@@ -55,3 +61,5 @@ filterwarnings = [
     "ignore::DeprecationWarning:defusedxml.*",
     "ignore::DeprecationWarning:ansys.aedt.*",
 ]
+
+

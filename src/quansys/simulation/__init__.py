@@ -3,7 +3,7 @@ from typing_extensions import Annotated
 
 from .driven_model import DriveModelAnalysis
 from .eigenmode import EigenmodeAnalysis, EigenmodeResults
-from .quantum_epr import QuantumEPR, QuantumResults
+from .quantum_epr import QuantumEPR, QuantumResults, ConfigJunction
 from .base import SimulationTypesNames, BaseSimulationOutput, BaseAnalysis
 
 SUPPORTED_ANALYSIS = Annotated[
@@ -19,6 +19,7 @@ SUPPORTED_RESULTS = Annotated[
 SIMULATION_RESULTS_ADAPTER = TypeAdapter(SUPPORTED_RESULTS)
 
 __all__ = [
+    "ConfigJunction",
     "DriveModelAnalysis",
     "EigenmodeAnalysis",
     "EigenmodeResults",

@@ -1,19 +1,27 @@
 # 📡 Welcome to quansys
 
-`quansys` is a Python package for automating **HFSS simulations** using [PyAEDT](https://github.com/ansys/pyaedt).  
-It supports structured workflows, parameter sweeps, and JSON/CSV result aggregation.  
-Simulation interfaces for `EigenmodeAnalysis` and `QuantumEPR` are included.
+**quansys** is a Python toolbox for *fully‑automated* **HFSS** workflows built on top of [PyAEDT](https://github.com/ansys/pyaedt).
 
-
-## Documentation
-
-* [📦 Installation](install.md) – Install the package
-* [🧪 Simulation Guide](guides/simulations.md) — Use `QuantumEPR`, `EigenmodeAnalysis`, and more
-* [⚙️ Automation Guide](guides/automation.md) — Define and execute parameterized simulation workflows
+* **Structured workflows** – prepare → build → simulate → aggregate  
+* **Parameter sweeps** – run grid or custom sweeps with one command  
+* **JSON / CSV outputs** – results flatten automatically for downstream analysis  
+* Ready‑made simulation classes: `EigenmodeAnalysis`, `QuantumEPR`
 
 ---
 
-!!! tip "Example workflows available"
-    Check the [`examples/`](https://github.com/hutorihunzu/quansys/tree/main/examples) folder in the repo for working templates.
+## Where to begin🚀
+
+| Step | Doc |
+|------|-----|
+| 1. Install the package | [📦 Installation](install.md) |
+| 2. Copy example `.aedt` & `.yaml` files | [⚡ Quick‑Start Example Files](getting_started.md) |
+| 3. Learn a single simulation run | [🧪 Simulation Guide](guides/simulations.md) |
+| 4. Scale up with parameter sweeps | [⚙️ Automation Guide](guides/automation.md) |
+| 5. Command‑line helpers | [🖥️ Terminal & CLI](guides/terminal.md) |
 
 ---
+
+!!! tip "Jump right in"
+    Already have HFSS and Python set up?  
+    Head straight to the [Quick‑Start guide](getting_started.md) to clone a working project in seconds.
+

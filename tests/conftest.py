@@ -9,7 +9,7 @@ import pytest
 # ---------------------------------------------------------------------
 from quansys.workflow import PyaedtFileParameters
 from quansys.simulation import EigenmodeAnalysis
-from quansys.workflow.session_handler.session import LicenseUnavailableError
+from quansys.workflow.session_handler import LicenseUnavailableError
 
 # ---------------------------------------------------------------------
 # Paths / constants

@@ -9,19 +9,22 @@ from pathlib import Path
 SIMPLE_DESIGN_AEDT = Path(__file__).parent / "resources" / "simple_design.aedt"
 
 
-def test_workflow():
+def test_workflow(tmp_path_factory):
+    tmp_path = tmp_path_factory.mktemp("testing_workflow")
+
     config_full = WorkflowConfig(
 
-        pyaedt_file_parameters=PyaedtFileParameters(file_path=SIMPLE_DESIGN_AEDT),
+        pyaedt_file_parameters=PyaedtFileParameters(file_path=SIMPLE_DESIGN_AEDT, non_graphical=False),
         simulations={'classical': EigenmodeAnalysis(setup_name='Setup1', design_name='my_design')},
 
         # A list of sweeps. We'll do a ZipSweep for chip_base_length
-        builder_sweep=[DictSweep(parameters={'chip_base_width': ['3mm', '4mm']})],
+        builder_sweep=[DictSweep(parameters={'chip_base_width': ['3mm', '3.5mm']})],
 
         # The builder to apply to each sweep iteration
         builder=DesignVariableBuilder(design_name='my_design'),
 
-        aggregation_dict={'classical_agg': ['classical']}
+        aggregation_dict={'classical_agg': ['classical']},
+        root_folder=tmp_path
     )
 
     execute_workflow(config_full)
@@ -51,5 +54,5 @@ def test_workflow_config():
         aggregation_dict={'classical_agg': ['classical']}
     )
 
-    config_full.save_to_yaml('config.yml')
+    config_full.save_to_yaml('config.yaml')
 

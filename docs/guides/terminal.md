@@ -1,94 +1,75 @@
-# 🖥️ Command-Line Usage Guide
+# 🖥️ Command‑Line Usage Guide
 
-The `quansys` command-line interface (CLI) allows you to manage simulation workflows using configuration files — no Python scripting needed.
+The **`quansys` CLI** lets you run or submit a workflow defined in **one YAML file**—no Python coding required.
 
-There are two primary commands:
+Primary commands:
 
-- `quansys run`: Run a simulation locally
-- `quansys submit`: Submit a simulation job to a compute cluster
+| Command          | Purpose                                                |
+|------------------|--------------------------------------------------------|
+| `quansys run`    | Execute the workflow locally                           |
+| `quansys submit` | Package and submit the workflow to a cluster scheduler |
 
-Both commands rely on a `config.yaml` file to define the workflow logic and parameters.
+Both commands read a `config.yaml` produced by:
 
-!!! tip "Getting command options"
+- the Quick‑Start bundles (`simple_config.yaml`, `complex_config.yaml`), or  
+- `cfg.save_to_yaml("config.yaml")` in Python.
 
-    To explore available options for either command, use:
-    
-    ```bash
-    quansys run --help
+!!! tip "Discover flags"
+
+    ```bash  
+    quansys run --help  
     quansys submit --help
     ```
 
 ---
 
-## Local Execution with `run`
+## Local execution — `run`
 
-The `run` command is a configuration-based tool for executing workflows locally:
-
-```bash
-quansys run config.yaml
+```bash  
+quansys run config.yaml  
 ```
 
-It is typically used to:
+Typical uses:
 
-* Test the automation workflow before submitting to a cluster
-* Run quick simulations for development or debugging
+- Validate your builder and sweep locally.  
+- Debug a new set of solver parameters.
 
 !!! tip
-    Keep different `config.yaml` files for different simulation setups.
-    This avoids duplicating Python code and makes testing easier.
 
-    ```bash
-    quansys run configs/design_3mm.yaml
-    quansys run configs/design_4mm.yaml
+    Keep separate config files for separate designs or sweeps:
+
+    ```bash  
+    quansys run configs/scan_over_inductance.yaml  
+    quansys run configs/scan_over_transmon_cavity_gap.yaml
     ```
 
 ---
 
-## Cluster Submission with `submit`
+## Cluster submission — `submit`
 
-The `submit` command packages and submits a simulation job to a compute cluster (e.g., LSF with `bsub`):
+```bash  
+quansys submit config.yaml my_env --name batch_run --files my_design.aedt --mem 160000 --timeout 06:00
+```  
 
-```bash
-quansys submit config.yaml my_env --name job_name
-```
+Resulting folder layout:
 
-This creates a new folder and places all required files inside it to run the job remotely.
-
-### Expected Folder Layout
-
-```text
-job_name/
-├── config.yaml
-├── [copied input files]
-├── simulate.sh
-└── job_submission.sh
-```
-
-| File                   | Description                                                        |
-| ---------------------- |--------------------------------------------------------------------|
-| `config.yaml`          | The configuration file defining the simulation workflow            |
-| `[copied input files]` | Any additional files provided via the `--files` option             |
-| `simulate.sh`          | Activates `my_env` (Conda) and runs `quansys run config.yaml`       |
-| `job_submission.sh`    | A submission script to run `simulate.sh` via `bsub` on the cluster |
-
-!!! example "Usage example"
-    ```bash
-    quansys submit config.yaml my_env --name batch_run --files my_design.aedt --mem 160000 --timeout 06:00
-    ```
+``` text  
+job_name/  
+├─ config.yaml  
+├─ [copied input files]  
+├─ simulate.sh         # activates my_env + runs quansys run config.yaml  
+└─ job_submission.sh   # the scheduler script (e.g. bsub)
+```  
 
 !!! note
-    `my_env` must be the name of a Conda environment available on the cluster.
-    The environment is activated inside `simulate.sh`.
 
-!!! note
-    The number of CPUs requested from the cluster depends on the `cores` setting
-    in your `EigenmodeAnalysis` simulation configuration.
+    - `my_env` must be a Conda environment available on the cluster.  
+    - CPU count is controlled by the `cores` field inside each `Simulation` config.
 
 ---
 
-## Related Guides
+## Related guides
 
-* [Automation Workflows](automation.md) – Understand the simulation pipeline
-* [Simulations](simulations.md) – Available simulation types and structure
-* [WorkflowConfig](../api/workflow_config.md) – Full YAML schema reference
-
+* [Automation Workflows](automation.md) — internal workflow engine  
+* [Simulation Guide](simulations.md) — available simulation classes  
+* [`WorkflowConfig` API](../api/workflow_config.md) — full YAML schema

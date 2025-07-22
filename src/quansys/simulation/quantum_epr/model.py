@@ -4,7 +4,7 @@ from pydantic import Field
 
 from .distributed_analysis import DistributedAnalysis
 from .epr_calculator import EprCalculator
-from .modes_and_labels import ModesAndLabels
+from .modes_to_labels import ModesToLabels
 from ..base import (BaseAnalysis, SimulationTypesNames, validate_and_set_design)
 from ..eigenmode.results import get_eigenmode_results
 
@@ -39,7 +39,7 @@ class QuantumEPR(BaseAnalysis):
     type: Literal[SimulationTypesNames.QUANTUM_EPR] = SimulationTypesNames.QUANTUM_EPR
     design_name: str = Field(..., description="Design name in HFSS.")
     setup_name: str = Field(..., description="Setup name in HFSS.")
-    modes_to_labels: ModesAndLabels | dict[int, str] = Field(..., description="Mode index-to-label mapping or parser.")
+    modes_to_labels: ModesToLabels | dict[int, str] = Field(..., description="Mode index-to-label mapping or parser.")
     junctions_infos: list[ConfigJunction] = Field(..., description="List of junction configuration objects.")
 
     def analyze(self, hfss: Hfss) -> QuantumResults:
@@ -73,10 +73,10 @@ class QuantumEPR(BaseAnalysis):
         eigenmode_result = get_eigenmode_results(setup)
 
         # convert modes to labels to dict of int to str
-        # in case of ModesAndLabels object call for parse
+        # in case of ModesToLabels object call for parse
         modes_to_labels = self.modes_to_labels
 
-        if isinstance(modes_to_labels, ModesAndLabels):
+        if isinstance(modes_to_labels, ModesToLabels):
             modes_to_labels = modes_to_labels.parse(eigenmode_result.generate_simple_form())
 
         epr, distributed = self._analyze(hfss, modes_to_labels)

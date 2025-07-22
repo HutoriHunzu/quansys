@@ -1,51 +1,67 @@
-# 🚀 Best Practices for Cluster Jobs
+# 🚀 Best Practices for Local & Cluster Runs
 
-`quansys` is designed so that a workflow you test on your laptop will behave the same way on a large compute cluster.  
-Follow the sequence below to keep every run **predictable, repeatable, and cluster-ready**.
-
----
-
-## 1 · Pick the Right Builder
-
-Choose a builder that matches how you want to create or edit the HFSS model:
-
-| Builder | When to Use | Docs |
-|---------|-------------|------|
-| **DesignVariableBuilder** | You already have an `.aedt` and only need to tweak project-level variables. | [`DesignVariableBuilder`](../api/design_variable_builder.md) |
-| **ModuleBuilder** | You prefer a reusable Python module to generate or modify geometry. | [`ModuleBuilder`](../api/module_builder.md) |
-
-(See the full list in the API reference under **Builders**.)
+A workflow you test on your laptop should behave **identically** on a large compute cluster.  
+Follow the checklist below to keep every run predictable, resumable, and version‑controlled.
 
 ---
 
-## 2 · Define Everything in a Config File
+## 1 Choose the right builder
 
-Create a single YAML/TOML file containing design variables, solver options, and cluster resources.  
-If it might change between runs, put it in the config—not in Python code.
+| Builder                    | When to use                                                            | Docs                                                          |
+|----------------------------|------------------------------------------------------------------------|---------------------------------------------------------------|
+| **DesignVariableBuilder* * | You have an existing `.aedt` and only need to tweak design variables.  | [`DesignVariableBuilder`](../api/design_variable_builder.md)  |
+| **ModuleBuilder**          | You want a reusable Python module to generate/modify geometry.         | [`ModuleBuilder`](../api/module_builder.md)                   |
 
----
-
-## 3 · Test Locally
-
-```bash
-quansys run config.yaml
-```
-
-A local run confirms the builder and settings work before you consume cluster hours.
+*(See all builders in the API reference.)*
 
 ---
 
-## 4 · Submit to the Cluster
+## 2 Put everything in a `WorkflowConfig`
 
-```bash
-quansys submit config.yaml my_env --name job_name
-```
+* Create or load a `WorkflowConfig` in Python **or** YAML.  
+* Include solver options, sweep parameters, simulation list, and cluster resources.  
+* **Avoid hard‑coding** these values in ad‑hoc Python scripts.
 
-`submit` copies the project, packages the config, and hands off the job to the scheduler.
+Reserved identifiers: **`build`** and **`prepare`** — never use them as simulation names.
 
 ---
+
+## 3 Test locally first
+
+intro bash  
+quansys run config.yaml  
+
+A local run confirms the builder works and the sweep hashes create the expected UID folders (`000`, `001`, …).
+
+---
+
+## 4 Submit to the cluster
+
+intro bash  
+quansys submit config.yaml my_env --name job_name  
+
+`submit` packages the project, stages input files, and hands the job to the scheduler.
+
+---
+
+## 5 Version‑control the artefacts
 
 !!! tip
-    *Commit the config file—and the design artefacts—to Git.*
-    With code and configuration under version control, every cluster run can be traced, repeated, and trusted.
+    Commit the **config file** and the **template design** (`template.aedt`) to Git.  
+    With code *and* configuration under version control, every cluster run can be traced, repeated, and trusted.
 
+---
+
+### YAML round‑trip snippet
+
+Need to tweak the workflow in CI without touching Python code?
+
+```python  
+from quansys import WorkflowConfig, execute_workflow  
+
+cfg = WorkflowConfig.load_from_yaml("config.yaml")  
+cfg.pyaedt_file_parameters.non_graphical = False      # optional tweak  
+execute_workflow(cfg)
+```  
+
+Use `cfg.save_to_yaml("new_config.yaml")` to persist edits back to disk.

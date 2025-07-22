@@ -1,12 +1,12 @@
 from .model import QuantumEPR, QuantumResults
 from .structures import ConfigJunction
-from .modes_and_labels import ModesAndLabels, ManualInference, OrderInference
+from .modes_to_labels import ModesToLabels, ManualInference, OrderInference
 
 __all__ = [
     "QuantumEPR",
     "QuantumResults",
     "ConfigJunction",
-    "ModesAndLabels",
+    "ModesToLabels",
     "ManualInference",
     "OrderInference",
 ]

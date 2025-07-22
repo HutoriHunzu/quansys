@@ -60,6 +60,7 @@ nav:
   - Get Started:
       - Welcome to quansys: index.md
       - Installation: install.md
+      - Quick-Start Example Files: getting_started.md
   - Guides:
       - Simulations: guides/simulations.md
       - Automation: guides/automation.md
@@ -77,7 +78,7 @@ nav:
       - DesignVariableBuilder: api/design_variable_builder.md
       - FunctionBuilder: api/function_builder.md
       - ModuleBuilder: api/module_builder.md
-      - ModesAndLabels: api/modes_and_labels.md
+      - ModesAndLabels: api/modes_to_labels.md
       - ManualInference: api/manual_inference.md
       - OrderInference: api/order_inference.md
       - ConfigJunction: api/junctions.md
