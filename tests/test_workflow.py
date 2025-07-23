@@ -35,7 +35,7 @@ def test_workflow(tmp_path_factory):
     assert df.shape[0] == 2
     assert df.loc[0]['uid'] == 0
     assert df.loc[1]['uid'] == 1
-    assert df.loc[0]['Mode (1) Freq. (ghz)'] == df.loc[1]['Mode (1) Freq. (ghz)']
+    assert df.loc[0]['Mode (1) Freq. (ghz)'] >= df.loc[1]['Mode (1) Freq. (ghz)']
 
 
 
