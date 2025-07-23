@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-
 from pydantic import BaseModel, Field
-from ..base import BaseSimulationOutput
 from ansys.aedt.core.application.analysis import Setup
 from functools import partial
 from typing import Literal
 
 from ...shared import Value
+from .profile import flatten_profile
+from ..base import BaseSimulationOutput
 from ..base import (FlatDictType, validate_solution_type, validate_existing_solution, SimulationOutputTypesNames)
 
 
@@ -18,11 +18,6 @@ class SingleModeResult(BaseModel):
     quality_factor: float = Field(..., description="The Q factor of the mode.")
     frequency: Value = Field(..., description="Frequency value with unit.")
     label: str | None = Field(None, description="Optional label for the mode.")
-
-    # mode_number: int
-    # quality_factor: float
-    # frequency: Value
-    # label: str | None = None
 
     def format_mode_number(self):
         return self.label or f'Mode ({self.mode_number})'
@@ -107,8 +102,8 @@ class EigenmodeResults(BaseSimulationOutput):
 
         # adding profile summary if exists
         if self.profile:
-            p = list(self.profile.values())[0]
-            result.update({f'Profile {k}': v for k, v in self.profile.items()})
+            flat_profile = flatten_profile(self.profile)
+            result.update(flat_profile)
         return result
 
     def generate_a_labeled_version(self, mode_to_labels: dict[int, str]) -> EigenmodeResults:

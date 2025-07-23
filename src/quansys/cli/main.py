@@ -5,7 +5,6 @@ import shutil
 from .prepare import prepare_job
 from .submit import submit_job
 from .run import run_job
-from typing import Literal
 
 
 # Suppress FutureWarning from pyaedt
