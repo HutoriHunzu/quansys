@@ -104,6 +104,11 @@ class EigenmodeResults(BaseSimulationOutput):
         for mode_number in self.results.keys():
             current = self.results[mode_number].flatten()
             result.update(current)
+
+        # adding profile summary if exists
+        if self.profile:
+            p = list(self.profile.values())[0]
+            result.update({f'Profile {k}': v for k, v in self.profile.items()})
         return result
 
     def generate_a_labeled_version(self, mode_to_labels: dict[int, str]) -> EigenmodeResults:

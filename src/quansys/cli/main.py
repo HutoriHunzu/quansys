@@ -70,7 +70,7 @@ def run(config_path: Path = typer.Argument(..., help="Path to the config.yaml fi
 
 @app.command()
 def example(
-    example_type: Literal["simple", "complex"] = typer.Option(
+    example_type: str = typer.Option(
         "simple",
         "--type",
         "-t",

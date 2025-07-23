@@ -75,5 +75,9 @@ class EigenmodeAnalysis(BaseAnalysis):
     @staticmethod
     def get_profile(setup: Setup) -> dict:
         """Generate a simulation report. Currently, a placeholder."""
-        return {}
-        # return setup.get_profile()
+        # 1) get the profile (key → BinaryTreeNode)
+        profile = setup.get_profile()  # {'Setup1 : Sweep1' : BinaryTreeNode, ...}
+
+        # 2) turn every node into a plain nested dict
+        serializable = {k: v.jsonalize_tree() for k, v in profile.items()}
+        return serializable
