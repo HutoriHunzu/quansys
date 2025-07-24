@@ -1,7 +1,7 @@
-from quansys import WorkflowConfig
+# Import moved to function level to avoid startup penalty
 
 
-def generate_job_submission_script(results_dir, config: WorkflowConfig, mem_mb, timeout,
+def generate_job_submission_script(results_dir, config, mem_mb, timeout,
                                    default_cores=8):
     """
     Generate the job_submission.sh script.

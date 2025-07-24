@@ -57,7 +57,7 @@ quansys submit config.yaml my_env --name job_name
 Need to tweak the workflow in CI without touching Python code?
 
 ```python  
-from quansys import WorkflowConfig, execute_workflow  
+from quansys.workflow import WorkflowConfig, execute_workflow  
 
 cfg = WorkflowConfig.load_from_yaml("config.yaml")  
 cfg.pyaedt_file_parameters.non_graphical = False      # optional tweak  

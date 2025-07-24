@@ -49,10 +49,11 @@ def execute_workflow(config: WorkflowConfig) -> None:
     Example:
         ```python
         from pathlib import Path
-        from quansys import (
+        from quansys.workflow import (
             WorkflowConfig, PyaedtFileParameters,
-            EigenmodeAnalysis, DesignVariableBuilder, execute_workflow
+            DesignVariableBuilder, execute_workflow
         )
+        from quansys.simulation import EigenmodeAnalysis
         from pykit.sweeper import DictSweep
 
         cfg = WorkflowConfig(

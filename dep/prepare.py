@@ -1,10 +1,13 @@
 
 
 def prepare_job(config_path, project_dir, files, mem, timeout, venv):
-
-    from quansys.workflow import WorkflowConfig
+    # Use cached imports for better performance
+    from .cache import cached_import
     from .utils import copy_files
     from .templates import generate_job_submission_script, generate_simulation_script
+    
+    WorkflowConfig = cached_import('quansys.workflow', attr_name='WorkflowConfig')
+    
     """
     Prepare the workflow: create directories, copy files, generate scripts.
     """

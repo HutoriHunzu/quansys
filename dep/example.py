@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from importlib.resources import files, as_file
-from quansys import examples
+import quansys.examples as examples
 import shutil
 
 

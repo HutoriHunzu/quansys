@@ -31,10 +31,10 @@ For demo purposes we sweep `junction inductance` over `"10nh"` and `"11nh"`.
 
 ```python  
 from pathlib import Path
-from quansys import (
-    WorkflowConfig, PyaedtFileParameters, DesignVariableBuilder,
-    EigenmodeAnalysis, QuantumEPR, execute_workflow
+from quansys.workflow import (
+    WorkflowConfig, PyaedtFileParameters, DesignVariableBuilder, execute_workflow
 )
+from quansys.simulation import EigenmodeAnalysis, QuantumEPR
 from quansys.simulation import ConfigJunction
 from pykit.sweeper import DictSweep
 
@@ -100,11 +100,11 @@ Re‑running the script creates **002**, **003**, … only for *new* parameter h
 
 ### 2 Build
 
-| Builder                  | Goal                              | Docs                                                          |
-|--------------------------|-----------------------------------|---------------------------------------------------------------|
-| `DesignVariableBuilder`  | Set HFSS design variables         | [`DesignVariableBuilder`](../api/design_variable_builder.md)  |
-| `FunctionBuilder`        | Execute an inline Python callable | [`FunctionBuilder`](../api/function_builder.md)               |
-| `ModuleBuilder`          | Import & call `<module>.build()`  | [`ModuleBuilder`](../api/module_builder.md)                   |
+| Builder                  | Goal                              | Docs                                                         |
+|--------------------------|-----------------------------------|--------------------------------------------------------------|
+| `DesignVariableBuilder`  | Set HFSS design variables         | [`DesignVariableBuilder`](../api/design_variable_builder.md) |
+| `FunctionBuilder`        | Execute an inline Python callable | [`FunctionBuilder`](../api/function_builder.md)              |
+| `ModuleBuilder`          | Import & call `<module>.build()`  | [`ModuleBuilder`](../api/module_builder.md)                  |
 
 Each sweep’s parameters are recorded in `build_parameters.json`.
 
@@ -147,7 +147,7 @@ A declarative **`workflow.yaml`** gives you the same power without rebuilding th
 
 !!! example "Load & run"
     ```python  
-    from quansys import WorkflowConfig, execute_workflow  
+    from quansys.workflow import WorkflowConfig, execute_workflow  
 
     cfg = WorkflowConfig.load_from_yaml("complex_config.yaml")  
     cfg.pyaedt_file_parameters.non_graphical = False   # tweak if desired  
