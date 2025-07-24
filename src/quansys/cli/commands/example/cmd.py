@@ -20,8 +20,8 @@ def example(
     # Handle --list immediately without any heavy imports
     if example_list:
         typer.echo("Available example types:")
-        typer.echo("  - simple   : minimal AEDT and config for basic sweep")
-        typer.echo("  - complex  : larger AEDT and config with multiple analyses")
+        typer.echo("  - simple   : resonator on silicon chip (eigenmode analysis)")
+        typer.echo("  - complex  : transmon + resonator coupled system (quantum EPR)")
         raise typer.Exit()
 
     # Lazy import the heavy implementation only when actually copying files

@@ -27,39 +27,30 @@ A **workflow** is a repeatable four‑phase loop that quansys drives for each un
 ## Quick‑start (Python)
 
 Below is a minimal workflow in **pure Python**.  
-For demo purposes we sweep `junction inductance` over `"10nh"` and `"11nh"`.
+For demo purposes we sweep `resonator_length` over `"5mm"` and `"6mm"`.
 
 ```python  
 from pathlib import Path
 from quansys.workflow import (
     WorkflowConfig, PyaedtFileParameters, DesignVariableBuilder, execute_workflow
 )
-from quansys.simulation import EigenmodeAnalysis, QuantumEPR
-from quansys.simulation import ConfigJunction
+from quansys.simulation import EigenmodeAnalysis
 from pykit.sweeper import DictSweep
 
 cfg = WorkflowConfig(
-    pyaedt_file_parameters=PyaedtFileParameters(file_path=Path("complex_design.aedt")),
+    pyaedt_file_parameters=PyaedtFileParameters(file_path=Path("resonator_design.aedt")),
 
-    builder=DesignVariableBuilder(design_name="my_design"),
+    builder=DesignVariableBuilder(design_name="resonator_design"),
     builder_sweep=[DictSweep(parameters={
-        "junction_inductance": ["10nh", "11nh"],
+        "resonator_length": ["5mm", "6mm"],
     })],
 
     simulations={
-        "classical": EigenmodeAnalysis(design_name="my_design", setup_name="Setup1"),
-        "quantum_res": QuantumEPR(
-            design_name="my_design",
-            setup_name="Setup1",
-            modes_to_labels={1: "transmon", 2: "readout"},
-            junctions_infos=[ConfigJunction(line_name="transmon_junction_line",
-                               inductance_variable_name="junction_inductance")]
-        )
+        "eigenmode": EigenmodeAnalysis(design_name="resonator_design", setup_name="Setup1")
     },
 
     aggregation_dict={
-        "classical_agg": ["build", "classical"],
-        "quantum_agg":   ["build", "quantum_res"]
+        "results": ["build", "eigenmode"]
     }
 )
 
@@ -75,20 +66,53 @@ execute_workflow(cfg)
 ```text  
 results/  
 ├─ iterations/  
-│├─ 000/   # inductance 10nh  
+│├─ 000/   # resonator_length 5mm  
 ││├─ build.aedt  
 ││├─ build_parameters.json  
-││├─ classical.json  
-││└─ quantum_res.json  
-│└─ 001/   # inductance 11nh  
+││└─ eigenmode.json  
+│└─ 001/   # resonator_length 6mm  
 │├─ …  
 └─ aggregations/  
-├─ classical_agg.csv  
-└─ quantum_agg.csv  
+└─ results.csv  
 
 ```
 
 Re‑running the script creates **002**, **003**, … only for *new* parameter hashes.
+
+### Transmon + Resonator Example
+
+For quantum analysis with junction coupling:
+
+```python
+from quansys.simulation import EigenmodeAnalysis, QuantumEPR, ConfigJunction
+
+cfg = WorkflowConfig(
+    pyaedt_file_parameters=PyaedtFileParameters(file_path=Path("transmon_resonator.aedt")),
+
+    builder=DesignVariableBuilder(design_name="transmon_design"),
+    builder_sweep=[DictSweep(parameters={
+        "junction_inductance": ["10nh", "11nh"],
+    })],
+
+    simulations={
+        "eigenmode": EigenmodeAnalysis(design_name="transmon_design", setup_name="Setup1"),
+        "quantum": QuantumEPR(
+            design_name="transmon_design",
+            setup_name="Setup1",
+            modes_to_labels={1: "transmon", 2: "readout"},
+            junctions_infos=[ConfigJunction(
+                line_name="transmon_junction_line",
+                inductance_variable_name="junction_inductance"
+            )]
+        )
+    },
+
+    aggregation_dict={
+        "eigenmode_results": ["build", "eigenmode"],
+        "quantum_results": ["build", "quantum"]
+    }
+)
+```
 
 ---
 
@@ -157,6 +181,20 @@ A declarative **`workflow.yaml`** gives you the same power without rebuilding th
 
 You can now **hand‑edit `complex_config.yaml`**—add new sweep ranges, change builders, or swap simulations—then re‑run the three‑line loader above.
 
+
+---
+
+## CLI Execution
+
+Once you have a YAML workflow file, you can execute it directly from the command line:
+
+- **Local testing**: `quansys run config.yaml`
+- **Cluster submission**: `quansys submit config.yaml env_name --name job_name`
+
+See the [terminal guide](terminal.md) for complete CLI examples and [best practices](best_practices.md) for workflow optimization tips.
+
+!!! tip "Typical usage pattern"
+    Most workflows use `quansys run` on a PC for local testing and `quansys submit` on Linux endpoints for cluster execution.
 
 ---
 

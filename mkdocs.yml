@@ -78,7 +78,7 @@ nav:
       - DesignVariableBuilder: api/design_variable_builder.md
       - FunctionBuilder: api/function_builder.md
       - ModuleBuilder: api/module_builder.md
-      - ModesAndLabels: api/modes_to_labels.md
+      - ModesToLabels: api/modes_to_labels.md
       - ManualInference: api/manual_inference.md
       - OrderInference: api/order_inference.md
       - ConfigJunction: api/junctions.md

@@ -119,4 +119,4 @@ if __name__ == "__main__":
     )
 
     result = inference.infer(eigenmode_results)
-    print(result)  # Example output: {4: 'A', 2: 'B'}
+    print(result)  # Example output: {2: 'A', 4: 'B'}

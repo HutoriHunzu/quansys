@@ -57,7 +57,7 @@ cp <PATH_TO_REPO>/src/quansys/examples/simple_config.yaml .
     params = PyaedtFileParameters("simple_design.aedt")  
     
     with params.open_pyaedt_file() as hfss:  
-        print("Design name: ", hfss.design_name)
+        print(f"Design name: {hfss.design_name}")
     ```  
 
 !!! danger "Avoid simultaneous access"
