@@ -98,9 +98,3 @@ class QuantumEPR(BaseAnalysis):
         epr_result = calc.epr_numerical_diagonalizing()
 
         return epr_result, distributed_result
-
-
-    def report(self):
-        pass
-
-

@@ -104,6 +104,7 @@ class EigenmodeResults(BaseSimulationOutput):
         if self.profile:
             flat_profile = flatten_profile(self.profile)
             result.update(flat_profile)
+
         return result
 
     def generate_a_labeled_version(self, mode_to_labels: dict[int, str]) -> EigenmodeResults:
