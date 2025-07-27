@@ -36,7 +36,7 @@ def _copy_example_files(example_type: str = "simple", with_config: bool = True, 
     copied_paths = []
     for filename in selected_files:
         target_path = destination / filename
-        _copy_example_file(filename, target_path)
+        _copy_example_file(filename, destination)
         copied_paths.append(target_path)
 
     return copied_paths
