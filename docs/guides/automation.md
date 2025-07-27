@@ -26,27 +26,32 @@ A **workflow** is a repeatable four‑phase loop that quansys drives for each un
 
 ## Quick‑start (Python)
 
-Below is a minimal workflow in **pure Python**.  
-For demo purposes we sweep `resonator_length` over `"5mm"` and `"6mm"`.
+Below is a minimal workflow in **pure Python**.
+For this example we need a working AEDT, we'll use the `simple_design.aedt` (refer to [Getting Started](../getting_started.md) for more information)
+For demo purposes we sweep `chip_base_width` over `"3mm"` and `"3.5mm"`.
 
 ```python  
 from pathlib import Path
 from quansys.workflow import (
-    WorkflowConfig, PyaedtFileParameters, DesignVariableBuilder, execute_workflow
+    WorkflowConfig, PyaedtFileParameters, 
+    DesignVariableBuilder, execute_workflow
 )
 from quansys.simulation import EigenmodeAnalysis
 from pykit.sweeper import DictSweep
 
 cfg = WorkflowConfig(
-    pyaedt_file_parameters=PyaedtFileParameters(file_path=Path("resonator_design.aedt")),
+    pyaedt_file_parameters=PyaedtFileParameters(
+        file_path=Path("simple_design.aedt")),
 
-    builder=DesignVariableBuilder(design_name="resonator_design"),
+    builder=DesignVariableBuilder(design_name="my_design"),
+    
     builder_sweep=[DictSweep(parameters={
-        "resonator_length": ["5mm", "6mm"],
+        "resonator_length": ["3mm", "3.5mm"],
     })],
 
     simulations={
-        "eigenmode": EigenmodeAnalysis(design_name="resonator_design", setup_name="Setup1")
+        "eigenmode": EigenmodeAnalysis(design_name="my_design", 
+                                       setup_name="Setup1")
     },
 
     aggregation_dict={
@@ -66,11 +71,11 @@ execute_workflow(cfg)
 ```text  
 results/  
 ├─ iterations/  
-│├─ 000/   # resonator_length 5mm  
+│├─ 000/   # chip_base_width 3mm  
 ││├─ build.aedt  
 ││├─ build_parameters.json  
 ││└─ eigenmode.json  
-│└─ 001/   # resonator_length 6mm  
+│└─ 001/   # chip_base_width 3.5mm  
 │├─ …  
 └─ aggregations/  
 └─ results.csv  
@@ -81,23 +86,34 @@ Re‑running the script creates **002**, **003**, … only for *new* parameter h
 
 ### Transmon + Resonator Example
 
-For quantum analysis with junction coupling:
+For quantum analysis with junction coupling we'll need a more complex AEDT file. For this demo we'll use the `complex_design.aedt`
+file (refer to [Getting Started](../getting_started.md) for more information)
 
 ```python
-from quansys.simulation import EigenmodeAnalysis, QuantumEPR, ConfigJunction
+from pathlib import Path
+from quansys.simulation import (QuantumEPR, ConfigJunction, 
+                                EigenmodeAnalysis)
+from quansys.workflow import (
+    WorkflowConfig, PyaedtFileParameters, 
+    DesignVariableBuilder, execute_workflow
+)
+from quansys.simulation import 
+from pykit.sweeper import DictSweep
 
 cfg = WorkflowConfig(
-    pyaedt_file_parameters=PyaedtFileParameters(file_path=Path("transmon_resonator.aedt")),
+    pyaedt_file_parameters=PyaedtFileParameters
+    (file_path=Path("complex_design.aedt")),
 
-    builder=DesignVariableBuilder(design_name="transmon_design"),
+    builder=DesignVariableBuilder(design_name="my_design"),
     builder_sweep=[DictSweep(parameters={
         "junction_inductance": ["10nh", "11nh"],
     })],
 
     simulations={
-        "eigenmode": EigenmodeAnalysis(design_name="transmon_design", setup_name="Setup1"),
+        "eigenmode": EigenmodeAnalysis(design_name="my_design", 
+                                       setup_name="Setup1"),
         "quantum": QuantumEPR(
-            design_name="transmon_design",
+            design_name="my_design",
             setup_name="Setup1",
             modes_to_labels={1: "transmon", 2: "readout"},
             junctions_infos=[ConfigJunction(
@@ -112,6 +128,9 @@ cfg = WorkflowConfig(
         "quantum_results": ["build", "quantum"]
     }
 )
+
+execute_workflow(cfg)
+
 ```
 
 ---
