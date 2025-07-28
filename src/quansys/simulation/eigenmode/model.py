@@ -80,4 +80,9 @@ class EigenmodeAnalysis(BaseAnalysis):
 
         # 2) turn every node into a plain nested dict
         serializable = {k: v.jsonalize_tree() for k, v in profile.items()}
+
+        # 3) remove first key as it is the variation string if the number of keys is 1
+        if len(list(serializable.keys())) == 1:
+            serializable = serializable[list(serializable.keys())[0]]
+
         return serializable

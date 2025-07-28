@@ -166,7 +166,7 @@ def _build_phase(builder, pyaedt_params, params, project):
 def _simulations_phase(identifier_simulation_dict,
                        params: dict,
                        run_params: PyaedtFileParameters,
-                       keep_hffs_solutions: bool,
+                       keep_hfss_solutions: bool,
                        project: Project):
 
     designs = []
@@ -190,7 +190,7 @@ def _simulations_phase(identifier_simulation_dict,
             session.done()
 
 
-    if not keep_hffs_solutions:
+    if not keep_hfss_solutions:
         with run_params.open_pyaedt_file() as hfss:
             for design_name in set(designs):
                 hfss.set_active_design(design_name)

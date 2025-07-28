@@ -6,7 +6,7 @@ from functools import partial
 from typing import Literal
 
 from ...shared import Value
-from .profile import flatten_profile
+from .profile import safe_extract_memory_gb
 from ..base import BaseSimulationOutput
 from ..base import (FlatDictType, validate_solution_type, validate_existing_solution, SimulationOutputTypesNames)
 
@@ -102,8 +102,8 @@ class EigenmodeResults(BaseSimulationOutput):
 
         # adding profile summary if exists
         if self.profile:
-            flat_profile = flatten_profile(self.profile)
-            result.update(flat_profile)
+            memory_gb_dict = safe_extract_memory_gb(self.profile)
+            result.update(memory_gb_dict)
 
         return result
 
