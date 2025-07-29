@@ -1,186 +1,248 @@
 import re
-from typing import Any, Callable, Iterable, Mapping, Optional, Sequence
+from typing import Any, Callable, Sequence, TypeVar
 
 from pykit.dict_utils import flatten as flatten_dict
 from pykit.convert import parse_quantity
+from functools import partial
+from datetime import timedelta
 
-# Strict number + single-letter SI unit (K/M/G/T/P/E) where appending 'B' is appropriate.
-_NEEDS_B = re.compile(
+T = TypeVar("T")
+
+
+# -------------------------
+# Small, readable utilities
+# -------------------------
+
+_SINGLE_LETTER_SI = re.compile(
     r"""
-    ^
-    \s*
+    ^\s*
     (?P<val>[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)
     \s*
-    (?P<u>[KMGTPE])
-    \s*
-    $
+    (?P<u>[KMGTPEkmgtpe])         # strict single-letter SI
+    \s*$
     """,
     re.VERBOSE,
 )
 
-def normalise_mem_unit(s: str) -> str:
-    """
-    '128 M' -> '128 MB'
-    '1.02e+03 m' -> '1.02e+03 MB'
-    Leaves '88.1 GB', '512 MiB' untouched.
-    Trims surrounding whitespace. Case-insensitive on the single-letter unit.
-    """
-    if not isinstance(s, str):
-        return s  # non-strings handled upstream
-    s = s.strip()
-    m = _NEEDS_B.match(s)
-    if m:
-        return f"{m.group('val')} {m.group('u').upper()}B"
-    return s
 
-def _tokens_lower(path: tuple[str | int, ...]) -> tuple[str, ...]:
-    # Convert ints to str and lower-case all tokens
+def _normalise_mem(s: str, unit: str = 'GB') -> float:
+    """
+    Turn '128 M' -> '128 MB'. Leave '512 MiB', '88.1 GB' untouched.
+    Non-strings should be handled upstream.
+    """
+    s = s.strip()
+    m = _SINGLE_LETTER_SI.match(s)
+    if m:
+        s = f"{m.group('val')} {m.group('u').upper()}B"
+
+    # call for parse unit
+    v, _ = parse_quantity(s, unit=unit)
+    return v
+
+
+def timedelta_to_str(td: timedelta) -> str:
+    total_seconds = int(td.total_seconds())
+    h = total_seconds // 3600
+    m = (total_seconds % 3600) // 60
+    s = total_seconds % 60
+    return f"{h:02}:{m:02}:{s:02}"
+
+
+def time_str_to_timedelta(s: str) -> timedelta:
+    h, m, s = map(int, s.split(":"))
+    return timedelta(hours=h, minutes=m, seconds=s)
+
+
+def _normalise_time(s: str) -> timedelta:
+    pass
+
+
+def _tokens_lower(path: tuple[str, ...]) -> tuple[str, ...]:
     return tuple(str(p).lower() for p in path)
 
-def _matches_path(
-    path_lower: tuple[str, ...],
-    required_words: Sequence[str],
-    avoided_words: Sequence[str],
-    require_last_key_equals: Optional[str],
+
+def _path_matches(
+        path: tuple[str, ...],
+        *,
+        include: Sequence[str] = (),
+        exclude: Sequence[str] = (),
+        last: str | None = None,
 ) -> bool:
-    if require_last_key_equals is not None:
-        if path_lower[-1] != require_last_key_equals.lower():
+    """
+    include: every word must appear at least once across tokens (substring match).
+    exclude: none of the words may appear in any token.
+    last:   if given, last token must equal this (case-insensitive).
+    """
+    toks = _tokens_lower(path)
+    if not toks:
+        return False
+
+    if last is not None and toks[-1] != last.lower():
+        return False
+
+    if include:
+        need = set(w.lower() for w in include)
+        if not need <= set(toks):
             return False
 
-    if required_words:
-        req = tuple(r.lower() for r in required_words)
-        # Each required word must appear in at least one token of the path
-        for r in req:
-            if not any(r in tok for tok in path_lower):
-                return False
-
-    if avoided_words:
-        exc = tuple(e.lower() for e in avoided_words)
-        for e in exc:
-            if any(e in tok for tok in path_lower):
-                return False
+    if exclude:
+        bad = set(w.lower() for w in exclude)
+        if not set(toks) & bad == set():
+            return False
 
     return True
 
-def _to_gb(value: Any, default_unit_for_numbers: Optional[str]) -> Optional[float]:
+
+def _convert_via_parse_quantity(
+        raw: Any,
+        *,
+        target_unit: str,
+        default_unit_for_numbers: str | None = None,
+        normalise: Callable[[str], str] | None = None,
+) -> float | None:
     """
-    Convert an arbitrary value to GB.
-    - If value is numeric and default_unit_for_numbers is provided, apply it.
-    - If value is numeric and no default unit is provided, interpret as GB.
-    - If value is str, normalise units and parse as GB.
-    Returns None on parse failure.
+    Convert `raw` to the target unit using your `parse_quantity`.
+    - Numbers: interpreted as `default_unit_for_numbers` (or as `target_unit` if None).
+    - Strings: optionally normalised, then parsed via `parse_quantity`.
+    Returns None if parsing fails or the result is negative.
     """
-    if isinstance(value, (int, float)):
-        s = f"{value} {default_unit_for_numbers}" if default_unit_for_numbers else f"{value} GB"
-    else:
-        s = str(value)
-    s = normalise_mem_unit(s)
-    try:
-        gb, _ = parse_quantity(s, "GB")
-        gb = float(gb)
-        if gb < 0:
-            return None
-        return gb
-    except Exception:
+    if raw is None:
         return None
 
-def extract_memory_gb(
-    profile: Optional[Mapping[str, Any]],
-    *,
-    required_words: Sequence[str] = ("memory",),        # words that must appear somewhere in the key path
-    avoided_words: Sequence[str] = ("hpc group",),      # words that must not appear anywhere in the key path
-    require_last_key_equals: Optional[str] = "memory",  # enforce last token == 'memory'; set to None to disable
-    aggregator: Callable[[Iterable[float]], float] = max,
-    default_unit_for_numbers: Optional[str] = None,     # e.g., "MB" for bare numbers; None => treat bare numbers as GB
-    return_source_of_best: bool = False,
+    try:
+        if isinstance(raw, (int, float)):
+            unit = default_unit_for_numbers or target_unit
+            val, _ = parse_quantity(f"{raw} {unit}", target_unit)
+        else:
+            s = str(raw)
+            if normalise:
+                s = normalise(s)
+            val, _ = parse_quantity(s, target_unit)
+
+        val = float(val)
+        return val if val >= 0 else None
+    except Exception as exc:
+        return None
+
+
+# -------------------------
+# Generic metric extractor
+# -------------------------
+
+def extract_metric(
+        profile: dict[str, Any] | None,
+        *,
+        metric_name: str,
+        include: Sequence[str],
+        exclude: Sequence[str] = (),
+        last: str | None = None,
+        aggregator: Callable[[list[float]], float] = max,
+        normaliser: Callable[[str], Any] | None = None,
+        formatter: Callable[[Any], str] | None = str
 ) -> dict[str, Any]:
     """
-    Flatten `profile`, select memory-like keys by path, parse/convert to GB, aggregate.
-
-    Raises:
-      - TypeError / ValueError on unexpected input shapes.
-      - Any errors from `flatten_dict` as-is.
+    Flatten the profile (with your flatten_dict), select matching paths, convert via parse_quantity,
+    aggregate, and return a simple result dict.
 
     Returns:
-      {'Memory [GB]': float, 'Source key': tuple[str|int, ...]?}
-      If no matching keys or no parseable values, returns 0.0 (not an error).
+      {f"{metric_name} [{target_unit}]": float, "Source key": path?}
+      If no matches/parseable values, returns 0.0 (not an error).
     """
-    if profile is None:
-        return {"Memory [GB]": 0.0}
 
-    flat = flatten_dict(profile)  # expected to yield keys: tuple[str|int, ...]
-    if not isinstance(flat, Mapping):
-        raise TypeError("flatten_dict(profile) did not return a Mapping.")
+    default = {metric_name: 0.0}
 
-    paths_and_values: list[tuple[tuple[str | int, ...], float]] = []
+    if not profile:
+        return default
 
-    for k, raw in flat.items():
-        if not isinstance(k, tuple):
-            raise TypeError(f"Flattened key is not a tuple: {k!r}")
+    # Use your flattener: expects dict[Path, Any] where Path is a tuple
+    flat = flatten_dict(profile)
+    values: list = []
 
-        if not all(isinstance(p, (str, int)) for p in k):
-            raise TypeError(f"Flattened key contains non-(str|int) parts: {k!r}")
+    for path, raw in flat.items():
 
-        path_lower = _tokens_lower(k)
-        if not _matches_path(path_lower, required_words, avoided_words, require_last_key_equals):
+        if not _path_matches(path, include=include, exclude=exclude, last=last):
             continue
 
-        gb = _to_gb(raw, default_unit_for_numbers)
-        if gb is not None:
-            paths_and_values.append((k, gb))
+        val = raw
+        if normaliser:
+            val = normaliser(val)
 
-    if not paths_and_values:
-        # No matches or nothing parseable is not a hard error; signal with 0.0
-        return {"Memory [GB]": 0.0}
+        values.append(val)
 
-    values = [v for _, v in paths_and_values]
-    try:
-        agg = float(aggregator(values))
-    except Exception as e:
-        # Aggregator should be pure; if it fails, that *is* exceptional.
-        raise ValueError(f"Aggregator failed on values {values!r}") from e
+    if not values:
+        return default
 
-    result: dict[str, Any] = {"Memory [GB]": agg}
-    if return_source_of_best and aggregator is max:
-        best_idx = values.index(agg)
-        result["Source key"] = paths_and_values[best_idx][0]
-    return result
+    result = aggregator(values)
+    if formatter:
+        result = formatter(result)
 
-def safe_extract_memory_gb(
-    profile: Optional[Mapping[str, Any]],
-    *,
-    required_words: Sequence[str] = ("memory",),
-    avoided_words: Sequence[str] = ("hpc group",),
-    require_last_key_equals: Optional[str] = "memory",
-    aggregator: Callable[[Iterable[float]], float] = max,
-    default_unit_for_numbers: Optional[str] = None,
-    return_source_of_best: bool = False,
-    on_error_return: float = -1.0,
-    printer: Callable[[str], None] = print,
+    return {metric_name: result}
+
+
+# -------------------------
+# Ready-to-use wrappers
+# -------------------------
+
+def extract_memory_gb(
+        profile: dict[str, Any] | None,
+        *,
+        include: Sequence[str] = ("memory",),
+        exclude: Sequence[str] = ("hpc group",),
+        last: str | None = "memory",
+        aggregator: Callable[[list[float]], float] = max,
+        unit: str = 'GB'
 ) -> dict[str, Any]:
     """
-    Fail-safe wrapper: never raises. Prints the error and returns a sentinel value.
+    Memory extractor using your dependencies.
     """
-    try:
-        return extract_memory_gb(
-            profile,
-            required_words=required_words,
-            avoided_words=avoided_words,
-            require_last_key_equals=require_last_key_equals,
-            aggregator=aggregator,
-            default_unit_for_numbers=default_unit_for_numbers,
-            return_source_of_best=return_source_of_best,
-        )
-    except Exception as e:
-        printer(f"[extract_memory_gb] error: {e}")
-        return {"Memory [GB]": float(on_error_return)}
+    return extract_metric(
+        profile,
+        metric_name=f"Memory [{unit}]",
+        include=include,
+        exclude=exclude,
+        last=last,
+        aggregator=aggregator,
+        normaliser=partial(_normalise_mem, unit=unit)
+    )
 
+
+def extract_elapsed_seconds(
+        profile: dict[str, Any] | None,
+        *,
+        include: Sequence[str] = ("elapsed time",),  # add ("duration",) if needed
+        exclude: Sequence[str] = (),
+        last: str | None = "elapsed time",
+        aggregator: Callable[[list[float]], float] = max,
+) -> dict[str, Any]:
+    """
+    Elapsed-time extractor, same engine, parsed to seconds.
+    """
+    return extract_metric(
+        profile,
+        metric_name="Elapsed Time",
+        include=include,
+        exclude=exclude,
+        last=last,
+        aggregator=aggregator,
+        normaliser=time_str_to_timedelta,  # no special unit normalization needed for time
+        formatter=timedelta_to_str,  # no special unit normalization needed for time
+    )
+
+
+def flat_profile(profile):
+    memory_dict = extract_memory_gb(profile)
+    eta_dict = extract_elapsed_seconds(profile)
+
+    return {**memory_dict, **eta_dict}
 
 if __name__ == '__main__':
-
     import json
 
     with open('eigenmode_1.json', 'r') as f:
         data = json.load(f)
 
-    print(safe_extract_memory_gb(data['profile']))
+    memory = extract_memory_gb(data['profile'])
+    print(memory)
+
+    eta = extract_elapsed_seconds(data['profile'])
+    print(eta)
