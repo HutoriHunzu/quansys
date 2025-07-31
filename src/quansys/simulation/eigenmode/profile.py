@@ -121,7 +121,7 @@ def _convert_via_parse_quantity(
 
         val = float(val)
         return val if val >= 0 else None
-    except Exception as exc:
+    except Exception:
         return None
 
 
