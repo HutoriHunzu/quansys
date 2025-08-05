@@ -57,9 +57,9 @@ def build_quantum_hamiltonian(
     )
 
     if return_separate_parts:
-        return linear_part_old, nonlinear_part_old
+        return linear_part, nonlinear_part
     else:
-        return linear_part_old + nonlinear_part_old
+        return linear_part + nonlinear_part
 
 
 def _create_composite_space(n_modes: int, fock_truncation: int):
@@ -97,7 +97,7 @@ def _build_nonlinear_hamiltonian(zpfs: NDArray,
 
     for zpf, junction_frequency_hz in zip(zpfs, junction_frequencies_hz):
 
-        cosine_arg = np.dot(zpf, field_operators)
+        cosine_arg = np.dot(zpf / reduced_flux_quantum, field_operators)
         cosine_op = cosine_taylor_series(cosine_arg, cosine_truncation)
 
         op = cosine_op * (-1) * junction_frequency_hz

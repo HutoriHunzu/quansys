@@ -3,8 +3,8 @@ from scipy.constants import Planck, elementary_charge, hbar
 
 import warnings
 from .structures import ParticipationDataset, EprDiagResult
-from .black_box import calculate_quantum_parameters
-# from .qutip_epr_simulation import calculate_quantum_parameters
+# from .black_box import calculate_quantum_parameters
+from .qutip_epr_simulation import calculate_quantum_parameters
 
 
 # Reduced Flux Quantum  (3.29105976 × 10-16 Webers)
