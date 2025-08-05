@@ -6,7 +6,9 @@ Quantum Hamiltonian construction for EPR analysis.
 import numpy as np
 import qutip
 
-from .constants import reduced_flux_quantum, Planck
+from .constants import reduced_flux_quantum
+from scipy.constants import Planck
+
 from .matrix_operations import cosine_taylor_series
 from .composite_space import CompositeSpace
 
