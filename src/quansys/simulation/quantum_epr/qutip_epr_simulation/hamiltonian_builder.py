@@ -7,9 +7,10 @@ import numpy as np
 import qutip
 from numpy.typing import NDArray
 
-from .constants import Planck as h, reduced_flux_quantum
+from .constants import reduced_flux_quantum, Planck
 from .matrix_operations import cosine_taylor_series
 from .composite_space import CompositeSpace
+
 
 
 def build_quantum_hamiltonian(
@@ -31,7 +32,7 @@ def build_quantum_hamiltonian(
     zpfs = np.transpose(np.array(junction_flux_zpfs))  # Ensure J x N shape
 
     junction_energies_j = reduced_flux_quantum ** 2 / inductances_h
-    junction_frequencies_hz = junction_energies_j / h
+    junction_frequencies_hz = junction_energies_j / Planck
 
     _validate_hamiltonian_inputs(frequencies_hz, inductances_h, zpfs, n_modes, n_junctions)
 

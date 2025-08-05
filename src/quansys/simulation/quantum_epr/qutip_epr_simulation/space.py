@@ -7,6 +7,10 @@ class Space:
     """
 
     def __init__(self, size, name):
+        if size < 2:
+            raise ValueError("Space size must be at least 2")
+        if not isinstance(size, int):
+            raise ValueError("Space size must be an integer")
         self.size = size
         self.name = name
 
@@ -17,6 +21,8 @@ class Space:
         return qt.destroy(self.size)
 
     def basis(self, n):
+        if n >= self.size or n < 0:
+            raise ValueError(f"Basis index {n} out of range for space of size {self.size}")
         return qt.basis(self.size, n)
 
     def coherent(self, alpha):

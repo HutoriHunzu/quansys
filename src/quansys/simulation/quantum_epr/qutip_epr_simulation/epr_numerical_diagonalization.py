@@ -3,7 +3,6 @@ Main entry point for EPR numerical diagonalization.
 """
 
 import numpy as np
-import qutip
 
 from .constants import reduced_flux_quantum
 from .hamiltonian_builder import build_quantum_hamiltonian
@@ -17,7 +16,7 @@ def calculate_quantum_parameters(
         junction_inductances_h: np.ndarray,
         reduced_flux_zpfs: np.ndarray,
         cosine_truncation: int = 8,
-        fock_truncation: int = 9) -> tuple[np.ndarray, np.ndarray] | tuple[np.ndarray, np.ndarray, qutip.Qobj]:
+        fock_truncation: int = 9) -> tuple[np.ndarray, np.ndarray]:
     """
     Perform numerical diagonalization to extract quantum circuit parameters.
     
@@ -31,15 +30,12 @@ def calculate_quantum_parameters(
                           shape M x J
         cosine_truncation: Truncation order for cosine expansion (default=8)
         fock_truncation: Fock space truncation (default=9)  
-        return_hamiltonian: If True, also return the Hamiltonian (default=False)
         
     Returns:
-        tuple: (dressed_frequencies_ghz, chi_matrix_mhz) or 
-               (dressed_frequencies_ghz, chi_matrix_mhz, hamiltonian) if return_hamiltonian=True
+        tuple: (dressed_frequencies_ghz, chi_matrix_mhz)
                
         - dressed_frequencies_ghz: Dressed mode frequencies in GHz
         - chi_matrix_mhz: Cross-Kerr matrix in MHz (sign flipped so down-shift is positive)
-        - hamiltonian: Full quantum Hamiltonian (if requested)
     """
     frequencies = np.array(mode_frequencies_ghz)
     inductances = np.array(junction_inductances_h)
@@ -88,6 +84,12 @@ def _validate_input_units(frequencies: np.ndarray, inductances: np.ndarray):
 
 
 def _create_composite_space(n_modes: int, fock_truncation: int):
+    """Create composite space for the quantum system."""
+    if n_modes < 1:
+        raise ValueError("Number of modes must be at least 1")
+    if fock_truncation < 2:
+        raise ValueError("Fock truncation must be at least 2")
+    
     # creating lst of spaces and a composite space
     spaces = [Space(size=fock_truncation, name=i) for i in range(n_modes)]
     return CompositeSpace(*spaces)

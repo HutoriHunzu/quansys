@@ -6,11 +6,6 @@ import qutip
 from math import factorial
 
 
-def dot_product(values_a, values_b):
-    """Calculate dot product of two sequences."""
-    return sum(a * b for a, b in zip(values_a, values_b))
-
-
 def cosine_matrix(operator):
     """
     Create exact cosine operator matrix using QutIP matrix exponentiation.
