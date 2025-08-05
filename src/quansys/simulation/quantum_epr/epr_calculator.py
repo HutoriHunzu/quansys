@@ -3,7 +3,7 @@ from scipy.constants import Planck, elementary_charge, pi  # pylint: disable=unu
 
 import warnings
 from .structures import ParticipationDataset, EprDiagResult
-from .black_box import black_box_numeric as black_box
+from .black_box import calculate_quantum_parameters
 
 # Reduced Planks constant
 hbar = Planck / (2 * pi)
@@ -104,8 +104,8 @@ class EprCalculator:
         PJ, sign, frequencies_mat, junction_inductance_energy_ghz, phi_zpf, PJ_cap, n_zpf = self.get_epr_base_matrices()
         frequencies_ghz = self.participation_dataset.frequencies / 1e9
 
-        f1_nd, chi_nd = black_box.epr_numerical_diagonalization(frequencies_ghz,
-                                                                self.participation_dataset.inductances,
-                                                                phi_zpf, cos_trunc=8, fock_trunc=15)
+        f1_nd, chi_nd = calculate_quantum_parameters(frequencies_ghz,
+                                                     self.participation_dataset.inductances,
+                                                     phi_zpf, cosine_truncation=8, fock_truncation=15)
 
         return EprDiagResult(chi=chi_nd, frequencies=f1_nd * 1e-9)

@@ -1,20 +1,11 @@
 """
-pyEPR constants and convenience definitions.
-
-@author: Zlatko Minev
+Physical constants for quantum EPR calculations.
 """
-# pylint: disable=invalid-name
 
-from scipy.constants import Planck, elementary_charge, pi  # pylint: disable=unused-import
+from scipy.constants import Planck, elementary_charge, pi
 
-# Pi
-π = pi
+# Reduced Planck's constant
+hbar = Planck / (2 * pi)
 
-# Reduced Planks constant
-ħ = hbar = Planck/(2*pi)
-
-# Reduced Flux Quantum  (3.29105976 × 10-16 Webers)
-ϕ0 = fluxQ = ħ / (2*elementary_charge)
-
-# Magnitude of the electric charge carried by a single electron
-e_el = elementary_charge
+# Reduced flux quantum (phi_0/2pi in Webers)
+reduced_flux_quantum = hbar / (2 * elementary_charge)
