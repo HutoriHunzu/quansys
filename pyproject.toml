@@ -19,11 +19,14 @@ dependencies = [
     "nbmake"
 ]
 
+authors = [ { name = "HutoriHunzu", email = "uri.goldblatt@gmail.com" }]
+
 requires-python = ">=3.11"
 readme = "README.md"
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Programming Language :: Python"
+"License :: OSI Approved :: MIT License",
+"Programming Language :: Python :: 3.11",
+"Operating System :: OS Independent"
 ]
 
 license = { text = "MIT" }

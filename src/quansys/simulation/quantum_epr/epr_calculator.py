@@ -1,12 +1,10 @@
 import numpy as np
-from scipy.constants import Planck, elementary_charge, pi  # pylint: disable=unused-import
+from scipy.constants import Planck, elementary_charge, hbar
 
 import warnings
 from .structures import ParticipationDataset, EprDiagResult
-from .black_box import black_box_numeric as black_box
+from .qutip_epr_simulation import calculate_quantum_parameters
 
-# Reduced Planks constant
-hbar = Planck / (2 * pi)
 
 # Reduced Flux Quantum  (3.29105976 × 10-16 Webers)
 reduced_flux_quantum = hbar / (2 * elementary_charge)
@@ -31,7 +29,7 @@ class EprCalculator:
         inductances = self.participation_dataset.inductances
         capacitances = self.participation_dataset.capacitances
 
-        junction_inductance_energy_ghz = 10 ** -9 * (reduced_flux_quantum ** 2) / (inductances * Planck)
+        junction_inductance_energy_ghz = (10 ** -9) * (reduced_flux_quantum ** 2) / (inductances * Planck)
         junction_inductance_energy_ghz = np.diagflat(junction_inductance_energy_ghz)  # GHz
 
         junction_capacitance_energy_ghz = elementary_charge ** 2 / (capacitances * Planck)
@@ -71,6 +69,7 @@ class EprCalculator:
         # norms
         Pm_norm = Pm_glb_sum / participation_ratio_induction.sum(axis=1)
         Pm_cap_norm = Pm_cap_glb_sum / participation_ratio_capacitance.sum(axis=1)
+
         # this is not the correct scaling yet! WARNING. Factors of 2 laying around too
         # these numbers are a bit all over the place for now. very small
 
@@ -82,15 +81,11 @@ class EprCalculator:
 
         participation_ratio_induction[idx] *= pm_norm_expanded[idx]
         participation_ratio_capacitance[idx_cap] *= pm_cap_norm_expanded[idx_cap]
-        # Pm = Pm.mul(Pm_norm, axis=0)
-        # Pm_cap = Pm_cap.mul(Pm_cap_norm, axis=0)
 
         if np.any(participation_ratio_induction < 0.0):
             warnings.warn("  ! Warning:  Some p_mj was found <= 0. This is probably a numerical error,'\
                 'or a super low-Q mode.  We will take the abs value.  Otherwise, rerun with more precision,'\
                 'inspect, and do due diligence.)")
-            # print(Pm, '\n')
-            # Pm = np.abs(Pm)
 
         return {'PJ': participation_ratio_induction,
                 'Pm_norm': Pm_norm,
@@ -104,8 +99,8 @@ class EprCalculator:
         PJ, sign, frequencies_mat, junction_inductance_energy_ghz, phi_zpf, PJ_cap, n_zpf = self.get_epr_base_matrices()
         frequencies_ghz = self.participation_dataset.frequencies / 1e9
 
-        f1_nd, chi_nd = black_box.epr_numerical_diagonalization(frequencies_ghz,
-                                                                self.participation_dataset.inductances,
-                                                                phi_zpf, cos_trunc=8, fock_trunc=15)
+        f1_nd, chi_nd = calculate_quantum_parameters(frequencies_ghz,
+                                                     self.participation_dataset.inductances,
+                                                     phi_zpf, cosine_truncation=8, fock_truncation=15)
 
         return EprDiagResult(chi=chi_nd, frequencies=f1_nd * 1e-9)
