@@ -10,8 +10,6 @@ from .structures import (ConfigJunction, ParsedJunctionValues,
                          ParticipationDataset, ParticipationJunctionDataset,
                          variables_types)
 
-# from pysubmit.simulation.config_handler.junction_scheme import ConfigJunction
-
 
 def inverse_dict(d: dict):
     # check all values are unique and are immutable
@@ -27,13 +25,6 @@ def inverse_dict(d: dict):
     pass
 
 
-# @dataclass
-# class
-#     quality_factor: ValuedVariable
-#     peak_current: ValuedVariable
-#     peak_voltage: ValuedVariable
-
-
 def read_and_delete(filepath):
     f = Path(filepath)
     txt = f.read_text()
@@ -47,10 +38,6 @@ def parse_expression_filetxt(txt):
 
 def calculator_read(calculator, expression_name):
     return float(calculator.evaluate(expression_name))
-
-    # calculator.calculator_write(expression_name, temp_filename)
-    # txt = read_and_delete(temp_filename)
-    # return parse_expression_filetxt(txt)
 
 
 class DistributedAnalysis:
@@ -162,8 +149,8 @@ class DistributedAnalysis:
         if use_smooth:
             add_electric_field += ["Operation('Smooth')"]
 
-        expression_name_real = "current_line_based_e_real"
-        expression_name_imag = "current_line_based_e_imag"
+        expression_name_real = f"current_line_e_real_{line_object_name}"
+        expression_name_imag = f"current_line_e_imag_{line_object_name}"
 
         expression_real = {
             "name": expression_name_real,
@@ -241,13 +228,6 @@ class DistributedAnalysis:
         q_sol = self.post_api.get_solution_data(expressions=f"Q({mode_number})")
         return freq_sol.data_real()[0], q_sol.data_real()[0]
 
-    # def get_current_and(self, junctions_dict: Dict[str, str]):
-
-    # def _helper():
-    #     for junction_name, inductance_variable_name in junctions_dict.items():
-    #         get junction inductance
-    #         calculate peak current and peak voltage
-    # pass
     def calculate_peak_current_and_voltage(
         self, mode_frequency, junction_infos: Tuple[ParsedJunctionValues, ...]
     ):
@@ -316,10 +296,6 @@ class DistributedAnalysis:
 
         sign = np.sign(peak_voltages)
 
-        # REPORT preliminary
-        # pmj_ind = 0.5 * line_object_inductance * peak_current ** 2 / peak_total_electric_energy
-        # pmj_cap = 0.5 * line_object_capacitance * peak_voltage ** 2 / peak_total_electric_energy
-
         return ParticipationJunctionDataset(
             junctions_infos=junctions_infos,
             participation_ratio_capacitance=participation_ratio_capacitance,
@@ -356,16 +332,12 @@ class DistributedAnalysis:
 
         def helper():
             for info in self.junctions_infos:
-                # frequency = label_to_freq_and_qfactor[info.label]['freq']
-                # q_factor = label_to_freq_and_qfactor[info.label]['q_factor']
                 inductance, capacitance = self.get_inductance_and_capacitance(
                     info.inductance_variable_name
                 )
 
                 yield ParsedJunctionValues(
                     info=info,
-                    # frequency=ValuedVariable(name='frequency', value=frequency, unit='hz'),
-                    # quality_factor=ValuedVariable(name='q_factor', value=q_factor),
                     inductance=variables_types.Value(value=inductance, unit="H"),
                     capacitance=variables_types.Value(value=capacitance, unit=""),
                 )
