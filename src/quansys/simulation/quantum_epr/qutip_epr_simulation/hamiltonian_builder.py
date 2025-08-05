@@ -3,14 +3,12 @@
 Quantum Hamiltonian construction for EPR analysis.
 """
 
-from functools import reduce
 import numpy as np
 import qutip
 from numpy.typing import NDArray
 
 from .constants import Planck as h, reduced_flux_quantum
-from .matrix_operations import dot_product, cosine_taylor_series
-from .space import Space
+from .matrix_operations import cosine_taylor_series
 from .composite_space import CompositeSpace
 
 

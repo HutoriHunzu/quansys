@@ -3,7 +3,6 @@ from scipy.constants import Planck, elementary_charge, hbar
 
 import warnings
 from .structures import ParticipationDataset, EprDiagResult
-from .black_box import epr_numerical_diagonalization
 from .qutip_epr_simulation import calculate_quantum_parameters
 
 
