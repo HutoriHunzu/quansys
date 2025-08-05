@@ -6,11 +6,9 @@ of the full quantum Hamiltonian. The main entry point is calculate_quantum_param
 """
 
 from .epr_numerical_diagonalization import (
-    calculate_quantum_parameters,
-    epr_numerical_diagonalization  # Legacy alias
+    calculate_quantum_parameters
 )
 
 __all__ = [
     'calculate_quantum_parameters',
-    'epr_numerical_diagonalization'
 ]

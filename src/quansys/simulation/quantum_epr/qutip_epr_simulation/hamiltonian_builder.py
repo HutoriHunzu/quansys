@@ -1,3 +1,4 @@
+
 """
 Quantum Hamiltonian construction for EPR analysis.
 """
@@ -6,14 +7,17 @@ from functools import reduce
 from typing import Union
 import numpy as np
 import qutip
+from blosc2 import NDArray
 
 from .constants import Planck as h, reduced_flux_quantum
 from .matrix_operations import dot_product, cosine_taylor_series
+from .space import Space
+from .composite_space import CompositeSpace
 
 
 def build_quantum_hamiltonian(
-        mode_frequencies_hz: np.ndarray,
-        junction_inductances_h: np.ndarray,
+        frequencies_hz: np.ndarray,
+        inductances_h: np.ndarray,
         junction_flux_zpfs: np.ndarray,
         cosine_truncation: int = 5,
         fock_truncation: int = 8,
@@ -24,33 +28,84 @@ def build_quantum_hamiltonian(
     Takes linear mode frequencies and zero-point fluctuations to construct
     the full Hamiltonian matrix assuming cosine junction potential.
     """
-    n_modes = len(mode_frequencies_hz)
-    n_junctions = len(junction_inductances_h)
+    n_modes = len(frequencies_hz)
+    n_junctions = len(inductances_h)
 
-    frequencies = np.array(mode_frequencies_hz)
-    inductances = np.array(junction_inductances_h)
     zpfs = np.transpose(np.array(junction_flux_zpfs))  # Ensure J x N shape
 
-    junction_energies_j = reduced_flux_quantum ** 2 / inductances
+    # creating lst of spaces and a composite space
+    cspace = _create_composite_space(n_modes, fock_truncation)
+
+    junction_energies_j = reduced_flux_quantum ** 2 / inductances_h
     junction_frequencies_hz = junction_energies_j / h
 
-    _validate_hamiltonian_inputs(frequencies, inductances, zpfs, n_modes, n_junctions)
+    _validate_hamiltonian_inputs(frequencies_hz, inductances_h, zpfs, n_modes, n_junctions)
 
     # Create mode operators
     mode_field_operators = _create_mode_field_operators(n_modes, fock_truncation)
     mode_number_operators = _create_mode_number_operators(n_modes, fock_truncation)
 
     # Build Hamiltonian parts
-    linear_part = dot_product(frequencies, mode_number_operators)
+    linear_part = _create_linear_part(cspace, frequencies_hz)
+    linear_part_2 = dot_product(frequencies_hz, mode_number_operators)
 
-    nonlinear_part = _build_nonlinear_hamiltonian(
+    nonlinear_part_old = _build_nonlinear_hamiltonian_old(
         zpfs, mode_field_operators, junction_frequencies_hz, cosine_truncation
+    )
+    
+    nonlinear_part = _build_nonlinear_hamiltonian(
+        zpfs, cspace, junction_frequencies_hz, cosine_truncation
     )
 
     if return_separate_parts:
         return linear_part, nonlinear_part
     else:
         return linear_part + nonlinear_part
+
+
+def _create_composite_space(n_modes: int, fock_truncation: int):
+    # creating lst of spaces and a composite space
+    spaces = [Space(size=fock_truncation, name=i) for i in range(n_modes)]
+    return CompositeSpace(*spaces)
+
+
+def _create_linear_part(cspace: CompositeSpace, frequencies_hz: NDArray):
+    """
+    creating number operator for each mode, expanding it (tensor with identity of the rest)
+    and then multiplying with the frequency
+    """
+    ops = []
+    for mode_number, frequency_hz in enumerate(frequencies_hz):
+        space = cspace.spaces[mode_number]
+        op = frequency_hz * cspace.expand_operator(mode_number, space.num_op())
+        ops.append(op)
+
+    return sum(ops)
+
+
+def _build_nonlinear_hamiltonian(zpfs: NDArray,
+                                 cspace: CompositeSpace,
+                                 junction_frequencies_hz: NDArray,
+                                 cosine_truncation: int) -> qutip.Qobj:
+    """Build the nonlinear part of the Hamiltonian from cosine junction terms."""
+
+    assert(len(zpfs) == len(junction_frequencies_hz))
+
+    ops = []
+
+    field_operators = [cspace.expand_operator(space.name, space.field_op())
+                       for space in cspace.spaces_ordered]
+
+    for zpf, junction_frequency_hz in zip(zpfs, junction_frequencies_hz):
+
+        cosine_arg = np.dot(zpf, field_operators)
+        cosine_op = cosine_taylor_series(cosine_arg, cosine_truncation)
+
+        op = cosine_op * (-1) * junction_frequency_hz
+
+        ops.append(op)
+
+    return np.sum(ops)
 
 
 def _create_mode_field_operators(n_modes: int, fock_truncation: int) -> list[qutip.Qobj]:
@@ -79,7 +134,7 @@ def _tensor_operator_at_mode(operator: qutip.Qobj, mode_index: int,
     return reduce(qutip.tensor, operator_list)
 
 
-def _build_nonlinear_hamiltonian(zpfs: np.ndarray, mode_field_operators: list[qutip.Qobj],
+def _build_nonlinear_hamiltonian_old(zpfs: np.ndarray, mode_field_operators: list[qutip.Qobj],
                                  junction_frequencies_hz: np.ndarray,
                                  cosine_truncation: int) -> qutip.Qobj:
     """Build the nonlinear part of the Hamiltonian from cosine junction terms."""
