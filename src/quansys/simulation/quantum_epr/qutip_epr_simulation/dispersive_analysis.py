@@ -9,6 +9,9 @@ from itertools import combinations_with_replacement
 from .composite_space import CompositeSpace
 
 
+MINIMAL_IMAG_INACCURACY = 1e-10  # Minimum imaginary part to consider as non-zero
+
+
 def extract_dispersive_parameters(
         cspace: CompositeSpace,
         hamiltonian: qutip.Qobj,
@@ -43,6 +46,11 @@ def _diagonalize_hamiltonian(hamiltonian: qutip.Qobj) -> tuple[np.ndarray, list[
     eigenvalues, eigenvectors = hamiltonian.eigenstates()
     # Shift energies relative to ground state
     eigenvalues = eigenvalues - eigenvalues[0]
+    # Check real energies
+    if np.any(np.imag(eigenvalues) > MINIMAL_IMAG_INACCURACY):
+        raise ValueError("Hamiltonian eigenvalues have non-zero imaginary part.")
+    eigenvalues = np.real(eigenvalues).astype(float)
+
     return eigenvalues, eigenvectors
 
 
@@ -96,7 +104,7 @@ def _calculate_chi_matrix(cspace: CompositeSpace, eigenvalues: np.ndarray, eigen
         chi_ij = two_excitation_energy - single_excitation_energy
 
         # Check no imaginary part
-        if np.imag(chi_ij) / np.abs(chi_ij) > 1e-10:
+        if np.imag(chi_ij) > MINIMAL_IMAG_INACCURACY:
             raise ValueError(f"Chi matrix element {i}, {j} has non-zero imaginary part: {chi_ij}")
         chi_ij = np.real(chi_ij)
 

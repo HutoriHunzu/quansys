@@ -105,16 +105,3 @@ class EprCalculator:
                                                      phi_zpf, cosine_truncation=8, fock_truncation=15)
 
         return EprDiagResult(chi=chi_nd, frequencies=f1_nd * 1e-9)
-
-
-    def black_box_diagonalizing(self):
-
-        PJ, sign, frequencies_mat, junction_inductance_energy_ghz, phi_zpf, PJ_cap, n_zpf = self.get_epr_base_matrices()
-        frequencies_ghz = self.participation_dataset.frequencies / 1e9
-
-        f1_nd, chi_nd, h = epr_numerical_diagonalization(frequencies_ghz,
-                                                     self.participation_dataset.inductances,
-                                                     phi_zpf, cos_trunc=8, fock_trunc=15, return_H=True)
-
-        return EprDiagResult(chi=chi_nd, frequencies=f1_nd * 1e-9), h
-
