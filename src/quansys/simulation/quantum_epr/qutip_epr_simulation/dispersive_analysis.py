@@ -3,7 +3,6 @@ Dispersive analysis for extracting dressed frequencies and cross-Kerr interactio
 """
 
 import numpy as np
-from numpy.typing import NDArray
 import qutip
 from itertools import combinations_with_replacement
 from .composite_space import CompositeSpace
@@ -17,14 +16,12 @@ def extract_dispersive_parameters(
         hamiltonian: qutip.Qobj,
         fock_truncation: int,
         zero_point_fluctuations: np.ndarray | None = None,
-        linear_frequencies: np.ndarray | None = None) -> tuple[
-    np.ndarray, np.ndarray, np.ndarray | None, np.ndarray | None]:
+        linear_frequencies: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray, np.ndarray | None, np.ndarray | None]:
     """
-    Extract dressed mode frequencies and chi matrix from Hamiltonian eigenanalysis.
+    Extract dressed frequencies and chi matrix via numerical diagonalization.
     
-    Diagonalizes the Hamiltonian and assigns quantum numbers to eigenstates based on
-    maximum overlap with bare Fock states. Then extracts dressed frequencies and
-    cross-Kerr matrix elements.
+    Finds eigenstates by maximum overlap with Fock states, then calculates dressed 
+    frequencies from single-excitation states and chi matrix from two-excitation states.
     """
     eigenvalues, eigenvectors = _diagonalize_hamiltonian(hamiltonian)
 
@@ -61,16 +58,28 @@ def _create_fock_state(cspace: CompositeSpace, excitation_numbers: dict[int, int
     return cspace.tensor(name_op_dict)
 
 
-def _find_closest_eigenstate(target_state: qutip.Qobj, eigenvalues: NDArray[float],
+def _find_closest_eigenstate(target_state: qutip.Qobj, eigenvalues: np.ndarray,
                              eigenvectors: list[qutip.Qobj]) -> tuple[float, qutip.Qobj]:
-    """Find eigenstate with maximum overlap with target Fock state."""
+    """
+    Find eigenstate with maximum overlap with target Fock state.
+    
+    Uses overlap = |<psi_target|psi_eigenstate>| to identify which eigenstate 
+    corresponds to the desired excitation pattern. This assigns quantum numbers 
+    to the dressed eigenstates based on their similarity to bare Fock states.
+    """
     overlaps = [np.abs(target_state.overlap(eigenvector)) for eigenvector in eigenvectors]
     max_overlap_index = np.argmax(overlaps)
     return float(eigenvalues[max_overlap_index]), eigenvectors[max_overlap_index]
 
 
 def _extract_dressed_frequencies(cspace: CompositeSpace, eigenvalues: np.ndarray, eigenvectors: list[qutip.Qobj]) -> np.ndarray:
-    """Extract single-excitation frequencies (dressed frequencies)."""
+    """
+    Extract dressed frequencies from single-excitation states.
+    
+    For each mode i, creates the Fock state |0...0,1_i,0...0> and finds the eigenstate 
+    with maximum overlap. The dressed frequency is the energy of this eigenstate minus 
+    the ground state energy.
+    """
     n_modes = len(cspace.spaces_ordered)
     dressed_frequencies = []
 
@@ -84,7 +93,16 @@ def _extract_dressed_frequencies(cspace: CompositeSpace, eigenvalues: np.ndarray
 
 def _calculate_chi_matrix(cspace: CompositeSpace, eigenvalues: np.ndarray, eigenvectors: list[qutip.Qobj],
                           dressed_frequencies: np.ndarray) -> np.ndarray:
-    """Calculate chi matrix (cross-Kerr interactions)."""
+    """
+    Calculate chi matrix (cross-Kerr interactions) from two-excitation states.
+    
+    For modes i and j, creates the two-excitation state |0...0,1_i,0...0,1_j,0...0> 
+    and finds the eigenstate with maximum overlap. The chi matrix element is:
+    chi_ij = E_|1_i,1_j> - (omega_i + omega_j)
+    
+    This quantifies the deviation from independent harmonic oscillators due to 
+    nonlinear coupling through Josephson junctions.
+    """
     n_modes = len(cspace.spaces_ordered)
     chi_matrix = np.zeros((n_modes, n_modes))
 

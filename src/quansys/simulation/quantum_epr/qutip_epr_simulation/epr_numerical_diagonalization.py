@@ -20,8 +20,17 @@ def calculate_quantum_parameters(
     """
     Perform numerical diagonalization to extract quantum circuit parameters.
     
-    This is the main function for EPR numerical analysis. It builds the quantum
-    Hamiltonian and extracts dressed frequencies and dispersive shifts.
+    Based on the energy-participation-ratio (EPR) method from:
+    "Energy-participation quantization of Josephson circuits"
+    DOI: https://doi.org/10.1038/s41534-021-00461-8
+
+
+    Builds the full quantum Hamiltonian H = H_linear + H_junction where:
+    - H_linear = sum(omega_i * n_i) for harmonic oscillator terms
+    - H_junction = -sum(E_J * cos(phi_zpf_i * (a_i + a_i_dag) / phi_0)) for Josephson interactions
+    
+    The method numerically diagonalizes the Hamiltonian to extract dressed mode 
+    frequencies and cross-Kerr interaction strengths (chi matrix).
     
     Args:
         mode_frequencies_ghz: Linear mode frequencies in GHz, length M
@@ -83,13 +92,7 @@ def _validate_input_units(frequencies: np.ndarray, inductances: np.ndarray):
         raise ValueError("Please provide inductances in Henries (values should be < 1E-3)")
 
 
-def _create_composite_space(n_modes: int, fock_truncation: int):
+def _create_composite_space(n_modes: int, fock_truncation: int) -> CompositeSpace:
     """Create composite space for the quantum system."""
-    if n_modes < 1:
-        raise ValueError("Number of modes must be at least 1")
-    if fock_truncation < 2:
-        raise ValueError("Fock truncation must be at least 2")
-    
-    # creating lst of spaces and a composite space
     spaces = [Space(size=fock_truncation, name=i) for i in range(n_modes)]
     return CompositeSpace(*spaces)

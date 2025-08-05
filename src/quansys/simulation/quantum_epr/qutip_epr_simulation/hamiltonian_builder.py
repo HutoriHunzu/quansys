@@ -5,7 +5,6 @@ Quantum Hamiltonian construction for EPR analysis.
 
 import numpy as np
 import qutip
-from numpy.typing import NDArray
 
 from .constants import reduced_flux_quantum, Planck
 from .matrix_operations import cosine_taylor_series
@@ -15,16 +14,17 @@ from .composite_space import CompositeSpace
 
 def build_quantum_hamiltonian(
         cspace: CompositeSpace,
-        frequencies_hz: NDArray[float],
-        inductances_h: NDArray[float],
-        junction_flux_zpfs: NDArray[float],
+        frequencies_hz: np.ndarray,
+        inductances_h: np.ndarray,
+        junction_flux_zpfs: np.ndarray,
         cosine_truncation: int = 5
     ) -> qutip.Qobj:
     """
     Build the quantum Hamiltonian for EPR analysis.
     
-    Takes linear mode frequencies and zero-point fluctuations to construct
-    the full Hamiltonian matrix assuming cosine junction potential.
+    Constructs H = H_linear + H_nonlinear where H_linear contains harmonic oscillator 
+    terms and H_nonlinear contains cosine junction interactions from the Josephson 
+    junction energy E_J * cos(phi/phi_0).
     """
     n_modes = len(frequencies_hz)
     n_junctions = len(inductances_h)
@@ -44,23 +44,19 @@ def build_quantum_hamiltonian(
 
 
 
-def _create_linear_part(cspace: CompositeSpace, frequencies_hz: NDArray):
-    """
-    creating number operator for each mode, expanding it (tensor with identity of the rest)
-    and then multiplying with the frequency
-    """
+def _create_linear_part(cspace: CompositeSpace, frequencies_hz: np.ndarray) -> qutip.Qobj:
+    """Create linear Hamiltonian part: sum(omega_i * n_i)."""
     ops = []
-    for mode_number, frequency_hz in enumerate(frequencies_hz):
-        space = cspace.spaces[mode_number]
-        op = frequency_hz * cspace.expand_operator(mode_number, space.num_op())
+    for space, frequency_hz in zip(cspace.spaces_ordered, frequencies_hz):
+        op = frequency_hz * cspace.expand_operator(space.name, space.num_op())
         ops.append(op)
 
-    return sum(ops)
+    return np.sum(ops)
 
 
-def _build_nonlinear_hamiltonian(zpfs: NDArray,
+def _build_nonlinear_hamiltonian(zpfs: np.ndarray,
                                  cspace: CompositeSpace,
-                                 junction_frequencies_hz: NDArray,
+                                 junction_frequencies_hz: np.ndarray,
                                  cosine_truncation: int) -> qutip.Qobj:
     """Build the nonlinear part of the Hamiltonian from cosine junction terms."""
 

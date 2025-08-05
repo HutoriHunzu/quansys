@@ -6,7 +6,7 @@ import qutip
 from math import factorial
 
 
-def cosine_matrix(operator):
+def cosine_matrix(operator: qutip.Qobj) -> qutip.Qobj:
     """
     Create exact cosine operator matrix using QutIP matrix exponentiation.
     
@@ -15,11 +15,11 @@ def cosine_matrix(operator):
     return 0.5 * ((1j * operator).expm() + (-1j * operator).expm())
 
 
-def cosine_taylor_series(operator, max_order: int = 8):
+def cosine_taylor_series(operator: qutip.Qobj, max_order: int = 8) -> qutip.Qobj:
     """
     Create Taylor series approximation of cosine.
     
-    Uses cos(x) ≈ sum((-1)^n * x^(2n) / (2n)!) for n=0 to max_order.
+    Uses cos(x) ≈ sum((-1)^n * x^(2n) / (2n)!) for n=2 to max_order.
     Note: Starts from n=2 to exclude constant and quadratic terms.
     """
     taylor_sum = qutip.qzero_like(operator)
