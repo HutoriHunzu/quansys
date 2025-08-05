@@ -241,13 +241,6 @@ class DistributedAnalysis:
         q_sol = self.post_api.get_solution_data(expressions=f"Q({mode_number})")
         return freq_sol.data_real()[0], q_sol.data_real()[0]
 
-    # def get_current_and(self, junctions_dict: Dict[str, str]):
-
-    # def _helper():
-    #     for junction_name, inductance_variable_name in junctions_dict.items():
-    #         get junction inductance
-    #         calculate peak current and peak voltage
-    # pass
     def calculate_peak_current_and_voltage(
         self, mode_frequency, junction_infos: Tuple[ParsedJunctionValues, ...]
     ):
@@ -315,10 +308,6 @@ class DistributedAnalysis:
         participation_ratio_capacitance = capacitance_energy / norm
 
         sign = np.sign(peak_voltages)
-
-        # REPORT preliminary
-        # pmj_ind = 0.5 * line_object_inductance * peak_current ** 2 / peak_total_electric_energy
-        # pmj_cap = 0.5 * line_object_capacitance * peak_voltage ** 2 / peak_total_electric_energy
 
         return ParticipationJunctionDataset(
             junctions_infos=junctions_infos,

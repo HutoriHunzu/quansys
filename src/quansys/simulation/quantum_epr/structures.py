@@ -1,4 +1,3 @@
-from typing import Dict, Tuple
 from numpy.typing import NDArray
 from dataclasses import dataclass, field
 from pydantic import BaseModel
@@ -45,7 +44,7 @@ class ParsedJunctionValues:
 
 @dataclass
 class ParticipationJunctionDataset:
-    junctions_infos: Tuple[ParsedJunctionValues, ...]
+    junctions_infos: tuple[ParsedJunctionValues, ...]
 
     participation_ratio_induction: NDArray
     participation_ratio_capacitance: NDArray
@@ -64,9 +63,9 @@ class ParticipationJunctionDataset:
 
 @dataclass
 class ParticipationDataset:
-    junctions_infos: Tuple[ParsedJunctionValues, ...]
-    labels_to_modes: Dict[str, int]
-    labels_order: Tuple[str, ...]
+    junctions_infos: tuple[ParsedJunctionValues, ...]
+    labels_to_modes: dict[str, int]
+    labels_order: tuple[str, ...]
     frequencies: NDArray
     quality_factors: NDArray
     inductances: NDArray
@@ -88,9 +87,9 @@ class ParticipationDataset:
 
     @classmethod
     def from_participation_junctions(
-            cls, label_to_junction_dataset_dict: Dict[str, ParticipationJunctionDataset],
-            labels_to_modes: Dict[str, int],
-            labels_to_freq_and_quality_factors: Dict[str, Dict[str, float | int]]) -> 'ParticipationDataset':
+            cls, label_to_junction_dataset_dict: dict[str, ParticipationJunctionDataset],
+            labels_to_modes: dict[str, int],
+            labels_to_freq_and_quality_factors: dict[str, dict[str, float | int]]) -> 'ParticipationDataset':
 
         if not label_to_junction_dataset_dict:
             raise ValueError("No instances provided for merging.")
