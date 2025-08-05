@@ -15,12 +15,12 @@ from .composite_space import CompositeSpace
 
 
 def build_quantum_hamiltonian(
+        cspace: CompositeSpace,
         frequencies_hz: NDArray[float],
         inductances_h: NDArray[float],
         junction_flux_zpfs: NDArray[float],
-        cosine_truncation: int = 5,
-        fock_truncation: int = 8,
-        return_separate_parts: bool = False) -> qutip.Qobj | tuple[qutip.Qobj, qutip.Qobj]:
+        cosine_truncation: int = 5
+    ) -> qutip.Qobj:
     """
     Build the quantum Hamiltonian for EPR analysis.
     
@@ -32,40 +32,17 @@ def build_quantum_hamiltonian(
 
     zpfs = np.transpose(np.array(junction_flux_zpfs))  # Ensure J x N shape
 
-    # creating lst of spaces and a composite space
-    cspace = _create_composite_space(n_modes, fock_truncation)
-
     junction_energies_j = reduced_flux_quantum ** 2 / inductances_h
     junction_frequencies_hz = junction_energies_j / h
 
     _validate_hamiltonian_inputs(frequencies_hz, inductances_h, zpfs, n_modes, n_junctions)
 
-    # Create mode operators
-    mode_field_operators = _create_mode_field_operators(n_modes, fock_truncation)
-    mode_number_operators = _create_mode_number_operators(n_modes, fock_truncation)
-
     # Build Hamiltonian parts
     linear_part = _create_linear_part(cspace, frequencies_hz)
-    linear_part_old = dot_product(frequencies_hz, mode_number_operators)
+    nonlinear_part = _build_nonlinear_hamiltonian(zpfs, cspace, junction_frequencies_hz, cosine_truncation)
 
-    nonlinear_part_old = _build_nonlinear_hamiltonian_old(
-        zpfs, mode_field_operators, junction_frequencies_hz, cosine_truncation
-    )
-    
-    nonlinear_part = _build_nonlinear_hamiltonian(
-        zpfs, cspace, junction_frequencies_hz, cosine_truncation
-    )
+    return linear_part + nonlinear_part
 
-    if return_separate_parts:
-        return linear_part, nonlinear_part
-    else:
-        return linear_part + nonlinear_part
-
-
-def _create_composite_space(n_modes: int, fock_truncation: int):
-    # creating lst of spaces and a composite space
-    spaces = [Space(size=fock_truncation, name=i) for i in range(n_modes)]
-    return CompositeSpace(*spaces)
 
 
 def _create_linear_part(cspace: CompositeSpace, frequencies_hz: NDArray):
@@ -107,47 +84,6 @@ def _build_nonlinear_hamiltonian(zpfs: NDArray,
     return np.sum(ops)
 
 
-def _create_mode_field_operators(n_modes: int, fock_truncation: int) -> list[qutip.Qobj]:
-    """Create field operators (x = a + a†) for all modes."""
-    annihilation = qutip.destroy(fock_truncation)
-    creation = annihilation.dag()
-    field_operator = annihilation + creation
-
-    return [_tensor_operator_at_mode(field_operator, mode_idx, n_modes, fock_truncation)
-            for mode_idx in range(n_modes)]
-
-
-def _create_mode_number_operators(n_modes: int, fock_truncation: int) -> list[qutip.Qobj]:
-    """Create number operators for all modes."""
-    number_operator = qutip.num(fock_truncation)
-
-    return [_tensor_operator_at_mode(number_operator, mode_idx, n_modes, fock_truncation)
-            for mode_idx in range(n_modes)]
-
-
-def _tensor_operator_at_mode(operator: qutip.Qobj, mode_index: int,
-                             n_modes: int, fock_truncation: int) -> qutip.Qobj:
-    """Create operator tensored with identities at other mode locations."""
-    operator_list = [qutip.qeye(fock_truncation) for _ in range(n_modes)]
-    operator_list[mode_index] = operator
-    return reduce(qutip.tensor, operator_list)
-
-
-def _build_nonlinear_hamiltonian_old(zpfs: np.ndarray, mode_field_operators: list[qutip.Qobj],
-                                 junction_frequencies_hz: np.ndarray,
-                                 cosine_truncation: int) -> qutip.Qobj:
-    """Build the nonlinear part of the Hamiltonian from cosine junction terms."""
-    cosine_arguments = [
-        dot_product(zpf_row / reduced_flux_quantum, mode_field_operators)
-        for zpf_row in zpfs
-    ]
-
-    cosine_terms = [
-        cosine_taylor_series(arg, cosine_truncation)
-        for arg in cosine_arguments
-    ]
-
-    return dot_product(-junction_frequencies_hz, cosine_terms)
 
 
 def _validate_hamiltonian_inputs(frequencies: np.ndarray, inductances: np.ndarray,
