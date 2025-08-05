@@ -4,10 +4,9 @@ Quantum Hamiltonian construction for EPR analysis.
 """
 
 from functools import reduce
-from typing import Union
 import numpy as np
 import qutip
-from blosc2 import NDArray
+from numpy.typing import NDArray
 
 from .constants import Planck as h, reduced_flux_quantum
 from .matrix_operations import dot_product, cosine_taylor_series
@@ -16,12 +15,12 @@ from .composite_space import CompositeSpace
 
 
 def build_quantum_hamiltonian(
-        frequencies_hz: np.ndarray,
-        inductances_h: np.ndarray,
-        junction_flux_zpfs: np.ndarray,
+        frequencies_hz: NDArray[float],
+        inductances_h: NDArray[float],
+        junction_flux_zpfs: NDArray[float],
         cosine_truncation: int = 5,
         fock_truncation: int = 8,
-        return_separate_parts: bool = False) -> Union[qutip.Qobj, tuple[qutip.Qobj, qutip.Qobj]]:
+        return_separate_parts: bool = False) -> qutip.Qobj | tuple[qutip.Qobj, qutip.Qobj]:
     """
     Build the quantum Hamiltonian for EPR analysis.
     
@@ -47,7 +46,7 @@ def build_quantum_hamiltonian(
 
     # Build Hamiltonian parts
     linear_part = _create_linear_part(cspace, frequencies_hz)
-    linear_part_2 = dot_product(frequencies_hz, mode_number_operators)
+    linear_part_old = dot_product(frequencies_hz, mode_number_operators)
 
     nonlinear_part_old = _build_nonlinear_hamiltonian_old(
         zpfs, mode_field_operators, junction_frequencies_hz, cosine_truncation
@@ -58,9 +57,9 @@ def build_quantum_hamiltonian(
     )
 
     if return_separate_parts:
-        return linear_part, nonlinear_part
+        return linear_part_old, nonlinear_part_old
     else:
-        return linear_part + nonlinear_part
+        return linear_part_old + nonlinear_part_old
 
 
 def _create_composite_space(n_modes: int, fock_truncation: int):
