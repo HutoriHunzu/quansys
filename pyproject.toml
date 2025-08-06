@@ -6,6 +6,8 @@ build-backend = "hatchling.build"
 [project]
 name = "quansys"
 version = "3.0.0"
+description = "Automated HFSS workflows for quantum circuit design and analysis"
+keywords = ["quantum", "hfss", "electromagnetic", "simulation", "epr", "superconducting", "circuits", "ansys", "automation"]
 dependencies = [
     "qutip",
     "pyaedt[all]",
@@ -23,13 +25,25 @@ authors = ["HutoriHunzu <uri.goldblatt@gmail.com>"]
 
 requires-python = ">=3.11"
 readme = "README.md"
+license = { text = "MIT" }
 classifiers = [
-"License :: OSI Approved :: MIT License",
-"Programming Language :: Python :: 3.11",
-"Operating System :: OS Independent"
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research", 
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
+    "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 
-license = { text = "MIT" }
+[project.urls]
+Homepage = "https://github.com/hutorihunzu/quansys"
+Documentation = "https://hutorihunzu.github.io/quansys"
+Repository = "https://github.com/hutorihunzu/quansys"
+Issues = "https://github.com/hutorihunzu/quansys/issues"
 
 
 [project.optional-dependencies]

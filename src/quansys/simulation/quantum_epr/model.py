@@ -28,6 +28,10 @@ class QuantumEPR(BaseAnalysis):
     and the chi matrix for quantum circuit modes. It integrates multiple simulation
     stages into a high-level quantum post-processing workflow.
 
+    The energy-participation-ratio method is based on:
+    "Energy-participation quantization of Josephson circuits"
+    DOI: https://doi.org/10.1038/s41534-021-00461-8
+
     Attributes:
         type: Simulation type identifier (always set to 'quantum_epr').
         design_name: Name of the HFSS design to use.
