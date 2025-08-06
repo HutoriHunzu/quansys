@@ -21,7 +21,7 @@ dependencies = [
     "nbmake"
 ]
 
-authors = ["HutoriHunzu <uri.goldblatt@gmail.com>"]
+authors = [ { name = "HutoriHunzu", email = "uri.goldblatt@gmail.com" }]
 
 requires-python = ">=3.11"
 readme = "README.md"

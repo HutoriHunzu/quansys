@@ -99,8 +99,8 @@ class EprCalculator:
         PJ, sign, frequencies_mat, junction_inductance_energy_ghz, phi_zpf, PJ_cap, n_zpf = self.get_epr_base_matrices()
         frequencies_ghz = self.participation_dataset.frequencies / 1e9
 
-        f1_nd, chi_nd = calculate_quantum_parameters(frequencies_ghz,
+        f1_nd_ghz, chi_nd_mhz = calculate_quantum_parameters(frequencies_ghz,
                                                      self.participation_dataset.inductances,
                                                      phi_zpf, cosine_truncation=8, fock_truncation=15)
 
-        return EprDiagResult(chi=chi_nd, frequencies=f1_nd * 1e-9)
+        return EprDiagResult(chi=chi_nd_mhz, frequencies=f1_nd_ghz)
