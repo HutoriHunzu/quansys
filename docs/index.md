@@ -1,6 +1,7 @@
 # 📡 Welcome to quansys
 
-**quansys** is a Python toolbox for *fully‑automated* **HFSS** workflows built on top of [PyAEDT](https://github.com/ansys/pyaedt), specifically designed for **IBM LSF cluster** environments.
+**quansys** is a Python toolbox for *fully‑automated* **HFSS** workflows built on top of [PyAEDT](https://github.com/ansys/pyaedt)
+supporting **pyepr** simulations based on on the energy-participation-ratio (EPR) method from [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1234567.svg )](https://doi.org/10.5281/zenodo.1234567 ).
 
 * **Structured workflows** – prepare → build → simulate → aggregate  
 * **Parameter sweeps** – run grid or custom sweeps with one command  
@@ -10,7 +11,7 @@
 
 ---
 
-## Where to begin🚀
+## Where to begin
 
 | Step | Doc |
 |------|-----|
