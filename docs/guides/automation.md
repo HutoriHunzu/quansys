@@ -37,7 +37,7 @@ from quansys.workflow import (
     DesignVariableBuilder, execute_workflow
 )
 from quansys.simulation import EigenmodeAnalysis
-from pykit.sweeper import DictSweep
+from pycaddy.sweeper import DictSweep
 
 cfg = WorkflowConfig(
     pyaedt_file_parameters=PyaedtFileParameters(
@@ -98,7 +98,7 @@ from quansys.workflow import (
     DesignVariableBuilder, execute_workflow
 )
 from quansys.simulation import 
-from pykit.sweeper import DictSweep
+from pycaddy.sweeper import DictSweep
 
 cfg = WorkflowConfig(
     pyaedt_file_parameters=PyaedtFileParameters

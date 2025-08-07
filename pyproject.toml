@@ -12,20 +12,18 @@ dependencies = [
     "qutip",
     "pyaedt[all]",
     "pint",
-    "h5py>=3.12.1",
     "pandas>=2.2.3",
     "pydantic_yaml", # Added typer as a dependency
     "typer",
     "pytest>=8.3.4",
-    "pykit @ git+https://github.com/HutoriHunzu/pykit.git",
-    "nbmake"
+    "pycaddy",
 ]
 
 authors = [ { name = "HutoriHunzu", email = "uri.goldblatt@gmail.com" }]
 
 requires-python = ">=3.11"
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research", 

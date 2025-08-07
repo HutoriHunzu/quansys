@@ -11,24 +11,21 @@
 
 ## 2 Install quansys
 
-Clone the repository and install it in *editable* mode (handy when you want to modify the source):
-
 ```bash
-git clone https://github.com/hutorihunzu/quansys.git
-pip install -e ./quansys          # standard pip
+pip install quansys          # standard pip
 ```
 
 !!! note "Prefer uv?"
     If you use [uv](https://github.com/astral-sh/uv) for faster installs:
     ```bash
-    uv pip install -e ./quansys
+    uv pip install quansys
     ```
 
 ## 3 Packages pulled in automatically
 
 - [PyAEDT](https://github.com/ansys/pyaedt) – Python bridge to HFSS 
-- [pykit](https://github.com/HutoriHunzu/pykit) – utilities for sweeping and safe data handling
-(See the [Automation](guides/automation.md) for how pykit is used.)
+- [pycaddy](https://pypi.org/project/pycaddy/) – utilities for sweeping and safe data handling
+(See the [Automation](guides/automation.md) for how pycaddy is used.)
 
 No manual installation is needed for these; `pip install quansys` brings them along.
 

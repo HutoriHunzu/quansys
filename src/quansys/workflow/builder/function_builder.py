@@ -1,7 +1,7 @@
 from pydantic import Field
 from .base import BaseBuilder
 from typing import Literal, Callable
-from pykit.dict_utils import merge_dicts
+from pycaddy.dict_utils import merge_dicts
 
 
 from ansys.aedt.core.hfss import Hfss

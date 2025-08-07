@@ -1,8 +1,8 @@
 import re
 from typing import Any, Callable, Sequence, TypeVar
 
-from pykit.dict_utils import flatten as flatten_dict
-from pykit.convert import parse_quantity
+from pycaddy.dict_utils import flatten as flatten_dict
+from pycaddy.convert import parse_quantity
 from functools import partial
 from datetime import timedelta
 

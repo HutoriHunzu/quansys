@@ -8,10 +8,10 @@ from .config import WorkflowConfig
 from .prepare import PrepareFolderConfig
 from ..simulation import SIMULATION_RESULTS_ADAPTER
 
-from pykit.project import Project, StorageMode
-from pykit.sweeper import ChainSweep
-from pykit.save import save_json
-from pykit.aggregator import Aggregator
+from pycaddy.project import Project, StorageMode
+from pycaddy.sweeper import ChainSweep
+from pycaddy.save import save_json
+from pycaddy.aggregator import Aggregator
 
 
 # ---------------------------------------------------------------------------
@@ -54,7 +54,7 @@ def execute_workflow(config: WorkflowConfig) -> None:
             DesignVariableBuilder, execute_workflow
         )
         from quansys.simulation import EigenmodeAnalysis
-        from pykit.sweeper import DictSweep
+        from pycaddy.sweeper import DictSweep
 
         cfg = WorkflowConfig(
             pyaedt_file_parameters=PyaedtFileParameters(
