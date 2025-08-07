@@ -1,6 +1,6 @@
 from quansys.workflow import WorkflowConfig, PyaedtFileParameters, DesignVariableBuilder, execute_workflow
 from quansys.simulation import EigenmodeAnalysis
-from pykit.sweeper import DictSweep
+from pycaddy.sweeper import DictSweep
 
 from pandas import read_csv
 

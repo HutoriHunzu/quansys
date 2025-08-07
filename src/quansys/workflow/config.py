@@ -6,7 +6,7 @@ from pydantic import BaseModel, BeforeValidator
 from pydantic_yaml import to_yaml_file, parse_yaml_file_as
 from typing_extensions import Annotated, TypeAlias
 
-from pykit.sweeper import EmptySweep, DictSweep
+from pycaddy.sweeper import EmptySweep, DictSweep
 
 from ..simulation import SUPPORTED_ANALYSIS
 
@@ -78,7 +78,7 @@ class WorkflowConfig(BaseModel):
             This dict is converted to `Aggregator` which than go for each key and aggregate
             its list of identifiers (e.g., flattening, validation, merging by UID).
 
-            See `pykit.aggregator.Aggregator` for behavior.
+            See `pycaddy.aggregator.Aggregator` for behavior.
     """
     root_folder: PathType = 'results'
     keep_hfss_solutions: bool = False
