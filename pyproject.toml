@@ -15,7 +15,6 @@ dependencies = [
     "pandas>=2.2.3",
     "pydantic_yaml", # Added typer as a dependency
     "typer",
-    "pytest>=8.3.4",
     "pycaddy",
 ]
 
@@ -56,6 +55,11 @@ mkdocs = [
 ]
 
 lint = [
+    "ruff"
+]
+
+test = [
+    "pytest",
     "ruff"
 ]
 
