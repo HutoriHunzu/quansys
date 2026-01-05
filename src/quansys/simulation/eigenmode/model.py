@@ -3,10 +3,15 @@ from typing import Literal
 
 from ansys.aedt.core.modules.solve_setup import Setup
 
-from ..base import (BaseAnalysis, SimulationTypesNames, set_design_and_get_setup,
-                    update_setup_parameters, validate_solution_type)
+from ..base import (
+    BaseAnalysis,
+    SimulationTypesNames,
+    set_design_and_get_setup,
+    update_setup_parameters,
+    validate_solution_type,
+)
 
-from .results import get_eigenmode_results, EigenmodeResults
+from .results import get_eigenmode_results, EigenmodeResults, SimpleProfile
 
 
 class EigenmodeAnalysis(BaseAnalysis):
@@ -25,13 +30,14 @@ class EigenmodeAnalysis(BaseAnalysis):
         setup_parameters: Optional dictionary of parameters to override the setup configuration.
         frequency_unit: Optional string to specify the frequency unit (default is 'GHz').
     """
+
     type: Literal[SimulationTypesNames.EIGENMODE] = SimulationTypesNames.EIGENMODE
     setup_name: str
     design_name: str
     cores: int = 4
     gpus: int = 0
     setup_parameters: dict = {}
-    frequency_unit: str = 'GHz'
+    frequency_unit: str = "GHz"
 
     def analyze(self, hfss: Hfss) -> EigenmodeResults:
         """
@@ -47,7 +53,7 @@ class EigenmodeAnalysis(BaseAnalysis):
             ValueError: If `hfss` is not a valid Hfss instance.
         """
         if not isinstance(hfss, Hfss):
-            raise ValueError('hfss given must be a Hfss instance')
+            raise ValueError("hfss given must be a Hfss instance")
 
         setup = set_design_and_get_setup(hfss, self.design_name, self.setup_name)
 
@@ -55,7 +61,7 @@ class EigenmodeAnalysis(BaseAnalysis):
         update_setup_parameters(setup, self.setup_parameters)
 
         # validate solution type
-        validate_solution_type(setup, setup_type='HfssEigen')
+        validate_solution_type(setup, setup_type="HfssEigen")
 
         # Analyze
         setup.analyze(cores=self.cores, gpus=self.gpus)
@@ -67,22 +73,21 @@ class EigenmodeAnalysis(BaseAnalysis):
         results = get_eigenmode_results(setup=setup)
 
         # Add profile information
-        results.profile = self.get_profile(setup)
+        results.profile = SimpleProfile.from_setup(setup)
 
         return results
 
+    # @staticmethod
+    # def get_profile(setup: Setup) -> dict:
+    #     """Generate a simulation report. Currently, a placeholder."""
+    #     # 1) get the profile (key → BinaryTreeNode)
+    #     profile = setup.get_profile()  # {'Setup1 : Sweep1' : BinaryTreeNode, ...}
 
-    @staticmethod
-    def get_profile(setup: Setup) -> dict:
-        """Generate a simulation report. Currently, a placeholder."""
-        # 1) get the profile (key → BinaryTreeNode)
-        profile = setup.get_profile()  # {'Setup1 : Sweep1' : BinaryTreeNode, ...}
+    #     # 2) turn every node into a plain nested dict
+    #     serializable = {k: v.jsonalize_tree() for k, v in profile.items()}
 
-        # 2) turn every node into a plain nested dict
-        serializable = {k: v.jsonalize_tree() for k, v in profile.items()}
+    #     # 3) remove first key as it is the variation string if the number of keys is 1
+    #     if len(list(serializable.keys())) == 1:
+    #         serializable = serializable[list(serializable.keys())[0]]
 
-        # 3) remove first key as it is the variation string if the number of keys is 1
-        if len(list(serializable.keys())) == 1:
-            serializable = serializable[list(serializable.keys())[0]]
-
-        return serializable
+    #     return serializable

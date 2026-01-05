@@ -10,8 +10,9 @@ builder_sweep:
     - constants: {}
       parameters:
           chip_base_width:
+          - 2.5mm
           - 3mm
-          - 4mm
+          - 3.5mm
       strategy: product
 
 prepare_folder:
