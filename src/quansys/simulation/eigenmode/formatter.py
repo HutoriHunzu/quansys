@@ -4,12 +4,6 @@ from typing import Literal
 from ..base.base_formatters import BaseResult, BaseFormatter
 
 
-# class BaseFormatter(BaseModel):
-#
-#     def format(self, setup) -> dict:
-#         raise NotImplementedError
-
-
 class FrequencyAndQualityFactorResult(BaseModel):
     frequency: float
     quality_factor: float

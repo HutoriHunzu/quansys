@@ -5,8 +5,8 @@ from pydantic import Field
 from .distributed_analysis import DistributedAnalysis
 from .epr_calculator import EprCalculator
 from .modes_to_labels import ModesToLabels
-from ..base import (BaseAnalysis, SimulationTypesNames, validate_and_set_design)
-from ..eigenmode.results import get_eigenmode_results
+from ..base import BaseAnalysis, SimulationTypesNames, validate_and_set_design
+from ..eigenmode.results import EigenmodeResults, get_eigenmode_results
 
 from .results import QuantumResults
 from .structures import ConfigJunction, EprDiagResult, ParticipationDataset
@@ -16,8 +16,6 @@ def ensure_list(value):
     if not isinstance(value, list):
         return [value]
     return value
-
-
 
 
 class QuantumEPR(BaseAnalysis):
@@ -43,8 +41,12 @@ class QuantumEPR(BaseAnalysis):
     type: Literal[SimulationTypesNames.QUANTUM_EPR] = SimulationTypesNames.QUANTUM_EPR
     design_name: str = Field(..., description="Design name in HFSS.")
     setup_name: str = Field(..., description="Setup name in HFSS.")
-    modes_to_labels: ModesToLabels | dict[int, str] = Field(..., description="Mode index-to-label mapping or parser.")
-    junctions_infos: list[ConfigJunction] = Field(..., description="List of junction configuration objects.")
+    modes_to_labels: ModesToLabels | dict[int, str] = Field(
+        ..., description="Mode index-to-label mapping or parser."
+    )
+    junctions_infos: list[ConfigJunction] = Field(
+        ..., description="List of junction configuration objects."
+    )
 
     def analyze(self, hfss: Hfss) -> QuantumResults:
         """
@@ -64,7 +66,7 @@ class QuantumEPR(BaseAnalysis):
         """
 
         if not isinstance(hfss, Hfss):
-            raise ValueError('hfss given must be a Hfss instance')
+            raise ValueError("hfss given must be a Hfss instance")
 
         validate_and_set_design(hfss, self.design_name)
 
@@ -78,25 +80,33 @@ class QuantumEPR(BaseAnalysis):
 
         # convert modes to labels to dict of int to str
         # in case of ModesToLabels object call for parse
+        simple_eigenmode_result = eigenmode_result.generate_simple_form()
         modes_to_labels = self.modes_to_labels
 
         if isinstance(modes_to_labels, ModesToLabels):
-            modes_to_labels = modes_to_labels.parse(eigenmode_result.generate_simple_form())
+            modes_to_labels = modes_to_labels.parse(simple_eigenmode_result)
 
-        epr, distributed = self._analyze(hfss, modes_to_labels)
+        epr, distributed = self._analyze(hfss, simple_eigenmode_result, modes_to_labels)
 
         return QuantumResults(
             epr=epr,
             distributed=distributed,
-            eigenmode_result=eigenmode_result.generate_a_labeled_version(modes_to_labels)
+            eigenmode_result=eigenmode_result.generate_a_labeled_version(
+                modes_to_labels
+            ),
         )
 
-    def _analyze(self, hfss: Hfss, modes_to_labels: dict[int, str]) -> tuple[EprDiagResult, ParticipationDataset]:
-        dst = DistributedAnalysis(hfss,
-                                  modes_to_labels=modes_to_labels,
-                                  junctions_infos=self.junctions_infos)
+    def _analyze(
+        self,
+        hfss: Hfss,
+        eigenmode_result: dict[int, dict[str, float]],
+        modes_to_labels: dict[int, str],
+    ) -> tuple[EprDiagResult, ParticipationDataset]:
+        dst = DistributedAnalysis(
+            hfss, modes_to_labels=modes_to_labels, junctions_infos=self.junctions_infos
+        )
 
-        distributed_result = dst.main()
+        distributed_result = dst.main(eigenmode_result)
 
         calc = EprCalculator(participation_dataset=distributed_result)
         epr_result = calc.epr_numerical_diagonalizing()

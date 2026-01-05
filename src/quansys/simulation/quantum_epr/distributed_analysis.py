@@ -6,9 +6,15 @@ from ansys.aedt.core.hfss import Hfss
 from ansys.aedt.core.visualization.post.post_common_3d import PostProcessor3D
 from numpy.typing import NDArray
 
-from .structures import (ConfigJunction, ParsedJunctionValues,
-                         ParticipationDataset, ParticipationJunctionDataset,
-                         variables_types)
+from quansys.simulation.eigenmode.results import EigenmodeResults
+
+from .structures import (
+    ConfigJunction,
+    ParsedJunctionValues,
+    ParticipationDataset,
+    ParticipationJunctionDataset,
+    variables_types,
+)
 
 
 def inverse_dict(d: dict):
@@ -62,7 +68,6 @@ class DistributedAnalysis:
                 )
 
     def calc_total_electric_energy(self, use_smooth=False):
-
         add_electric_field = ["Fundamental_Quantity('E')"]
         if use_smooth:
             add_electric_field += ["Operation('Smooth')"]
@@ -97,7 +102,6 @@ class DistributedAnalysis:
         return calculator_read(self.field_calculator, expression_name)
 
     def calc_total_magnetic_energy(self, use_smooth=False):
-
         add_magnetic_field = ["NameOfExpression('<Hx,Hy,Hz>')"]
         if use_smooth:
             add_magnetic_field += ["Operation('Smooth')"]
@@ -144,7 +148,6 @@ class DistributedAnalysis:
     def _calculate_line_voltage(
         self, freq, line_object_name, line_inductance, use_smooth=False
     ):
-
         add_electric_field = ["Fundamental_Quantity('E')"]
         if use_smooth:
             add_electric_field += ["Operation('Smooth')"]
@@ -206,32 +209,26 @@ class DistributedAnalysis:
         impedance = omega * line_inductance
         return peak_voltage / impedance, peak_voltage
 
-    def parse_modes_and_set_number_of_modes(self):
+    def parse_modes_and_set_number_of_modes(self, eigenmode_result):
+        modes = set(eigenmode_result.keys())
 
-        # q_factors_names = self.post_api.available_report_quantities(quantities_category='Eigen Q')
-        modes_names = self.post_api.available_report_quantities(
-            quantities_category="Eigen Modes"
-        )
-
-        self.number_of_modes = len(modes_names)
+        self.number_of_modes = len(modes)
 
         # checking that the required modes appear in the supported list
-        for mode_number in self.modes_to_labels.keys():
-            mode_number = str(mode_number)
-            if f"Mode({mode_number})" not in modes_names:
-                raise ValueError(
-                    f"Cannot find mode number: {mode_number} in the mode solutions: {modes_names}"
-                )
+        modes_from_labels = set(self.modes_to_labels.keys())
+        if not modes_from_labels <= modes:
+            raise ValueError(
+                f"Selected modes {modes_from_labels} is not subset of available modes {modes}"
+            )
 
-    def get_mode_frequency_and_q_factor(self, mode_number):
-        freq_sol = self.post_api.get_solution_data(expressions=f"Mode({mode_number})")
-        q_sol = self.post_api.get_solution_data(expressions=f"Q({mode_number})")
-        return freq_sol.data_real()[0], q_sol.data_real()[0]
+    # def get_mode_frequency_and_q_factor(self, mode_number):
+    #     freq_sol = self.post_api.get_solution_data(expressions=f"Mode({mode_number})")
+    #     q_sol = self.post_api.get_solution_data(expressions=f"Q({mode_number})")
+    #     return freq_sol.data_real()[0], q_sol.data_real()[0]
 
     def calculate_peak_current_and_voltage(
         self, mode_frequency, junction_infos: Tuple[ParsedJunctionValues, ...]
     ):
-
         def helper():
             for info in junction_infos:
                 yield self._calculate_line_voltage(
@@ -248,7 +245,6 @@ class DistributedAnalysis:
         peak_voltages: NDArray,
         infos: Tuple[ParsedJunctionValues, ...],
     ):
-
         inductances = np.array(list(map(lambda x: x.inductance.value, infos)))
         capacitances = np.array(list(map(lambda x: x.capacitance.value, infos)))
 
@@ -264,7 +260,6 @@ class DistributedAnalysis:
         two_times_total_peak_electric_energy,
         junctions_infos: Tuple[ParsedJunctionValues, ...],
     ):
-
         junctions_infos = tuple(junctions_infos)
 
         peak_total_magnetic_energy = two_times_total_peak_magnetic_energy / 2
@@ -313,13 +308,16 @@ class DistributedAnalysis:
             diff=diff,
         )
 
-    def get_all_frequencies_and_q_factors_with_labels(self):
-        d = {
-            label: self.get_mode_frequency_and_q_factor(mode_number)
+    def get_all_frequencies_and_q_factors_with_labels(
+        self, eigenmode_result: dict[int, dict[str, float]]
+    ):
+        return {
+            label: {
+                "freq": eigenmode_result[mode_number]["frequency"],
+                "q_factor": eigenmode_result[mode_number]["quality_factor"],
+            }
             for mode_number, label in self.modes_to_labels.items()
         }
-
-        return {k: {"freq": v[0], "q_factor": v[1]} for k, v in d.items()}
 
     def get_inductance_and_capacitance(self, inductance_variable_name):
         inductance = self.hfss.get_evaluated_value(inductance_variable_name)
@@ -329,7 +327,6 @@ class DistributedAnalysis:
     def _parse_junctions_infos_to_values(
         self, label_to_freq_and_qfactor
     ) -> Tuple[ParsedJunctionValues, ...]:
-
         def helper():
             for info in self.junctions_infos:
                 inductance, capacitance = self.get_inductance_and_capacitance(
@@ -344,14 +341,15 @@ class DistributedAnalysis:
 
         return tuple(helper())
 
-    def main(self) -> ParticipationDataset:
-
+    def main(
+        self, eigenmode_result: dict[int, dict[str, float]]
+    ) -> ParticipationDataset:
         # parsing to make sure the total number of modes is correct
-        self.parse_modes_and_set_number_of_modes()
+        self.parse_modes_and_set_number_of_modes(eigenmode_result)
 
         # getting frequencies and q factors for all modes
         label_to_frequency_and_q_factor = (
-            self.get_all_frequencies_and_q_factors_with_labels()
+            self.get_all_frequencies_and_q_factors_with_labels(eigenmode_result)
         )
 
         # parsing junctions infos into parsed junction values
@@ -370,7 +368,7 @@ class DistributedAnalysis:
             two_times_total_peak_magnetic_energy = self.calc_total_magnetic_energy()
             two_times_peak_total_electric_energy = self.calc_total_electric_energy()
 
-            # get current mode frequecy
+            # get current mode frequency
             frequency = label_to_frequency_and_q_factor[label]["freq"]  # SI
 
             # calculate p junction
