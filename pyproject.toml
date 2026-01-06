@@ -10,7 +10,7 @@ description = "Automated HFSS workflows for quantum circuit design and analysis"
 keywords = ["quantum", "hfss", "electromagnetic", "simulation", "epr", "superconducting", "circuits", "ansys", "automation"]
 dependencies = [
     "qutip",
-    "pyaedt[all]",
+    "pyaedt[all]==0.23.0",
     "pint",
     "pandas>=2.2.3",
     "pydantic_yaml", # Added typer as a dependency

@@ -23,7 +23,6 @@ def ensure_path(s: str | Path) -> Path:
 PathType: TypeAlias = Annotated[Path, BeforeValidator(ensure_path)]
 
 
-
 class WorkflowConfig(BaseModel):
     """
     Top-level configuration model for a simulation workflow.
@@ -80,11 +79,11 @@ class WorkflowConfig(BaseModel):
 
             See `pycaddy.aggregator.Aggregator` for behavior.
     """
-    root_folder: PathType = 'results'
+
+    root_folder: PathType = "results"
     keep_hfss_solutions: bool = False
     pyaedt_file_parameters: PyaedtFileParameters
     simulations: dict[str, SUPPORTED_ANALYSIS]
-
 
     builder: SUPPORTED_BUILDERS | None = None
     builder_sweep: list[DictSweep] = EmptySweep()

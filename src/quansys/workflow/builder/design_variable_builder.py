@@ -5,7 +5,6 @@ from ansys.aedt.core.hfss import Hfss
 from .design_variables_handler import set_variables
 
 
-
 class DesignVariableBuilder(BaseBuilder):
     """
     Builder for setting design variables in an HFSS model.
@@ -18,12 +17,10 @@ class DesignVariableBuilder(BaseBuilder):
         design_name: Name of the HFSS design to activate.
     """
 
-    type: Literal['design_variable_builder'] = 'design_variable_builder'
+    type: Literal["design_variable_builder"] = "design_variable_builder"
     design_name: str
 
-    def build(self, hfss: Hfss,
-              parameters: dict = None) -> dict:
-
+    def build(self, hfss: Hfss, parameters: dict = None) -> dict:
         """
         Apply design variables to the HFSS project.
 

@@ -15,7 +15,7 @@ def convert_from_si(value, to_unit):
     Returns:
         float: The converted value.
     """
-    if to_unit == '':
+    if to_unit == "":
         return value
 
     # Create a quantity in SI base units (assume it's already in SI)
@@ -39,7 +39,9 @@ def convert_to_si(value: float | int, unit: str = None) -> float:
         float: The value converted to SI units, or the original value if unitless.
     """
 
-    if not unit or unit == '':  # If unit is None or an empty string, return the value as is
+    if (
+        not unit or unit == ""
+    ):  # If unit is None or an empty string, return the value as is
         return value
 
     try:

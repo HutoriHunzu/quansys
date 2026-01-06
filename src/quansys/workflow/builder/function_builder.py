@@ -36,12 +36,12 @@ class FunctionBuilder(BaseBuilder):
         function: Callable object (excluded from serialization).
         args: Static arguments passed to the function at runtime.
     """
-    type: Literal['function_builder'] = 'function_builder'
+
+    type: Literal["function_builder"] = "function_builder"
     function: Callable[[Hfss, ...], dict] = Field(..., exclude=True)
     args: dict = Field(default_factory=dict)
 
-    def build(self, hfss: Hfss,
-              parameters: dict | None = None) -> dict:
+    def build(self, hfss: Hfss, parameters: dict | None = None) -> dict:
         """
         Call the user-defined function with merged arguments.
 

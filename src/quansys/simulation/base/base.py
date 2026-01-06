@@ -8,7 +8,7 @@ FlatDictAdapter = TypeAdapter(FlatDictType)
 
 
 class SupportedSetupTypes:
-    EIGENMODE = 'HfssEigen'
+    EIGENMODE = "HfssEigen"
 
 
 class SimulationTypesNames(StrEnum):

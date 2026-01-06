@@ -7,14 +7,12 @@ from .quantum_epr import QuantumEPR, QuantumResults, ConfigJunction
 from .base import SimulationTypesNames, BaseSimulationOutput, BaseAnalysis
 
 SUPPORTED_ANALYSIS = Annotated[
-    EigenmodeAnalysis | DriveModelAnalysis | QuantumEPR,
-    Field(discriminator="type")
+    EigenmodeAnalysis | DriveModelAnalysis | QuantumEPR, Field(discriminator="type")
 ]
 ANALYSIS_ADAPTER = TypeAdapter(SUPPORTED_ANALYSIS)
 
 SUPPORTED_RESULTS = Annotated[
-    EigenmodeResults | QuantumResults,
-    Field(discriminator="type")
+    EigenmodeResults | QuantumResults, Field(discriminator="type")
 ]
 SIMULATION_RESULTS_ADAPTER = TypeAdapter(SUPPORTED_RESULTS)
 

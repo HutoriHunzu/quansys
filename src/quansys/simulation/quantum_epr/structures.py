@@ -19,6 +19,7 @@ class ConfigJunction(BaseModel):
         inductance_variable_name (str):
             The name of the variable that defines this junction’s inductance.
     """
+
     line_name: str
     inductance_variable_name: str
 
@@ -27,16 +28,17 @@ class ConfigJunction(BaseModel):
 class EprDiagResult:
     chi: NDArray
     frequencies: NDArray
-    chi_unit: str = 'MHz'
-    frequencies_unit: str = 'GHz'
-
+    chi_unit: str = "MHz"
+    frequencies_unit: str = "GHz"
 
 
 @dataclass
 class ParsedJunctionValues:
     info: ConfigJunction
     inductance: variables_types.Value
-    capacitance: variables_types.Value = field(default_factory=lambda: variables_types.Value(value=2e-15))
+    capacitance: variables_types.Value = field(
+        default_factory=lambda: variables_types.Value(value=2e-15)
+    )
 
 
 # T = TypeVar('T', bound='ParticipationDataset')
@@ -87,15 +89,17 @@ class ParticipationDataset:
 
     @classmethod
     def from_participation_junctions(
-            cls, label_to_junction_dataset_dict: dict[str, ParticipationJunctionDataset],
-            labels_to_modes: dict[str, int],
-            labels_to_freq_and_quality_factors: dict[str, dict[str, float | int]]) -> 'ParticipationDataset':
-
+        cls,
+        label_to_junction_dataset_dict: dict[str, ParticipationJunctionDataset],
+        labels_to_modes: dict[str, int],
+        labels_to_freq_and_quality_factors: dict[str, dict[str, float | int]],
+    ) -> "ParticipationDataset":
         if not label_to_junction_dataset_dict:
             raise ValueError("No instances provided for merging.")
 
         junctions_infos = list(label_to_junction_dataset_dict.values())[
-            0].junctions_infos  # Assuming all have the same junctions_infos
+            0
+        ].junctions_infos  # Assuming all have the same junctions_infos
 
         # Initialize lists to collect each attribute
         participation_ratio_induction = []
@@ -122,7 +126,9 @@ class ParticipationDataset:
         for label, instance in label_to_junction_dataset_dict.items():
             labels_order.append(label)
             participation_ratio_induction.append(instance.participation_ratio_induction)
-            participation_ratio_capacitance.append(instance.participation_ratio_capacitance)
+            participation_ratio_capacitance.append(
+                instance.participation_ratio_capacitance
+            )
             sign.append(instance.sign)
             peak_currents.append(instance.peak_currents)
             peak_voltages.append(instance.peak_voltages)
@@ -134,8 +140,10 @@ class ParticipationDataset:
             peak_total_electric_energy.append(instance.peak_total_electric_energy)
             norm.append(instance.norm)
             diff.append(instance.diff)
-            frequencies.append(labels_to_freq_and_quality_factors[label]['freq'])
-            quality_factors.append(labels_to_freq_and_quality_factors[label]['q_factor'])
+            frequencies.append(labels_to_freq_and_quality_factors[label]["freq"])
+            quality_factors.append(
+                labels_to_freq_and_quality_factors[label]["q_factor"]
+            )
 
         for junction in junctions_infos:
             capacitances.append(junction.capacitance.value)
@@ -161,9 +169,5 @@ class ParticipationDataset:
             quality_factors=np.array(quality_factors),
             frequencies=np.array(frequencies),
             capacitances=np.array(capacitances),
-            inductances=np.array(inductances)
+            inductances=np.array(inductances),
         )
-
-
-
-

@@ -6,8 +6,7 @@ from .function_builder import FunctionBuilder
 from .module_builder import ModuleBuilder
 
 SUPPORTED_BUILDERS: TypeAlias = Annotated[
-    DesignVariableBuilder | FunctionBuilder | ModuleBuilder,
-    Field(discriminator="type")
+    DesignVariableBuilder | FunctionBuilder | ModuleBuilder, Field(discriminator="type")
 ]
 
 __all__ = [

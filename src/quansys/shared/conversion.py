@@ -6,13 +6,8 @@ ureg.formatter.default_format = "~"
 
 
 # Define the canonical units and their multipliers relative to Hz.
-case_sensitive_units = ('Hz', 'kHz', 'MHz', 'GHz')
-multipliers = {
-    'Hz': 1,
-    'kHz': 1e3,
-    'MHz': 1e6,
-    'GHz': 1e9
-}
+case_sensitive_units = ("Hz", "kHz", "MHz", "GHz")
+multipliers = {"Hz": 1, "kHz": 1e3, "MHz": 1e6, "GHz": 1e9}
 
 # Add lower-case aliases for each canonical unit.
 for canonical in case_sensitive_units:
@@ -37,7 +32,7 @@ def is_dimensionless(unit: str | None) -> bool:
     Returns:
         bool: True if the unit is None or empty (after stripping whitespace), False otherwise.
     """
-    return not unit or unit.strip() == ''
+    return not unit or unit.strip() == ""
 
 
 class SIConverter:
@@ -96,17 +91,23 @@ class SIConverter:
             # Determine the SI base unit corresponding to the target unit.
             base_unit = ureg.Quantity(1, target_unit).to_base_units().units
         except Exception as e:
-            raise ValueError(f"Error determining SI base unit for target '{target_unit}': {e}")
+            raise ValueError(
+                f"Error determining SI base unit for target '{target_unit}': {e}"
+            )
         try:
             # Create a quantity in SI using the determined base unit and convert it.
             quantity = ureg.Quantity(value, base_unit)
             converted_quantity = quantity.to(target_unit)
         except Exception as e:
-            raise ValueError(f"Error converting from SI to target unit '{target_unit}': {e}")
+            raise ValueError(
+                f"Error converting from SI to target unit '{target_unit}': {e}"
+            )
         return converted_quantity.magnitude, str(converted_quantity.units)
 
 
-def convert(value: float | int, unit: str, target_unit: str | None) -> tuple[float, str]:
+def convert(
+    value: float | int, unit: str, target_unit: str | None
+) -> tuple[float, str]:
     """
     Convert a value from one arbitrary unit to another directly.
 
@@ -126,17 +127,19 @@ def convert(value: float | int, unit: str, target_unit: str | None) -> tuple[flo
     Raises:
         ValueError: If the conversion fails.
     """
-    if target_unit is None or target_unit == '':
+    if target_unit is None or target_unit == "":
         return value, unit
 
     if is_dimensionless(unit):
         # Input is dimensionless; nothing to convert.
-        return value, ''
+        return value, ""
     try:
         quantity = ureg.Quantity(value, unit)
         converted_quantity = quantity.to(target_unit)
     except Exception as e:
-        raise ValueError(f"Error converting {value} from '{unit}' to '{target_unit}': {e}")
+        raise ValueError(
+            f"Error converting {value} from '{unit}' to '{target_unit}': {e}"
+        )
     return converted_quantity.magnitude, str(converted_quantity.units)
 
 
@@ -167,5 +170,3 @@ if __name__ == "__main__":
     # Example 5: Convert 3.5 inches to centimeters.
     cm_value, cm_unit = convert(3.5, "khz", "GHz")
     print(f"3.5 inch -> centimeter: {cm_value} {cm_unit}")
-
-

@@ -6,7 +6,6 @@ from ansys.aedt.core.hfss import Hfss
 from ansys.aedt.core.visualization.post.post_common_3d import PostProcessor3D
 from numpy.typing import NDArray
 
-from quansys.simulation.eigenmode.results import EigenmodeResults
 
 from .structures import (
     ConfigJunction,

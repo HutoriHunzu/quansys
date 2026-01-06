@@ -1,4 +1,3 @@
-
 # Define the paths to your notebooks
 notebook_paths = [
     "./tutorial/01_simulations.ipynb",
@@ -6,7 +5,7 @@ notebook_paths = [
     "./tutorial/03_builder.ipynb",
     "./tutorial/04_sweeper.ipynb",
     "./tutorial/05_data_handler.ipynb",
-    "./tutorial/06_workflow.ipynb"
+    "./tutorial/06_workflow.ipynb",
 ]
 
 # @pytest.mark.tutorial

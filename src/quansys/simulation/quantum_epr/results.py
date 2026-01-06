@@ -9,7 +9,7 @@ from ..eigenmode.results import EigenmodeResults
 from typing_extensions import Annotated
 from pydantic import BeforeValidator, ConfigDict, PlainSerializer, Field
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 # def factory_custom_dataclass_before_validator(cls: Type[T], x: dict) -> T:
@@ -58,10 +58,18 @@ class QuantumResults(BaseSimulationOutput):
         eigenmode_result: Labeled EigenmodeResults used in the computation.
     """
 
-    type: Literal[SimulationOutputTypesNames.QUANTUM_EPR_RESULT] = SimulationOutputTypesNames.QUANTUM_EPR_RESULT
-    epr: EprDiagResultType = Field(..., description="Numerical diagonalization and chi matrix result.")
-    distributed: ParticipationDatasetType = Field(..., description="Participation dataset from distributed simulation.")
-    eigenmode_result: EigenmodeResults = Field(..., description="Labeled eigenmode result object.")
+    type: Literal[SimulationOutputTypesNames.QUANTUM_EPR_RESULT] = (
+        SimulationOutputTypesNames.QUANTUM_EPR_RESULT
+    )
+    epr: EprDiagResultType = Field(
+        ..., description="Numerical diagonalization and chi matrix result."
+    )
+    distributed: ParticipationDatasetType = Field(
+        ..., description="Participation dataset from distributed simulation."
+    )
+    eigenmode_result: EigenmodeResults = Field(
+        ..., description="Labeled eigenmode result object."
+    )
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -83,8 +91,6 @@ class QuantumResults(BaseSimulationOutput):
         flat_dict.update(frequencies_flat_dict)
         return flat_dict
 
-
-
     def _flatten_chi(self) -> Iterable[tuple[str, float]]:
         """
         Internal method to flatten the chi matrix into labeled scalar values.
@@ -97,7 +103,9 @@ class QuantumResults(BaseSimulationOutput):
         chi_matrix = self.epr.chi
 
         if not np.isrealobj(chi_matrix):
-            raise ValueError("The chi matrix contains complex values. Only real values are supported.")
+            raise ValueError(
+                "The chi matrix contains complex values. Only real values are supported."
+            )
 
         # Flatten chi matrix into unique label pairs using combinations
         for (i, label_1), (j, label_2) in combinations(enumerate(labels), 2):
@@ -127,15 +135,14 @@ class QuantumResults(BaseSimulationOutput):
         labels = self.distributed.labels_order
         frequencies = self.epr.frequencies
 
-        for label, frequency, single_mode_result in zip(labels, frequencies, self.eigenmode_result.results.values()):
-
+        for label, frequency, single_mode_result in zip(
+            labels, frequencies, self.eigenmode_result.results.values()
+        ):
             unit = self.epr.frequencies_unit
             single_mode_result.change_frequency_unit(unit)
 
-            key = f'{label} Freq. ND ({unit})'
+            key = f"{label} Freq. ND ({unit})"
             value = float(frequency)
 
             yield key, value
             yield from single_mode_result.flatten().items()
-
-

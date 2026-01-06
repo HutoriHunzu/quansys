@@ -5,10 +5,8 @@ from ansys.aedt.core.hfss import Hfss
 
 
 class BaseBuilder(BaseModel, ABC):
-
     @abstractmethod
-    def build(self, hfss: Hfss,
-              parameters: dict | None = None) -> dict:
+    def build(self, hfss: Hfss, parameters: dict | None = None) -> dict:
         pass
 
     # def build(self,

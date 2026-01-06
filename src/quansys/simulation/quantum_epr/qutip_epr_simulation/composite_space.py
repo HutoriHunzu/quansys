@@ -10,7 +10,9 @@ class CompositeSpace:
 
     def __init__(self, *args: Space):
         self.spaces_ordered = args
-        self.spaces: dict[str | int, Space] = {space.name: space for space in self.spaces_ordered}
+        self.spaces: dict[str | int, Space] = {
+            space.name: space for space in self.spaces_ordered
+        }
 
     def tensor(self, name_op_dict: dict[str | int, qt.Qobj]) -> qt.Qobj:
         """Tensor product of operators. Uses identity for unspecified spaces."""

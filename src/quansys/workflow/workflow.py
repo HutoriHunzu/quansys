@@ -80,7 +80,6 @@ def execute_workflow(config: WorkflowConfig) -> None:
     chain_sweep = ChainSweep(sweepers=config.builder_sweep)
 
     for params in chain_sweep.generate():
-
         # 1. PREPARE (copy template .aedt if policy allows)
         run_params = _prepare_folder_phase(
             cfg=config.prepare_folder,
@@ -98,7 +97,7 @@ def execute_workflow(config: WorkflowConfig) -> None:
             params,
             run_params.model_copy(),
             config.keep_hfss_solutions,
-            iteration_proj
+            iteration_proj,
         )
 
     # 4. AGGREGATION
@@ -129,7 +128,7 @@ def _prepare_folder_phase(
     session = project.session("prepare", params=params)
 
     if session.is_done():
-        hfss_path = session.files['hfss']
+        hfss_path = session.files["hfss"]
         return pyaedt.model_copy(update={"file_path": hfss_path})
 
     session.start()
@@ -139,14 +138,13 @@ def _prepare_folder_phase(
     if pyaedt.file_path.exists():
         shutil.copy2(pyaedt.file_path, dest)
 
-    session.attach_files({'hfss': dest})
+    session.attach_files({"hfss": dest})
 
     session.done()
     return pyaedt.model_copy(update={"file_path": dest})
 
 
 def _build_phase(builder, pyaedt_params, params, project):
-
     session = project.session("build", params=params)
 
     if session.is_done():
@@ -154,21 +152,22 @@ def _build_phase(builder, pyaedt_params, params, project):
 
     session.start()
 
-    parameters_path = session.path('parameters.json')
+    parameters_path = session.path("parameters.json")
     save_json(parameters_path, params)
-    session.attach_files({'data': parameters_path})
+    session.attach_files({"data": parameters_path})
 
     with pyaedt_params.open_pyaedt_file() as hfss:
         builder.build(hfss, parameters=params)
     session.done()
 
 
-def _simulations_phase(identifier_simulation_dict,
-                       params: dict,
-                       run_params: PyaedtFileParameters,
-                       keep_hfss_solutions: bool,
-                       project: Project):
-
+def _simulations_phase(
+    identifier_simulation_dict,
+    params: dict,
+    run_params: PyaedtFileParameters,
+    keep_hfss_solutions: bool,
+    project: Project,
+):
     designs = []
 
     for identifier, simulation in identifier_simulation_dict.items():
@@ -176,19 +175,16 @@ def _simulations_phase(identifier_simulation_dict,
         if session.is_done():
             continue
 
-
         designs.append(simulation.design_name)
 
         run_params.design_name = simulation.design_name
         with run_params.open_pyaedt_file() as hfss:
-
             session.start()
             result = simulation.analyze(hfss=hfss)
             path = session.path(suffix=".json")
             save_json(path, result.model_dump())
             session.attach_files({"data": path})
             session.done()
-
 
     if not keep_hfss_solutions:
         with run_params.open_pyaedt_file() as hfss:
@@ -197,7 +193,9 @@ def _simulations_phase(identifier_simulation_dict,
                 hfss.cleanup_solution()
 
 
-def _aggregation_phase(name: str, aggregator: Aggregator, project: Project, iteration_project: Project):
+def _aggregation_phase(
+    name: str, aggregator: Aggregator, project: Project, iteration_project: Project
+):
     session = project.session(identifier=name, storage_mode=StorageMode.PREFIX)
     if session.is_done():
         return
@@ -209,7 +207,7 @@ def _aggregation_phase(name: str, aggregator: Aggregator, project: Project, iter
         relpath=iteration_project.relpath,
         adapter=SIMULATION_RESULTS_ADAPTER,
     )
-    path = session.path(suffix='.csv', include_uid=False)
+    path = session.path(suffix=".csv", include_uid=False)
     pd.DataFrame(results).to_csv(path)
     session.attach_files({"data": path})
     session.done()

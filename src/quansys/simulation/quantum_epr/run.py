@@ -8,15 +8,13 @@ from .epr_calculator import EprCalculator
 
 
 def run(
-        hfss: Hfss,
-        modes_to_labels: Dict[int, str],
-        junctions_infos: List[ConfigJunction],
-        ):
-
-
-    dst = DistributedAnalysis(hfss,
-                              modes_to_labels=modes_to_labels,
-                              junctions_infos=junctions_infos)
+    hfss: Hfss,
+    modes_to_labels: Dict[int, str],
+    junctions_infos: List[ConfigJunction],
+):
+    dst = DistributedAnalysis(
+        hfss, modes_to_labels=modes_to_labels, junctions_infos=junctions_infos
+    )
 
     distributed_result = dst.main()
 
@@ -29,7 +27,4 @@ def run(
     # saving epr calculation
     # json_write(dir_path / f'epr{suffix}.json', epr_result)
 
-    return QuantumResult(
-        epr=epr_result,
-        distributed=distributed_result
-    )
+    return QuantumResult(epr=epr_result, distributed=distributed_result)

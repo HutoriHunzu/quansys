@@ -25,7 +25,7 @@ _SINGLE_LETTER_SI = re.compile(
 )
 
 
-def _normalise_mem(s: str, unit: str = 'GB') -> float:
+def _normalise_mem(s: str, unit: str = "GB") -> float:
     """
     Turn '128 M' -> '128 MB'. Leave '512 MiB', '88.1 GB' untouched.
     Non-strings should be handled upstream.
@@ -62,11 +62,11 @@ def _tokens_lower(path: tuple[str, ...]) -> tuple[str, ...]:
 
 
 def _path_matches(
-        path: tuple[str, ...],
-        *,
-        include: Sequence[str] = (),
-        exclude: Sequence[str] = (),
-        last: str | None = None,
+    path: tuple[str, ...],
+    *,
+    include: Sequence[str] = (),
+    exclude: Sequence[str] = (),
+    last: str | None = None,
 ) -> bool:
     """
     include: every word must appear at least once across tokens (substring match).
@@ -94,11 +94,11 @@ def _path_matches(
 
 
 def _convert_via_parse_quantity(
-        raw: Any,
-        *,
-        target_unit: str,
-        default_unit_for_numbers: str | None = None,
-        normalise: Callable[[str], str] | None = None,
+    raw: Any,
+    *,
+    target_unit: str,
+    default_unit_for_numbers: str | None = None,
+    normalise: Callable[[str], str] | None = None,
 ) -> float | None:
     """
     Convert `raw` to the target unit using your `parse_quantity`.
@@ -129,16 +129,17 @@ def _convert_via_parse_quantity(
 # Generic metric extractor
 # -------------------------
 
+
 def extract_metric(
-        profile: dict[str, Any] | None,
-        *,
-        metric_name: str,
-        include: Sequence[str],
-        exclude: Sequence[str] = (),
-        last: str | None = None,
-        aggregator: Callable[[list[float]], float] = max,
-        normaliser: Callable[[str], Any] | None = None,
-        formatter: Callable[[Any], str] | None = str
+    profile: dict[str, Any] | None,
+    *,
+    metric_name: str,
+    include: Sequence[str],
+    exclude: Sequence[str] = (),
+    last: str | None = None,
+    aggregator: Callable[[list[float]], float] = max,
+    normaliser: Callable[[str], Any] | None = None,
+    formatter: Callable[[Any], str] | None = str,
 ) -> dict[str, Any]:
     """
     Flatten the profile (with your flatten_dict), select matching paths, convert via parse_quantity,
@@ -159,7 +160,6 @@ def extract_metric(
     values: list = []
 
     for path, raw in flat.items():
-
         if not _path_matches(path, include=include, exclude=exclude, last=last):
             continue
 
@@ -183,14 +183,15 @@ def extract_metric(
 # Ready-to-use wrappers
 # -------------------------
 
+
 def extract_memory_gb(
-        profile: dict[str, Any] | None,
-        *,
-        include: Sequence[str] = ("memory",),
-        exclude: Sequence[str] = ("hpc group",),
-        last: str | None = "memory",
-        aggregator: Callable[[list[float]], float] = max,
-        unit: str = 'GB'
+    profile: dict[str, Any] | None,
+    *,
+    include: Sequence[str] = ("memory",),
+    exclude: Sequence[str] = ("hpc group",),
+    last: str | None = "memory",
+    aggregator: Callable[[list[float]], float] = max,
+    unit: str = "GB",
 ) -> dict[str, Any]:
     """
     Memory extractor using your dependencies.
@@ -202,17 +203,17 @@ def extract_memory_gb(
         exclude=exclude,
         last=last,
         aggregator=aggregator,
-        normaliser=partial(_normalise_mem, unit=unit)
+        normaliser=partial(_normalise_mem, unit=unit),
     )
 
 
 def extract_elapsed_seconds(
-        profile: dict[str, Any] | None,
-        *,
-        include: Sequence[str] = ("elapsed time",),  # add ("duration",) if needed
-        exclude: Sequence[str] = (),
-        last: str | None = "elapsed time",
-        aggregator: Callable[[list[float]], float] = max,
+    profile: dict[str, Any] | None,
+    *,
+    include: Sequence[str] = ("elapsed time",),  # add ("duration",) if needed
+    exclude: Sequence[str] = (),
+    last: str | None = "elapsed time",
+    aggregator: Callable[[list[float]], float] = max,
 ) -> dict[str, Any]:
     """
     Elapsed-time extractor, same engine, parsed to seconds.
@@ -235,14 +236,15 @@ def flat_profile(profile):
 
     return {**memory_dict, **eta_dict}
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import json
 
-    with open('eigenmode_1.json', 'r') as f:
+    with open("eigenmode_1.json", "r") as f:
         data = json.load(f)
 
-    memory = extract_memory_gb(data['profile'])
+    memory = extract_memory_gb(data["profile"])
     print(memory)
 
-    eta = extract_elapsed_seconds(data['profile'])
+    eta = extract_elapsed_seconds(data["profile"])
     print(eta)

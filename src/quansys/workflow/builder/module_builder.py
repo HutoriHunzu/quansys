@@ -39,12 +39,10 @@ class ModuleBuilder(BaseBuilder):
 
     type: Literal["module_builder"] = "module_builder"
     module: str
-    function: str = 'build'
+    function: str = "build"
     args: dict = {}
 
-    def build(self,
-              hfss: Hfss,
-              parameters: dict | None = None) -> dict:
+    def build(self, hfss: Hfss, parameters: dict | None = None) -> dict:
         """
         Import the specified module, call its build function with merged arguments.
 

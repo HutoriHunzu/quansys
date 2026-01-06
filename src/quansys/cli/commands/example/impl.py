@@ -1,10 +1,12 @@
 """
 Example command implementation - contains all heavy imports and logic
 """
+
 import typer
 from pathlib import Path
 import shutil
 # import importlib
+
 
 def _copy_example_file(name: str, dest: Path):
     """Copy a single example file to destination."""
@@ -19,11 +21,16 @@ def _copy_example_file(name: str, dest: Path):
             raise FileNotFoundError(f"Missing example file: {f}")
         shutil.copy(f, dest / name)
 
-def _copy_example_files(example_type: str = "simple", with_config: bool = True, destination: Path = Path.cwd()):
+
+def _copy_example_files(
+    example_type: str = "simple",
+    with_config: bool = True,
+    destination: Path = Path.cwd(),
+):
     """Copy example files based on type."""
     file_map = {
         "simple": ["simple_design.aedt", "simple_config.yaml"],
-        "complex": ["complex_design.aedt", "complex_config.yaml"]
+        "complex": ["complex_design.aedt", "complex_config.yaml"],
     }
 
     selected_files = file_map.get(example_type)
@@ -40,6 +47,7 @@ def _copy_example_files(example_type: str = "simple", with_config: bool = True, 
         copied_paths.append(target_path)
 
     return copied_paths
+
 
 def execute_example(example_type, with_config):
     """

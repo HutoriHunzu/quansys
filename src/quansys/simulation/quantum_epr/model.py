@@ -6,7 +6,7 @@ from .distributed_analysis import DistributedAnalysis
 from .epr_calculator import EprCalculator
 from .modes_to_labels import ModesToLabels
 from ..base import BaseAnalysis, SimulationTypesNames, validate_and_set_design
-from ..eigenmode.results import EigenmodeResults, get_eigenmode_results
+from ..eigenmode.results import get_eigenmode_results
 
 from .results import QuantumResults
 from .structures import ConfigJunction, EprDiagResult, ParticipationDataset

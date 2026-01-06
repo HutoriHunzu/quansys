@@ -97,7 +97,7 @@ from quansys.workflow import (
     WorkflowConfig, PyaedtFileParameters, 
     DesignVariableBuilder, execute_workflow
 )
-from quansys.simulation import 
+
 from pycaddy.sweeper import DictSweep
 
 cfg = WorkflowConfig(

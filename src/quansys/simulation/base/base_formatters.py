@@ -5,7 +5,6 @@ from typing_extensions import TypeVar, Generic
 
 
 class BaseResult(RootModel[dict], ABC):
-
     # @abstractmethod
     # def to_dict(self) -> dict:
     #     pass
@@ -15,10 +14,10 @@ class BaseResult(RootModel[dict], ABC):
         pass
 
 
-TResult = TypeVar('TResult', bound='BaseResult')
+TResult = TypeVar("TResult", bound="BaseResult")
+
 
 class BaseFormatter(BaseModel, Generic[TResult], ABC):
-
     @abstractmethod
     def format(self, setup) -> TResult:
         pass

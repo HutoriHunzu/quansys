@@ -1,7 +1,6 @@
 from ansys.aedt.core import Hfss
 from typing import Literal
 
-from ansys.aedt.core.modules.solve_setup import Setup
 
 from ..base import (
     BaseAnalysis,

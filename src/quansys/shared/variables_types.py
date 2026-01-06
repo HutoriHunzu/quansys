@@ -18,33 +18,38 @@ def ensure_list(value):
 
 
 class RangeValues(BaseModel):
-    type: Literal['range'] = 'range'
+    type: Literal["range"] = "range"
     start: float
     step: float
     end: float
-    return_type: Literal['float', 'int'] = 'float'
+    return_type: Literal["float", "int"] = "float"
 
     def __iter__(self):
-        c = float if self.return_type == 'float' else int
+        c = float if self.return_type == "float" else int
         return map(lambda x: c(x), np.arange(self.start, self.end, self.step))
 
 
 class LinSpaceValues(BaseModel):
-    type: Literal['linspace'] = 'linspace'
+    type: Literal["linspace"] = "linspace"
     start: float
     number: int
     end: float
-    return_type: Literal['float', 'int'] = 'float'
+    return_type: Literal["float", "int"] = "float"
 
     def __iter__(self):
-        c = float if self.return_type == 'float' else int
+        c = float if self.return_type == "float" else int
         return map(lambda x: c(x), np.linspace(self.start, self.end, self.number))
 
 
-SUPPORTED_COMPOUND_VALUES = Annotated[RangeValues | LinSpaceValues, Field(discriminator='type')]
+SUPPORTED_COMPOUND_VALUES = Annotated[
+    RangeValues | LinSpaceValues, Field(discriminator="type")
+]
 
 AllValueType = float | str | bool | None
-AllValuesType = SUPPORTED_COMPOUND_VALUES | Annotated[list[AllValueType], BeforeValidator(ensure_list)]
+AllValuesType = (
+    SUPPORTED_COMPOUND_VALUES
+    | Annotated[list[AllValueType], BeforeValidator(ensure_list)]
+)
 
 
 class GenericValue(RootModel):
@@ -57,7 +62,7 @@ class GenericValue(RootModel):
         return iter([self.root])
 
     def to_str(self):
-        return f'{self.root}'
+        return f"{self.root}"
 
 
 class GenericValues(RootModel):
@@ -75,10 +80,10 @@ class GenericValues(RootModel):
 
 class Value(BaseModel):
     value: float
-    unit: str = ''
+    unit: str = ""
 
     def to_str(self):
-        return f'{self.value}{self.unit}'
+        return f"{self.value}{self.unit}"
 
     def change_unit(self, unit: str | None):
         self.value, self.unit = convert(self.value, self.unit, target_unit=unit)
@@ -86,7 +91,7 @@ class Value(BaseModel):
 
 class Values(BaseModel):
     values: AllValuesType
-    unit: str = ''
+    unit: str = ""
 
     def gen(self) -> Iterable[dict]:
         for v in self.values:
@@ -96,19 +101,19 @@ class Values(BaseModel):
 class NamedValue(BaseModel):
     name: str
     value: AllValueType
-    unit: str = ''
+    unit: str = ""
 
     def gen(self) -> Iterable[dict]:
         return [dict(self)]
 
     def to_str(self):
-        return f'{self.value}{self.unit}'
+        return f"{self.value}{self.unit}"
 
 
 class NamedValues(BaseModel):
     name: str
     values: AllValuesType
-    unit: str = ''
+    unit: str = ""
 
     def gen(self) -> Iterable[dict]:
         for v in self.values:

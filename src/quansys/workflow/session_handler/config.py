@@ -18,6 +18,7 @@ def ensure_path(value: Path | str) -> Path:
 
 PATH_TYPE = Annotated[Path, BeforeValidator(ensure_path)]
 
+
 class LicenseUnavailableError(Exception):
     """Raised when AEDT license isn't available."""
 
@@ -42,8 +43,8 @@ class PyaedtFileParameters(BaseModel):
     """
 
     file_path: PATH_TYPE
-    design_name: str = 'temp'
-    version: Literal['2024.2'] = '2024.2'
+    design_name: str = "temp"
+    version: Literal["2024.2"] = "2024.2"
     non_graphical: bool = True
     new_desktop: bool = True
     close_on_exit: bool = True
@@ -62,13 +63,13 @@ class PyaedtFileParameters(BaseModel):
             LicenseUnavailableError: If no valid design is loaded (e.g., license issue).
         """
         with Hfss(
-                non_graphical=self.non_graphical,
-                version=self.version,
-                new_desktop=self.new_desktop,
-                close_on_exit=self.close_on_exit,
-                design=self.design_name,
-                project=str(self.file_path.resolve()),
-                remove_lock=True
+            non_graphical=self.non_graphical,
+            version=self.version,
+            new_desktop=self.new_desktop,
+            close_on_exit=self.close_on_exit,
+            design=self.design_name,
+            project=str(self.file_path.resolve()),
+            remove_lock=True,
         ) as hfss:
             # Immediately check if HFSS initialized to a valid state
             if not hfss.valid_design:
@@ -82,6 +83,6 @@ class PyaedtFileParameters(BaseModel):
                 hfss.save_project()
             finally:
                 # Optional cleanup
-                if 'temp' in hfss.design_list:
+                if "temp" in hfss.design_list:
                     print("Cleaning up: Deleting temporary HFSS design.")
                     hfss.delete_design("temp")

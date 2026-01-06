@@ -13,11 +13,13 @@ def serialize_ndarray(array: NDArray) -> Any:
     is_not_complex = np.isclose(np.sum(np.imag(array)), 0)
     if is_not_complex:
         return np.real(array).tolist()
+
     # Recursively serialize complex arrays of arbitrary dimensions
     def serialize_element(element):
         if isinstance(element, complex):
             return {"real": element.real, "imag": element.imag}
         return element
+
     return np.vectorize(serialize_element, otypes=[object])(array).tolist()
 
 
@@ -46,6 +48,7 @@ def deserialize_ndarray(data: Any) -> NDArray:
     # Convert to ndarray with appropriate dtype
     return np.array(deserialized)
 
+
 def dataclass_to_dict(obj: Any) -> Any:
     """
     Recursively convert a dataclass (or nested dataclass) to a JSON-serializable dictionary.
@@ -59,10 +62,13 @@ def dataclass_to_dict(obj: Any) -> Any:
             elif is_dataclass(value):
                 result[field.name] = dataclass_to_dict(value)
             elif isinstance(value, list):
-                result[field.name] = [dataclass_to_dict(v) if is_dataclass(v) else v for v in value]
+                result[field.name] = [
+                    dataclass_to_dict(v) if is_dataclass(v) else v for v in value
+                ]
             elif isinstance(value, dict):
                 result[field.name] = {
-                    k: dataclass_to_dict(v) if is_dataclass(v) else v for k, v in value.items()
+                    k: dataclass_to_dict(v) if is_dataclass(v) else v
+                    for k, v in value.items()
                 }
             else:
                 result[field.name] = value
@@ -70,8 +76,11 @@ def dataclass_to_dict(obj: Any) -> Any:
     elif isinstance(obj, list):
         return [dataclass_to_dict(v) if is_dataclass(v) else v for v in obj]
     elif isinstance(obj, dict):
-        return {k: dataclass_to_dict(v) if is_dataclass(v) else v for k, v in obj.items()}
+        return {
+            k: dataclass_to_dict(v) if is_dataclass(v) else v for k, v in obj.items()
+        }
     return obj
+
 
 def dict_to_dataclass(cls: Any, data: dict) -> Any:
     """
@@ -89,11 +98,12 @@ def dict_to_dataclass(cls: Any, data: dict) -> Any:
             elif is_dataclass(field.type):
                 kwargs[field.name] = dict_to_dataclass(field.type, value)
             elif isinstance(value, list) and is_dataclass(field.type.__args__[0]):
-                kwargs[field.name] = [dict_to_dataclass(field.type.__args__[0], v) for v in value]
+                kwargs[field.name] = [
+                    dict_to_dataclass(field.type.__args__[0], v) for v in value
+                ]
             else:
                 kwargs[field.name] = value
     return cls(**kwargs)
-
 
 
 @dataclass
@@ -109,11 +119,11 @@ class EprDiagResult:
         return dict_to_dataclass(cls, data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     r = EprDiagResult(
-        chi=np.array([1,2,3]),
-        frequencies=np.array([[[1,2,3+1j], [2,3,4]], [[2,3,4], [5,3,3]]])
+        chi=np.array([1, 2, 3]),
+        frequencies=np.array([[[1, 2, 3 + 1j], [2, 3, 4]], [[2, 3, 4], [5, 3, 3]]]),
     )
     print(r)
-    q = deserialize_ndarray(r.to_dict()['frequencies'])
+    q = deserialize_ndarray(r.to_dict()["frequencies"])
     print(q)
