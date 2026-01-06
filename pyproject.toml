@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "quansys"
-version = "3.0.0"
+version = "4.0.0"
 description = "Automated HFSS workflows for quantum circuit design and analysis"
 keywords = ["quantum", "hfss", "electromagnetic", "simulation", "epr", "superconducting", "circuits", "ansys", "automation"]
 dependencies = [
